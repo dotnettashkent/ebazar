@@ -2,7 +2,7 @@
 using Stl.Fusion;
 using System.Runtime.Serialization;
 
-namespace Shared.Features.Product
+namespace Shared.Features
 {
     [DataContract, MemoryPackable]
     public partial record CreateProductCommand([property: DataMember] Session Session, [property: DataMember] ProductView Entity) : ISessionCommand<ProductView>;
