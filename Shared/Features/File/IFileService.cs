@@ -7,7 +7,7 @@ using System.Reactive;
 
 namespace Shared.Features
 {
-    public interface IFileService
+    public interface IFileService : IComputeService
     {
         //[ComputeMethod]
         Task<TableResponse<FileView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
