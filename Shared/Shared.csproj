@@ -15,4 +15,8 @@
     <PackageReference Include="Stl.Fusion.EntityFramework" Version="6.8.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Photo\" />
+  </ItemGroup>
+
 </Project>

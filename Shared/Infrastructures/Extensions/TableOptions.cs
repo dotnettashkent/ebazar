@@ -1,6 +1,10 @@
-﻿namespace Shared.Infrastructures
+﻿using MemoryPack;
+using System.Runtime.Serialization;
+
+namespace Shared.Infrastructures
 {
-    public class TableOptions
+    [DataContract, MemoryPackable]
+    public sealed partial record TableOptions
     {
     }
 }

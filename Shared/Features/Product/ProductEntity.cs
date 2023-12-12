@@ -67,5 +67,11 @@ namespace Shared.Features.Product
 
         [Column("is_big_sale")]
         public bool IsBigSale { get; set; }
+
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set;} = DateTime.UtcNow;
+
+        [Column("updated_at")]
+        public DateTime? UpdatedAt { get; set; }
     }
 }

@@ -30,6 +30,10 @@ namespace Shared.Features
         [property : DataMember] public bool IsHoliday { get; set; } = false;
         [property : DataMember] public bool IsBigSale { get; set; } = false;
 
+        [property: DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [property: DataMember] public DateTime? UpdatedAt { get; set; }
+
+
         public override bool Equals(object? o)
         {
             var other = o as ProductView;
