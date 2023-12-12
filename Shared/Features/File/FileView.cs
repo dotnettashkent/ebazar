@@ -1,9 +1,13 @@
-﻿using Shared.Infrastructures;
+﻿using MemoryPack;
+using Shared.Infrastructures;
+using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
 
 namespace Shared.Features
 {
-    public class FileView
+    [DataContract, MemoryPackable]
+    [ParameterComparer(typeof(ByValueParameterComparer))]
+    public partial class FileView
     {
         [property: DataMember] public string Name { get; set; } = null!;
         [property: DataMember] public Guid? FileId { get; set; }
