@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Shared.Infrastructures;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features.Product
@@ -39,8 +40,8 @@ namespace Shared.Features.Product
         [Column("discount_price")]
         public decimal DiscountPrice { get; set; }
 
-        //[Column("unit_type")]
-        //public UnitType UnitType { get; set; }
+        [Column("unit_type")]
+        public UnitType UnitType { get; set; }
 
         [Column("is_free_delivery")]
         public bool IsFreeDelivery { get; set; } = false;
