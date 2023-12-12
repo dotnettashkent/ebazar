@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Shared.Features.Banner
+namespace Shared.Features
 {
     public class BannerEntity
     {

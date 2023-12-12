@@ -1,4 +1,5 @@
 ﻿using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
 using Stl.Async;
 using Stl.CommandR.Configuration;
 using Stl.Fusion;
@@ -9,7 +10,7 @@ namespace Shared.Features
     public interface IFileService
     {
         //[ComputeMethod]
-        Task<List<FileView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
+        Task<TableResponse<FileView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
         //[ComputeMethod]
         Task<FileView> Get(long Id, CancellationToken cancellationToken = default);
         [CommandHandler]

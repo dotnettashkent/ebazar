@@ -1,4 +1,5 @@
 ﻿using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
 using Stl.Async;
 using Stl.CommandR.Configuration;
 using Stl.Fusion;
@@ -9,7 +10,7 @@ namespace Shared.Features
     public interface IProductService : IComputeService
     {
         [ComputeMethod]
-        Task<List<ProductView>> GetAll(TableOptions options , CancellationToken cancellationToken = default);
+        Task<TableResponse<ProductView>> GetAll(TableOptions options , CancellationToken cancellationToken = default);
         [ComputeMethod]
         Task<ProductView> GetById(long id, CancellationToken cancellationToken = default);
         [CommandHandler]

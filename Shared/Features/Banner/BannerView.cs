@@ -2,7 +2,7 @@
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
 
-namespace Shared.Features.Banner
+namespace Shared.Features
 {
     [DataContract, MemoryPackable]
     [ParameterComparer(typeof(ByValueParameterComparer))]
