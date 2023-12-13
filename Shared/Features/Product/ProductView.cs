@@ -25,6 +25,7 @@ namespace Shared.Features
         [property : DataMember] public DateTime DeliveryTime { get; set; }
         [property : DataMember] public long PhotoId { get; set; }
         [property : DataMember] public string? Tag {  get; set; }
+        [property : DataMember] public decimal Weight { get; set; }
         [property: DataMember] public bool IsActive { get; set; } = false;
         [property : DataMember] public bool IsPopular { get; set; } = false;
         [property : DataMember] public bool IsHoliday { get; set; } = false;
