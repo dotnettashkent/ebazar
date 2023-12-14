@@ -30,4 +30,12 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Basket\" />
+    <Folder Include="Features\Favourite\" />
+    <Folder Include="Features\Address\" />
+    <Folder Include="Features\ProductDiscount\" />
+    <Folder Include="Features\ProductCategory\" />
+  </ItemGroup>
+
 </Project>
