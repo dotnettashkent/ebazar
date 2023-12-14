@@ -15,4 +15,28 @@
     <PackageReference Include="Stl.Fusion.EntityFramework" Version="6.8.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Localization\SharedResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SharedResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Localization\SharedResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SharedResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Favourite\" />
+    <Folder Include="Features\Address\" />
+    <Folder Include="Features\Courier\" />
+    <Folder Include="Features\Order\" />
+    <Folder Include="Features\ProductDiscount\" />
+    <Folder Include="Features\ProductCategory\" />
+  </ItemGroup>
+
 </Project>

@@ -56,6 +56,9 @@ namespace Shared.Features.Product
         [Column("tag")]
         public string? Tag {  get; set; }
 
+        [Column("weight")]
+        public decimal Weight { get; set; }
+
         [Column("is_active")]
         public bool IsActive { get; set; }
 

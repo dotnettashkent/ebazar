@@ -11,6 +11,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Riok.Mapperly" Version="3.3.0" />
+    <PackageReference Include="Stl.Fusion" Version="6.8.11" />
+    <PackageReference Include="Stl.Fusion.Blazor.Authentication" Version="6.8.11" />
+    <PackageReference Include="Stl.Fusion.EntityFramework" Version="6.8.11" />
+    <PackageReference Include="Stl.Fusion.Ext.Services" Version="6.8.11" />
+    <PackageReference Include="Stl.Generators" Version="6.8.11" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
