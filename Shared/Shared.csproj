@@ -36,7 +36,6 @@
     <Folder Include="Features\Courier\" />
     <Folder Include="Features\Order\" />
     <Folder Include="Features\ProductDiscount\" />
-    <Folder Include="Features\ProductCategory\" />
   </ItemGroup>
 
 </Project>
