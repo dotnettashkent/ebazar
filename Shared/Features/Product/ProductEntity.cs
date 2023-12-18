@@ -1,8 +1,7 @@
-﻿using Shared.Infrastructures;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Shared.Features.Product
+namespace Shared.Features
 {
     public class ProductEntity
     {
@@ -28,6 +27,9 @@ namespace Shared.Features.Product
         [Column("description_uz")]
         public string DescriptionUz { get; set; } = null!;
 
+        [Column("brand_name")]
+        public string BrandName { get; set; } = null!;
+
         [Column("count")]
         public int Count { get; set; }
 
@@ -40,14 +42,14 @@ namespace Shared.Features.Product
         [Column("discount_price")]
         public decimal DiscountPrice { get; set; }
 
-        [Column("unit_type")]
-        public UnitType UnitType { get; set; }
+		[Column("discount_percent")]
+		public decimal DiscountPercent { get; set; }
 
-        [Column("is_free_delivery")]
-        public bool IsFreeDelivery { get; set; } = false;
+		[Column("price_type")]
+        public string PriceType { get; set; } = null!;
 
-        [Column("delivery_time")]
-        public DateTime DeliveryTime { get; set; }
+        [Column("is_delivery_free")]
+        public bool IsDeliveryFree { get; set; }
 
 
         [Column("photo_id")]

@@ -16,11 +16,12 @@ namespace Shared.Features
         [property : DataMember] public string DescriptionEn { get; set; } = null!;
         [property : DataMember] public string DescriptionRu { get; set; } = null!;
         [property : DataMember] public string DescriptionUz { get; set; } = null!;
+        [property : DataMember] public string BrandName { get; set; } = null!;
         [property : DataMember] public int Count { get; set; }
         [property : DataMember] public int MaxCount { get; set; }
         [property : DataMember] public decimal Price { get; set; }
         [property : DataMember] public decimal DiscountPrice { get; set; }
-        [property : DataMember] public UnitType UnitType { get; set; }
+        [property : DataMember] public string PriceType { get; set; } = string.Empty;
         [property : DataMember] public bool IsFreeDelivery { get; set; } = false;
         [property : DataMember] public DateTime DeliveryTime { get; set; }
         [property : DataMember] public long PhotoId { get; set; }
