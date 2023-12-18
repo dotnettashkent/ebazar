@@ -15,6 +15,9 @@ namespace Shared.Features
         [Column("title")]
         public string Title { get; set; } = null!;
 
+        [Column("link")]
+        public string Link { get; set; } = null!;
+
         [Column("description")]
         public string? Description { get; set; }
 

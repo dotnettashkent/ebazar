@@ -11,6 +11,7 @@ namespace Shared.Features
         [property : DataMember] public long Id { get; set; }
         [property : DataMember] public FileView Photo { get; set; } = null!;
         [property : DataMember] public string Title { get; set; } = null!;
+        [property : DataMember] public string Link { get; set; } = null!;
         [property : DataMember] public string? Description { get; set; }
 
         [property : DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
