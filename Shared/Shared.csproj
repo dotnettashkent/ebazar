@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Favourite\" />
     <Folder Include="Features\Address\" />
   </ItemGroup>
 
