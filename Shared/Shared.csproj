@@ -33,7 +33,6 @@
   <ItemGroup>
     <Folder Include="Features\Favourite\" />
     <Folder Include="Features\Address\" />
-    <Folder Include="Features\Courier\" />
   </ItemGroup>
 
 </Project>
