@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +17,7 @@
     <PackageReference Include="Stl.Fusion.EntityFramework" Version="6.8.11" />
     <PackageReference Include="Stl.Fusion.Ext.Services" Version="6.8.11" />
     <PackageReference Include="Stl.Generators" Version="6.8.11" />
+	<PackageReference Include="EF.Audit.Core" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
