@@ -6,7 +6,7 @@ using Shared.Features.File;
 
 namespace Service.Data
 {
-	public partial class PostgresContext
+	public partial class AppDbContext
 	{
 		public virtual DbSet<AddressEntity> Addresses { get; set; }
 		public virtual DbSet<BannerEntity> Banners { get; set; }
@@ -18,6 +18,6 @@ namespace Service.Data
 		public virtual DbSet<OrderEntity> Orders { get; set; }
 		public virtual DbSet<ProductEntity> Products { get; set; }
 		public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
-		public virtual DbSet<UserEntity> Users { get; set; }
+		public virtual DbSet<UserEntity> UsersEn { get; set; }
 	}
 }

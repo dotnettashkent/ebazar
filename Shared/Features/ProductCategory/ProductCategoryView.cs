@@ -17,6 +17,6 @@ namespace Shared.Features
 		[property : DataMember] public string? SecondLink { get; set; }
 		[property : DataMember] public string? ThirdName { get; set; }
 		[property : DataMember] public string? ThirdLink { get; set; }
-		[property: DataMember] public FileEntity? Photo { get; set; } = new();
+		[property: DataMember] public FileEntity? PhotoView { get; set; }
 	}
 }

@@ -11,7 +11,6 @@ using EF.Audit.Core.Extensions;
 
 namespace Service.Data
 {
-
 	public partial class AppDbContext : DbContextBase
 	{
 		private readonly AuditDbContext _context;
