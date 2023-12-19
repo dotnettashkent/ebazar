@@ -17,6 +17,13 @@ namespace Shared.Features
 		[property : DataMember] public string? SecondLink { get; set; }
 		[property : DataMember] public string? ThirdName { get; set; }
 		[property : DataMember] public string? ThirdLink { get; set; }
-		[property: DataMember] public FileEntity? PhotoView { get; set; }
+		//[property: DataMember] public FileEntity? PhotoView { get; set; }
+
+		public override bool Equals(object? o)
+		{
+			var other = o as ProductCategoryView;
+			return other?.Id == Id;
+		}
+		public override int GetHashCode() => Id.GetHashCode();
 	}
 }

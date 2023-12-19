@@ -64,7 +64,7 @@ namespace Shared.Features
 		[Column("is_popular")]
 		public bool IsPopular { get; set; }
 
-		[Column("photo")]
-		public FileEntity? Photo { get; set; }
+		/*[Column("photo")]
+		public FileEntity? Photo { get; set; }*/
 	}
 }
