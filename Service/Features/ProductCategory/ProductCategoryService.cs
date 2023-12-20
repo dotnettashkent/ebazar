@@ -8,6 +8,7 @@ using Stl.Fusion.EntityFramework;
 using Service.Data;
 using Microsoft.EntityFrameworkCore;
 using Service.Features.ProductCategory;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
@@ -46,31 +47,81 @@ namespace Service.Features
 			return new TableResponse<ProductCategoryView>() { Items = items.MapToViewList(), TotalItems = count };
 		}
 
-		public Task<ProductCategoryView> GetById(long id, CancellationToken cancellationToken = default)
+		public async virtual Task<ProductCategoryView> GetById(long id, CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			var dbContext = dbHub.CreateDbContext();
+			await using var _ = dbContext.ConfigureAwait(false);
+			var category = await dbContext.ProductCategories
+				.Include(x => x.Photo)
+				.Include(x => x.PhotoMobile)
+				.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+			return category == null ? throw new ValidationException("ProductCategoryEntity Not Found...") : category.MapToView();
 		}
 		#endregion
 		#region Mutations
-		public Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default)
+		public async virtual Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			if (Computed.IsInvalidating())
+			{
+				_ = await Invalidate();
+				return;
+			}
+
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			ProductCategoryEntity category = new ProductCategoryEntity();
+			Reattach(category, command.Entity, dbContext);
+
+			dbContext.Update(category);
+			await dbContext.SaveChangesAsync();
 		}
 
-		public Task Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken = default)
+		public async virtual Task Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			if (Computed.IsInvalidating())
+			{
+				_ = await Invalidate();
+				return;
+			}
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			var category = await dbContext.ProductCategories
+			.Include(x => x.Photo)
+			.Include(x => x.PhotoMobile)
+			.FirstOrDefaultAsync(x => x.Id == command.Id);
+			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+			dbContext.Remove(category);
+			await dbContext.SaveChangesAsync();
 		}
 
-		public Task Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken = default)
+		public async virtual Task Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			if (Computed.IsInvalidating())
+			{
+				_ = await Invalidate();
+				return;
+			}
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			var category = await dbContext.ProductCategories
+			.Include(x => x.Photo)
+			.Include(x => x.PhotoMobile)
+			.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
+
+			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+
+			Reattach(category, command.Entity, dbContext);
+
+			await dbContext.SaveChangesAsync();
 		}
 		#endregion
 		#region Helpers
 
 		[ComputeMethod]
 		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
+
+		private void Reattach(ProductCategoryEntity category, ProductCategoryView categoryView, AppDbContext dbContext)
+		{
+			ProductCategoryMapper.From(categoryView, category);
+		}
 		#endregion
 	}
 }
