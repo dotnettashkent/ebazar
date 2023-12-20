@@ -1,4 +1,5 @@
-﻿using Shared.Infrastructures;
+﻿using Shared.Features.Favourite;
+using Shared.Infrastructures;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -42,6 +43,12 @@ namespace Shared.Features
 		public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 		[Column("updated_at")]
 		public DateTime? UpdatedAt { get; set; }
+
+		//Relations
+
+		public virtual CartEntity? Cart { get; set;}
+		public virtual ICollection<OrderEntity>? Orders { get; set; } = new List<OrderEntity>();
+		public virtual FavouriteEntity? Favourites { get; set; } 
 
 	}
 }

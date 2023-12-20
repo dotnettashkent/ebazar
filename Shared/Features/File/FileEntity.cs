@@ -1,8 +1,10 @@
-﻿using Shared.Infrastructures;
+﻿using MemoryPack;
+using Shared.Infrastructures;
 
 namespace Shared.Features.File
 {
-    public partial class FileEntity : BaseEntity
+	[MemoryPackable]
+	public partial class FileEntity : BaseEntity
     {
         public string Name { get; set; } = null!;
         public Guid? FileId { get; set; }

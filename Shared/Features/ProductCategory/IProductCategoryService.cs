@@ -4,11 +4,10 @@ using Stl.Async;
 using Stl.CommandR.Configuration;
 using Stl.Fusion;
 using System.Reactive;
-using Shared.Features;
 
 namespace Shared.Features
 {
-	public interface IProductCategoryService
+	public interface IProductCategoryService : IComputeService
 	{
 		[ComputeMethod]
 		Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
