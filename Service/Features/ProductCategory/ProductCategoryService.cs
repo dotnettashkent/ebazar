@@ -76,16 +76,34 @@ namespace Service.Features
 		{
 			if (Computed.IsInvalidating())
 			{
+				foreach (var item in command.Entity)
+				{
+					_ = await Get(item.Id, item.Locale, cancellationToken);
+				}
 				_ = await Invalidate();
-				return;
 			}
+			if (command.Entity.Count != 3)
+				throw new Exception("Section must be 3 language!");
 
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			ProductCategoryEntity category = new ProductCategoryEntity();
-			Reattach(category, command.Entity, dbContext);
-
-			dbContext.Update(category);
-			await dbContext.SaveChangesAsync();
+			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+			var maxId = await dbContext.Sections.Select(x => x.Id).MaxAsync();
+			maxId++;
+			try
+			{
+				foreach (var item in command.Entity)
+				{
+					SectionEntity section = new SectionEntity();
+					section = Reattach(section, item, dbContext);
+					section.Id = maxId;
+					dbContext.Sections.Add(section);
+				}
+				await dbContext.SaveChangesAsync();
+			}
+			catch (Exception e)
+			{
+				throw new Exception(e.Message);
+			}
+			return maxId;
 		}
 
 		public async virtual Task Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken = default)
