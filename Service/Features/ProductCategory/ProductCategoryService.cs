@@ -23,7 +23,8 @@ namespace Service.Features
 		#endregion
 
 		#region Queries
-		public async virtual Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+		[ComputeMethod]
+		public virtual async Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 
