@@ -16,7 +16,6 @@ namespace Service.Features
 	{
 		#region Initialize
 		private readonly DbHub<AppDbContext> dbHub;
-
 		public ProductCategoryService(DbHub<AppDbContext> dbHub)
 		{
 			this.dbHub = dbHub;
@@ -24,17 +23,7 @@ namespace Service.Features
 		#endregion
 
 		#region Queries
-		[ComputeMethod]
-		public virtual async Task<ProductCategoryEntity?> Get(long Id, string locale, CancellationToken cancellationToken = default)
-		{
-			var dbContext = dbHub.CreateDbContext();
-			await using var _ = dbContext.ConfigureAwait(false);
-			var section = from s in dbContext.ProductCategories select s;
-			section = section
-				.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile);
-			return await section.FirstOrDefaultAsync(x => x.Id == Id && x.Locale == locale);
-		}
+		
 
 		[ComputeMethod]
 		public virtual async Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
@@ -76,34 +65,16 @@ namespace Service.Features
 		{
 			if (Computed.IsInvalidating())
 			{
-				foreach (var item in command.Entity)
-				{
-					_ = await Get(item.Id, item.Locale, cancellationToken);
-				}
 				_ = await Invalidate();
+				return;
 			}
-			if (command.Entity.Count != 3)
-				throw new Exception("Section must be 3 language!");
 
-			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
-			var maxId = await dbContext.Sections.Select(x => x.Id).MaxAsync();
-			maxId++;
-			try
-			{
-				foreach (var item in command.Entity)
-				{
-					SectionEntity section = new SectionEntity();
-					section = Reattach(section, item, dbContext);
-					section.Id = maxId;
-					dbContext.Sections.Add(section);
-				}
-				await dbContext.SaveChangesAsync();
-			}
-			catch (Exception e)
-			{
-				throw new Exception(e.Message);
-			}
-			return maxId;
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			ProductCategoryEntity category = new ProductCategoryEntity();
+			Reattach(category, command.Entity, dbContext);
+
+			dbContext.Update(category);
+			await dbContext.SaveChangesAsync();
 		}
 
 		public async virtual Task Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken = default)

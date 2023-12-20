@@ -10,9 +10,6 @@ namespace Shared.Features
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public long Id { get; set; }
 
-		[Column("locale")]
-		public string Locale { get; set; } = null!;
-
 		[Column("main_name_uz")]
 		public string MainNameUz { get; set; } = null!;
 
