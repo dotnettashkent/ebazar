@@ -1,13 +1,13 @@
-﻿using Shared.Infrastructures.Extensions;
-using Shared.Infrastructures;
-using Shared.Features;
-using Stl.Async;
+﻿using Stl.Async;
 using Stl.Fusion;
-using System.Reactive;
-using Stl.Fusion.EntityFramework;
 using Service.Data;
+using Shared.Features;
+using System.Reactive;
+using Shared.Infrastructures;
+using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Service.Features.ProductCategory;
+using Shared.Infrastructures.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
@@ -24,6 +24,18 @@ namespace Service.Features
 		#endregion
 
 		#region Queries
+		[ComputeMethod]
+		public virtual async Task<ProductCategoryEntity?> Get(long Id, string locale, CancellationToken cancellationToken = default)
+		{
+			var dbContext = dbHub.CreateDbContext();
+			await using var _ = dbContext.ConfigureAwait(false);
+			var section = from s in dbContext.ProductCategories select s;
+			section = section
+				.Include(x => x.Photo)
+				.Include(x => x.PhotoMobile);
+			return await section.FirstOrDefaultAsync(x => x.Id == Id && x.Locale == locale);
+		}
+
 		[ComputeMethod]
 		public virtual async Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
