@@ -13,23 +13,11 @@ namespace Shared.Features
         [Column("locale")]
         public string Locale { get; set; } = null!;
 
-        [Column("name_en")]
-        public string NameEn { get; set; } = null!;
+        [Column("name")]
+        public string Name { get; set; } = null!;
 
-        [Column("name_ru")]
-        public string NameRu { get; set; } = null!;
-
-        [Column("name_uz")]
-        public string NameUz { get; set; } = null!;
-
-        [Column("description_en")]
-        public string DescriptionEn { get; set; } = null!;
-
-        [Column("description_ru")]
-        public string DescriptionRu { get; set; } = null!;
-
-        [Column("description_uz")]
-        public string DescriptionUz { get; set; } = null!;
+        [Column("description")]
+        public string Description { get; set; } = null!;
 
         [Column("brand_name")]
         public string BrandName { get; set; } = null!;
@@ -85,5 +73,9 @@ namespace Shared.Features
 
         [Column("updated_at")]
         public DateTime? UpdatedAt { get; set; }
+        
+        //Relations
+        public virtual CartEntity? Cart { get; set; }
+        public virtual ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
     }
 }
