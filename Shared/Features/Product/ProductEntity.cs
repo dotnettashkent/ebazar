@@ -1,4 +1,5 @@
-﻿using Shared.Features.File;
+﻿using Shared.Features.Favourite;
+using Shared.Features.File;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -77,5 +78,6 @@ namespace Shared.Features
         //Relations
         public virtual CartEntity? Cart { get; set; }
         public virtual ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
+        public virtual FavouriteEntity? Favourite { get; set; }
     }
 }

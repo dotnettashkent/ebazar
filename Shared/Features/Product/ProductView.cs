@@ -1,4 +1,5 @@
 ﻿using MemoryPack;
+using Shared.Features.Favourite;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
 
@@ -32,8 +33,13 @@ namespace Shared.Features
         [property: DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [property: DataMember] public DateTime? UpdatedAt { get; set; }
 
+		//Relations
+		public virtual CartView? Cart { get; set; }
+		public virtual ICollection<OrderView> Orders { get; set; } = new List<OrderView>();
+		public virtual FavouriteView? Favourite { get; set; }
 
-        public override bool Equals(object? o)
+
+		public override bool Equals(object? o)
         {
             var other = o as ProductView;
             return other?.Id == Id;
