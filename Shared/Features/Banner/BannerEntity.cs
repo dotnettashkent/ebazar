@@ -9,6 +9,9 @@ namespace Shared.Features
         [Column("id")]
         public long Id { get; set; }
 
+        [Column("locale")]
+        public string Locale { get; set; } = null!;
+
         [Column("photo_id")]
         public FileView Photo { get; set; } = null!;
         

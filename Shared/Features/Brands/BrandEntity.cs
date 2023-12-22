@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Features.File;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Features.Brands
+namespace Shared.Features
 {
 	public class BrandEntity
 	{
@@ -20,7 +21,9 @@ namespace Shared.Features.Brands
 		[Column("is_popular")]
 		public string IsPopular { get; set; } = null!;
 
+		public string Link { get; set; } = null!;
+
 		[Column("photo_id")]
-		public long PhotoId { get; set; }
+		public FileEntity? Photo { get; set; }
 	}
 }
