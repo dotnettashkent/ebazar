@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Features.Brands
+namespace Shared.Features
 {
 	public class BrandEntity
 	{
@@ -20,6 +20,8 @@ namespace Shared.Features.Brands
 
 		[Column("is_popular")]
 		public string IsPopular { get; set; } = null!;
+
+		public string Link { get; set; } = null!;
 
 		[Column("photo_id")]
 		public FileEntity? Photo { get; set; }
