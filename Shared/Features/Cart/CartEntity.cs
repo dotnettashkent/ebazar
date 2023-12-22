@@ -25,6 +25,7 @@ namespace Shared.Features
 		public decimal UserMoneySave { get; set; }*/
 
 		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
+		public virtual UserEntity? User { get; set; }
 
 
 	}
