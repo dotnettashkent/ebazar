@@ -15,5 +15,9 @@ namespace Shared.Features
 		[property : DataMember] public bool IsSuccess { get; set; } = false;
 		[property : DataMember] public string UserComment { get; set; } = string.Empty;
 
+		//Relations
+		public virtual ICollection<ProductView> Products { get; set; } = new List<ProductView>();
+		public virtual UserView? User { get; set; }
+		public virtual CourierView? Courier { get; set; }
 	}
 }

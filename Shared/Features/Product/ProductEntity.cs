@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Shared.Features.Favourite;
+using Shared.Features.File;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
@@ -9,23 +11,14 @@ namespace Shared.Features
         [Column("id")]
         public long Id { get; set; }
 
-        [Column("name_en")]
-        public string NameEn { get; set; } = null!;
+        [Column("locale")]
+        public string Locale { get; set; } = null!;
 
-        [Column("name_ru")]
-        public string NameRu { get; set; } = null!;
+        [Column("name")]
+        public string Name { get; set; } = null!;
 
-        [Column("name_uz")]
-        public string NameUz { get; set; } = null!;
-
-        [Column("description_en")]
-        public string DescriptionEn { get; set; } = null!;
-
-        [Column("description_ru")]
-        public string DescriptionRu { get; set; } = null!;
-
-        [Column("description_uz")]
-        public string DescriptionUz { get; set; } = null!;
+        [Column("description")]
+        public string Description { get; set; } = null!;
 
         [Column("brand_name")]
         public string BrandName { get; set; } = null!;
@@ -53,7 +46,10 @@ namespace Shared.Features
 
 
         [Column("photo_id")]
-        public long PhotoId { get; set; }
+        public FileEntity? Photo { get; set; }
+
+        [Column("photo_mobile_id")]
+        public FileEntity? PhotoMobile {  get; set; }
 
         [Column("tag")]
         public string? Tag {  get; set; }
@@ -78,5 +74,10 @@ namespace Shared.Features
 
         [Column("updated_at")]
         public DateTime? UpdatedAt { get; set; }
+        
+        //Relations
+        public virtual CartEntity? Cart { get; set; }
+        public virtual ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
+        public virtual FavouriteEntity? Favourite { get; set; }
     }
 }

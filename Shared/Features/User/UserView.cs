@@ -1,4 +1,5 @@
 ﻿using MemoryPack;
+using Shared.Features.Favourite;
 using Shared.Infrastructures;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
@@ -18,6 +19,10 @@ namespace Shared.Features
 		[property : DataMember] public string Password { get; set; } = null!;
 		[property : DataMember] public Gender Gender { get; set; }
 		[property : DataMember] public DateTime? DateOfBirth { get; set; }
+
+		public virtual CartView? Cart { get; set; }
+		public virtual ICollection<OrderView>? Orders { get; set; } = new List<OrderView>();
+		public virtual FavouriteView? Favourites { get; set; }
 
 	}
 }
