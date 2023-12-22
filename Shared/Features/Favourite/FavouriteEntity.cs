@@ -15,5 +15,9 @@ namespace Shared.Features.Favourite
 
 		[Column("product_id")]
 		public long ProductId { get; set; }
+
+		//Relations
+		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
+		public virtual UserEntity? User { get; set; }
 	}
 }
