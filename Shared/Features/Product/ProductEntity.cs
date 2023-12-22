@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Shared.Features.File;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
@@ -8,6 +9,9 @@ namespace Shared.Features
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public long Id { get; set; }
+
+        [Column("locale")]
+        public string Locale { get; set; } = null!;
 
         [Column("name_en")]
         public string NameEn { get; set; } = null!;
@@ -53,7 +57,10 @@ namespace Shared.Features
 
 
         [Column("photo_id")]
-        public long PhotoId { get; set; }
+        public FileEntity? Photo { get; set; }
+
+        [Column("photo_mobile_id")]
+        public FileEntity? PhotoMobile {  get; set; }
 
         [Column("tag")]
         public string? Tag {  get; set; }
