@@ -24,6 +24,9 @@ namespace Shared.Features
 		[Column("user_comment")]
 		public string UserComment { get; set; } = string.Empty;
 
+		//Relations
 
+		public virtual UserEntity? User {  get; set; }
+		public virtual CourierEntity? Courier { get; set; }
 	}
 }
