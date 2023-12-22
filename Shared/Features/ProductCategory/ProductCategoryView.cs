@@ -11,7 +11,7 @@ namespace Shared.Features
 	public partial class ProductCategoryView
 	{
 		[property : DataMember] public long Id { get; set; }
-		[property : DataMember] public string? Locale { get; set; }
+		[property: DataMember] public string Locale { get; set; } = null!;
 		[property : DataMember] public string? MainName { get; set; }
 		[property : DataMember] public string? MainLink { get; set; }
 		[property : DataMember] public string? SecondName { get; set; }
