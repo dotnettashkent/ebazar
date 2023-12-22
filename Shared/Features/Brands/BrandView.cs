@@ -11,7 +11,7 @@ namespace Shared.Features
 		[property: DataMember] public long Id { get; set; }
 		[property: DataMember] public string Name { get; set; } = null!;
 		[property: DataMember] public string IsPopular { get; set; } = null!;
-		[property: DataMember] public long PhotoId { get; set; }
+		[property: DataMember] public FileView? PhotoView { get; set; }
 
 	}
 }

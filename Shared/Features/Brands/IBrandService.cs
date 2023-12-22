@@ -17,7 +17,7 @@ namespace Shared.Features.Brands
 		//[ComputeMethod]
 		Task<TableResponse<BrandView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 		//[ComputeMethod]
-		Task<BrandView> Get(long id, CancellationToken cancellationToken = default);
+		Task<BrandView> Get(long Id, CancellationToken cancellationToken = default);
 		[CommandHandler]
 		Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default);
 		[CommandHandler]

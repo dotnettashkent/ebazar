@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Features.File;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,6 +22,6 @@ namespace Shared.Features.Brands
 		public string IsPopular { get; set; } = null!;
 
 		[Column("photo_id")]
-		public long PhotoId { get; set; }
+		public FileEntity? Photo { get; set; }
 	}
 }
