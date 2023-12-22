@@ -1,19 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Stl.Async;
 using Stl.Fusion;
-using UtcNew.Shared;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using Stl.Async;
-using System.Reactive;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Service.Data;
-using Service.Features.Banner;
+using System.Reactive;
+using Shared.Features;
 using Service.Features;
 using Shared.Features.Banner;
-using Shared.Features;
-using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
+using Service.Features.Banner;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructures.Extensions;
+using System.ComponentModel.DataAnnotations;
 namespace UtcNew.Services;
 
 public class BannerService : IBannerService
@@ -145,9 +142,9 @@ public class BannerService : IBannerService
 	private void Reattach(BannerEntity Banner, BannerView BannerView, AppDbContext dbContext)
 	{
 		BannerMapper.From(BannerView, Banner);
-		if (Banner.Photo != null)
+		/*if (Banner.Photo != null)
 			Banner.Photo = dbContext.Files
-			.First(x => x.Id == Banner.Photo.Id);
+			.First(x => x.Id == Banner.Photo.Id);*/
 
 	}
 

@@ -22,7 +22,7 @@ namespace Shared.Features
         public string Link { get; set; } = null!;
 
         [Column("description")]
-        public string? Description { get; set; }
+        public string Description { get; set; } = null!;
 
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
