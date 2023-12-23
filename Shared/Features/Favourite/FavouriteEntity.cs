@@ -14,7 +14,7 @@ namespace Shared.Features
 		public long UserId { get; set; }
 
 		[Column("product_id")]
-		public long ProductId { get; set; }
+		public List<long> ProductIds { get; set; } = new List<long>();
 
 		//Relations
 		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();

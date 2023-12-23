@@ -22,7 +22,6 @@ namespace Service.Features.Courier
 			this.dbHub = dbHub;
 		}
 		#endregion
-
 		#region Queries
 		public async virtual Task<TableResponse<CourierView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
@@ -60,7 +59,6 @@ namespace Service.Features.Courier
 			return user == null ? throw new ValidationException("Courier was not found") : user.MapToView();
 		}
 		#endregion
-
 		#region Mutations
 		public async virtual Task Create(CreateCourierCommand command, CancellationToken cancellationToken = default)
 		{
@@ -71,10 +69,10 @@ namespace Service.Features.Courier
 			}
 
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			CourierEntity goldnumber = new CourierEntity();
-			Reattach(goldnumber, command.Entity, dbContext);
+			CourierEntity courier = new CourierEntity();
+			Reattach(courier, command.Entity, dbContext);
 
-			dbContext.Update(goldnumber);
+			dbContext.Update(courier);
 			await dbContext.SaveChangesAsync(cancellationToken);
 		}
 		public async virtual Task Delete(DeleteCourierCommand command, CancellationToken cancellationToken = default)
@@ -110,7 +108,6 @@ namespace Service.Features.Courier
 		}
 
 		#endregion
-
 		#region Helpers
 
 		//[ComputeMethod]
