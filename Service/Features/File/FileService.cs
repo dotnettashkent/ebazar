@@ -1,6 +1,5 @@
 ﻿using Service.Data;
 using Shared.Features;
-using Shared.Features.File;
 using Shared.Infrastructures;
 using Shared.Infrastructures.Extensions;
 using Stl.Fusion.EntityFramework;
@@ -10,7 +9,7 @@ using Stl.Async;
 using System.Reactive;
 using Microsoft.EntityFrameworkCore;
 
-namespace Service.Features.File
+namespace Service.Features
 {
 	public class FileService : IFileService
 	{

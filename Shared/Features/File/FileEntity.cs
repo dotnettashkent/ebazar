@@ -1,7 +1,7 @@
 ﻿using MemoryPack;
 using Shared.Infrastructures;
 
-namespace Shared.Features.File
+namespace Shared.Features
 {
 	[MemoryPackable]
 	public partial class FileEntity : BaseEntity

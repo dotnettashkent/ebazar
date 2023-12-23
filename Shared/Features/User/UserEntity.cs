@@ -1,5 +1,4 @@
-﻿using Shared.Features.Favourite;
-using Shared.Infrastructures;
+﻿using Shared.Infrastructures;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

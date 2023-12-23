@@ -5,7 +5,7 @@ using Stl.CommandR.Configuration;
 using Stl.Fusion;
 using System.Reactive;
 
-namespace Shared.Features.Banner
+namespace Shared.Features
 {
     public interface IBannerService : IComputeService
     {

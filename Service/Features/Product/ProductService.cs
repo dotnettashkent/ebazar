@@ -4,7 +4,7 @@ using Service.Data;
 using Shared.Features;
 using System.Reactive;
 using Shared.Infrastructures;
-using Service.Features.Product;
+using Service.Features;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;

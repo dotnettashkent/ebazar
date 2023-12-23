@@ -1,5 +1,4 @@
-﻿using Shared.Features.File;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features

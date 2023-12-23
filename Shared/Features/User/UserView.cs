@@ -1,5 +1,4 @@
 ﻿using MemoryPack;
-using Shared.Features.Favourite;
 using Shared.Infrastructures;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;

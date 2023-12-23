@@ -3,15 +3,13 @@ using Stl.Fusion;
 using Service.Data;
 using System.Reactive;
 using Shared.Features;
-using Service.Features;
-using Shared.Features.Banner;
 using Shared.Infrastructures;
-using Service.Features.Banner;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
 using System.ComponentModel.DataAnnotations;
-namespace UtcNew.Services;
+
+namespace Service.Features;
 
 public class BannerService : IBannerService
 {
