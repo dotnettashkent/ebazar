@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Features;
-using Shared.Features.Favourite;
-using Shared.Features.File;
 
 namespace Service.Data
 {

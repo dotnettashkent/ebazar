@@ -13,7 +13,7 @@ namespace Shared.Features
 		[property : DataMember]	public long ProductId { get; set; }
 
 		//Relations
-		public virtual ICollection<ProductView> Products { get; set; } = new List<ProductView>();
-		public virtual UserView? User { get; set; }
+		public virtual ICollection<ProductView> ProductsView { get; set; } = new List<ProductView>();
+		public virtual UserView? UserView { get; set; }
 	}
 }

@@ -33,9 +33,9 @@ namespace Shared.Features
         [property: DataMember] public DateTime? UpdatedAt { get; set; }
 
 		//Relations
-		public virtual CartView? Cart { get; set; }
-		public virtual ICollection<OrderView> Orders { get; set; } = new List<OrderView>();
-		public virtual FavouriteView? Favourite { get; set; }
+		public virtual CartView? CartView { get; set; }
+		public virtual ICollection<OrderView> OrdersView { get; set; } = new List<OrderView>();
+		public virtual FavouriteView? FavouriteView { get; set; }
 
 
 		public override bool Equals(object? o)

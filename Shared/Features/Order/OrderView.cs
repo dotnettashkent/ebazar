@@ -16,8 +16,8 @@ namespace Shared.Features
 		[property : DataMember] public string UserComment { get; set; } = string.Empty;
 
 		//Relations
-		public virtual ICollection<ProductView> Products { get; set; } = new List<ProductView>();
-		public virtual UserView? User { get; set; }
-		public virtual CourierView? Courier { get; set; }
+		public virtual ICollection<ProductView> ProductsView { get; set; } = new List<ProductView>();
+		public virtual UserView? UserView { get; set; }
+		public virtual CourierView? CourierView { get; set; }
 	}
 }

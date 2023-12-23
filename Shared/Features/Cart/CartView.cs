@@ -14,7 +14,7 @@ namespace Shared.Features
 		public int ProductCount { get; set; }
 		public decimal ProductPrice { get; set; }
 		//public decimal UserMoneySave { get; set; }
-		public virtual ICollection<ProductView> Products { get; set; } = new List<ProductView>();
-		public virtual UserView? User { get; set; }
+		public virtual ICollection<ProductView> ProductsView { get; set; } = new List<ProductView>();
+		public virtual UserView? UserView { get; set; }
 	}
 }
