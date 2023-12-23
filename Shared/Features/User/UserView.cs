@@ -16,7 +16,7 @@ namespace Shared.Features
 		[property : DataMember] public string? Email { get; set; }
 		[property : DataMember] public string PhoneNumber { get; set; } = null!;
 		[property : DataMember] public string Password { get; set; } = null!;
-		[property : DataMember] public Gender Gender { get; set; }
+		[property : DataMember] public Gender? Gender { get; set; }
 		[property : DataMember] public DateTime? DateOfBirth { get; set; }
 
 		public virtual CartView? CartView { get; set; }

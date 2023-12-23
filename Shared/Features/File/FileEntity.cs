@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+    [MemoryPackable]
 	public partial class FileEntity : BaseEntity
     {
         [Column("name")]

@@ -15,6 +15,6 @@ namespace Service.Data
 		public virtual DbSet<OrderEntity> Orders { get; set; }
 		public virtual DbSet<ProductEntity> Products { get; set; }
 		public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
-		public virtual DbSet<UserEntity> UsersEn { get; set; }
+		public virtual DbSet<UserEntity> UsersEntities { get; set; }
 	}
 }
