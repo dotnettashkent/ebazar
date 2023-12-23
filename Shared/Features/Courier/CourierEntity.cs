@@ -36,5 +36,17 @@ namespace Shared.Features
 
 		[Column("passport_PINFL")]
 		public string PassportPINFL {  get; set; } = null!;
+
+
+
+		[Column("created_at")]
+		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+		[Column("updated_at")]
+		public DateTime? UpdatedAt { get; set;}
+
+		//Relations
+
+		public virtual ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
 	}
 }
