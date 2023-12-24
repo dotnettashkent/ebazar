@@ -1,9 +1,12 @@
-﻿using Service.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Service.Data;
 using Shared.Features;
 using Shared.Infrastructures;
 using Shared.Infrastructures.Extensions;
 using Stl.Async;
+using Stl.Fusion;
 using Stl.Fusion.EntityFramework;
+using System.ComponentModel.DataAnnotations;
 using System.Reactive;
 
 namespace Service.Features
@@ -20,51 +23,51 @@ namespace Service.Features
 		#endregion
 
 		#region Queries
-		public async virtual Task<TableResponse<FavouriteView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+		public async virtual Task<TableResponse<FavouriteView>> GetAll(long UserId, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var users = from s in dbContext.Favorites select s;
-
-			if (!String.IsNullOrEmpty(options.Search))
-			{
-				var search = options.Search.ToLower();
-				users = users.Where(s =>
-						 s.FirstName != null && s.FirstName.ToLower().Contains(search)
-						|| s.LastName != null && s.LastName.ToLower().Contains(search)
-						|| s.FatherName != null && s.FatherName.ToLower().Contains(search)
-						|| s.Username != null && s.Username.ToLower().Contains(search)
-						|| s.PhoneNumber != null && s.PhoneNumber.Contains(search)
-				);
-			}
-
-			Sorting(ref users, options);
+			users = users.Where(x => x.UserId == UserId);
 
 			var count = await users.AsNoTracking().CountAsync();
-			var items = await users.AsNoTracking().Paginate(options).ToListAsync();
-			return new TableResponse<UserView>() { Items = items.MapToViewList(), TotalItems = count };
+			var items = await users.AsNoTracking().ToListAsync();
+			return new TableResponse<FavouriteView>() { Items = items.MapToViewList(), TotalItems = count };
 		}
 
-		public Task<FavouriteView> GetById(long id, CancellationToken cancellationToken = default)
-		{
-			throw new NotImplementedException();
-		}
 		#endregion
 
 		#region Mutations
-		public Task Create(CreateFavouriteCommand command, CancellationToken cancellationToken = default)
+		public async virtual Task Create(CreateFavouriteCommand command, CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			if (Computed.IsInvalidating())
+			{
+				_ = await Invalidate();
+				return;
+			}
+
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			FavouriteEntity category = new FavouriteEntity();
+			Reattach(category, command.Entity, dbContext);
+
+			dbContext.Update(category);
+			await dbContext.SaveChangesAsync();
 		}
 
-		public Task Delete(DeleteFavouriteCommand command, CancellationToken cancellationToken = default)
+		public async virtual Task Delete(DeleteFavouriteCommand command, CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
-		}
-		public Task Update(UpdateFavouriteCommand command, CancellationToken cancellationToken = default)
-		{
-			throw new NotImplementedException();
+			if (Computed.IsInvalidating())
+			{
+				_ = await Invalidate();
+				return;
+			}
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			var brand = await dbContext.Favorites
+			.FirstOrDefaultAsync(x => x.Id == command.Id);
+			if (brand == null) throw new ValidationException("FavouriteEntity Not Found");
+			dbContext.Remove(brand);
+			await dbContext.SaveChangesAsync();
 		}
 		#endregion
 
