@@ -15,9 +15,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 		.GetConnectionString("Default")));
 //builder.Services.AddTransient<IDbContextFactory<AuditDbContext>, YourAuditDbContextFactory>();
 var app = builder.Build();
-var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
+/*var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
 using var dbContext = dbContextFactory.CreateDbContext();
-await dbContext.Database.MigrateAsync();
+await dbContext.Database.MigrateAsync();*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
