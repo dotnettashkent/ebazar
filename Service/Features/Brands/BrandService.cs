@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
 using System.ComponentModel.DataAnnotations;
 
-namespace Service.Features.Brands
+namespace Service.Features
 {
 	public class BrandService : IBrandService
 	{

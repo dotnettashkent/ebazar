@@ -1,13 +1,7 @@
 ﻿using Riok.Mapperly.Abstractions;
-using Shared.Features.File;
 using Shared.Features;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Service.Features.File
+namespace Service.Features
 {
 	[Mapper]
 	public static partial class FileMapper

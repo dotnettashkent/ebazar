@@ -1,7 +1,7 @@
 ﻿using Riok.Mapperly.Abstractions;
 using Shared.Features;
 
-namespace Service.Features.Banner
+namespace Service.Features
 {
 	[Mapper]
 	public static partial class BannerMapper

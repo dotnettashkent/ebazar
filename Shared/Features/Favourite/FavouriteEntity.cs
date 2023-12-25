@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Shared.Features.Favourite
+namespace Shared.Features
 {
 	public class FavouriteEntity
 	{
@@ -14,7 +14,7 @@ namespace Shared.Features.Favourite
 		public long UserId { get; set; }
 
 		[Column("product_id")]
-		public long ProductId { get; set; }
+		public List<long> ProductIds { get; set; } = new List<long>();
 
 		//Relations
 		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();

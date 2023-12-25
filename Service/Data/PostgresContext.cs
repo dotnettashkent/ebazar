@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Features;
-using Shared.Features.Favourite;
-using Shared.Features.File;
 
 namespace Service.Data
 {
@@ -17,6 +15,6 @@ namespace Service.Data
 		public virtual DbSet<OrderEntity> Orders { get; set; }
 		public virtual DbSet<ProductEntity> Products { get; set; }
 		public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
-		public virtual DbSet<UserEntity> UsersEn { get; set; }
+		public virtual DbSet<UserEntity> UsersEntities { get; set; }
 	}
 }

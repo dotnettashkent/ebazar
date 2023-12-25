@@ -8,13 +8,11 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class CartView
 	{
-		public long Id { get; set; }
-		public long ProductId { get; set; }
-		public long UserId { get; set; }
-		public int ProductCount { get; set; }
-		public decimal ProductPrice { get; set; }
-		//public decimal UserMoneySave { get; set; }
-		public virtual ICollection<ProductView> Products { get; set; } = new List<ProductView>();
-		public virtual UserView? User { get; set; }
+		[property : DataMember] public long Id { get; set; }
+		[property : DataMember] public long ProductId { get; set; }
+		[property : DataMember] public long UserId { get; set; }
+		[property : DataMember] public int ProductCount { get; set; }
+		[property : DataMember] public virtual ICollection<ProductView> ProductsView { get; set; } = new List<ProductView>();
+		[property : DataMember] public virtual UserView? UserView { get; set; }
 	}
 }
