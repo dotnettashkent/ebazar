@@ -18,12 +18,6 @@ namespace Shared.Features
 		[Column("product_count")]
 		public int ProductCount { get; set; }
 
-		[Column("product_price")]
-		public decimal ProductPrice { get; set; }
-
-		/*[Column("user_money_save")]
-		public decimal UserMoneySave { get; set; }*/
-
 		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
 		public virtual UserEntity? User { get; set; }
 
