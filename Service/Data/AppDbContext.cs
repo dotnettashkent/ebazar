@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Stl.Fusion.Authentication.Services;
-using Stl.Fusion.EntityFramework.Operations;
-using Stl.Fusion.EntityFramework;
-using Stl.Fusion.Extensions.Services;
+﻿using EF.Audit.Core;
 using System.Security.Claims;
-using EF.Audit.Core;
 using Shared.Infrastructures;
 using EF.Audit.Core.Extensions;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using Stl.Fusion.Extensions.Services;
+using Stl.Fusion.Authentication.Services;
+using Stl.Fusion.EntityFramework.Operations;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Service.Data
 {

@@ -1,15 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Stl.Async;
+using Stl.Fusion;
+using System.Data;
 using Service.Data;
 using Shared.Features;
-using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Reactive;
+using Shared.Infrastructures;
 using System.Security.Principal;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructures.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features.User
 {

@@ -1,11 +1,11 @@
-﻿using Service.Data;
+﻿using Stl.Rpc;
 using Stl.Fusion;
-using Stl.Fusion.Authentication;
+using Service.Data;
 using Stl.Fusion.Blazor;
-using Stl.Fusion.Blazor.Authentication;
-using Stl.Fusion.Extensions;
 using Stl.Fusion.Server;
-using Stl.Rpc;
+using Stl.Fusion.Extensions;
+using Stl.Fusion.Authentication;
+using Stl.Fusion.Blazor.Authentication;
 
 namespace Server.Infrastructure.ServiceCollection
 {

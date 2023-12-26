@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shared.Features;
+﻿using Shared.Features;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Data
 {

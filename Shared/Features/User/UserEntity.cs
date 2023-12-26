@@ -1,7 +1,7 @@
-﻿using MemoryPack;
-using Shared.Infrastructures;
+﻿using Shared.Infrastructures;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Shared.Features
 {
