@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("project_users")]
 	public class UserEntity
 	{
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

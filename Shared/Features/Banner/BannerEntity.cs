@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+    [Table("banners")]
     public class BannerEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

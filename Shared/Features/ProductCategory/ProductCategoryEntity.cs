@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("product_category")]
 	public class ProductCategoryEntity
 	{
 		[Column("id")]

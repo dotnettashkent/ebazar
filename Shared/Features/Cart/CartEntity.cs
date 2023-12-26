@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("carts")]
 	public class CartEntity
 	{
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

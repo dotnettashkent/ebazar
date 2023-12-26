@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("addresses")]
 	public class AddressEntity
 	{
 		[Column("id")]

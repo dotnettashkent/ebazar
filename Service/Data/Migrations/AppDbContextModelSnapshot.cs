@@ -81,7 +81,7 @@ namespace Service.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("addresses");
                 });
 
             modelBuilder.Entity("Shared.Features.BannerEntity", b =>
@@ -128,7 +128,7 @@ namespace Service.Data.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("Banners");
+                    b.ToTable("banners");
                 });
 
             modelBuilder.Entity("Shared.Features.BrandEntity", b =>
@@ -161,7 +161,7 @@ namespace Service.Data.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("Brands");
+                    b.ToTable("brands");
                 });
 
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
@@ -190,7 +190,7 @@ namespace Service.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts");
+                    b.ToTable("carts");
                 });
 
             modelBuilder.Entity("Shared.Features.CourierEntity", b =>
@@ -256,7 +256,7 @@ namespace Service.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Couriers");
+                    b.ToTable("couriers");
                 });
 
             modelBuilder.Entity("Shared.Features.FavouriteEntity", b =>
@@ -282,7 +282,7 @@ namespace Service.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Favorites");
+                    b.ToTable("favourites");
                 });
 
             modelBuilder.Entity("Shared.Features.FileEntity", b =>
@@ -329,7 +329,7 @@ namespace Service.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Files");
+                    b.ToTable("files");
                 });
 
             modelBuilder.Entity("Shared.Features.FileView", b =>
@@ -400,7 +400,7 @@ namespace Service.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("orders");
                 });
 
             modelBuilder.Entity("Shared.Features.ProductCategoryEntity", b =>
@@ -463,7 +463,7 @@ namespace Service.Data.Migrations
 
                     b.HasIndex("PhotoMobileId");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("product_category");
                 });
 
             modelBuilder.Entity("Shared.Features.ProductEntity", b =>
@@ -578,7 +578,7 @@ namespace Service.Data.Migrations
 
                     b.HasIndex("PhotoMobileId");
 
-                    b.ToTable("Products");
+                    b.ToTable("products");
                 });
 
             modelBuilder.Entity("Shared.Features.UserEntity", b =>
@@ -636,7 +636,7 @@ namespace Service.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsersEntities");
+                    b.ToTable("project_users");
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbSessionInfo<string>", b =>

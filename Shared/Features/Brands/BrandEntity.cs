@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("brands")]
 	public class BrandEntity
 	{
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

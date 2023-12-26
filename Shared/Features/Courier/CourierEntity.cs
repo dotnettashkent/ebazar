@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("couriers")]
 	public class CourierEntity
 	{
 		[Column("id")]
