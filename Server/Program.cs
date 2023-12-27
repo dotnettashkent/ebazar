@@ -1,17 +1,25 @@
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Service.Data;
-using Service.Features.Courier;
-using Service.Features.User;
-using Service.Features;
-using Shared.Features;
 using Stl.Fusion;
 using Server.Infrastructure.ServiceCollection;
+using EF.Audit.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var services = builder.Services;
+var cfg = builder.Configuration;
+var env = builder.Environment;
 
+// Database
+var dbType = cfg.GetValue<string>("DatabaseProviderConfiguration:ProviderType");
+services.AddDataBase<AppDbContext>(env, cfg, (DataBaseType)Enum.Parse(typeof(DataBaseType), dbType, true));
 
+// Register IDbContextFactory<AuditDbContext> before AddDataBase<AppDbContext>
+services.AddDbContextFactory<AuditDbContext>(options =>
+{
+	// Configure options for AuditDbContext
+	options.UseNpgsql(cfg.GetConnectionString("Default"));
+});
 
 
 builder.Services.AddControllers();
@@ -19,11 +27,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocument();
 builder.Services.AddDbContext<AppDbContext>(options =>
-	options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
-#region STL.Fusion
+	options.UseNpgsql(cfg.GetConnectionString("Default")));
+
+// STL.Fusion
 IComputedState.DefaultOptions.MustFlowExecutionContext = true;
 builder.Services.AddFusionServices();
-#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -39,11 +48,7 @@ else
 	app.UseHsts();
 }
 
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

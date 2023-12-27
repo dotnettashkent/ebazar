@@ -40,7 +40,6 @@ namespace Service.Features
 
 			Sorting(ref brand, options);
 
-			brand = brand.Include(x => x.Photo);
 			var count = await brand.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
 			var items = await brand.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
 			return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count };
@@ -50,7 +49,6 @@ namespace Service.Features
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var category = await dbContext.Brands
-			.Include(x => x.Photo)
 			.FirstOrDefaultAsync(x => x.Id == Id);
 
 			return category == null ? throw new ValidationException("BrandEntity Not Found") : category.MapToView();
@@ -83,7 +81,6 @@ namespace Service.Features
 			}
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 			var brand = await dbContext.Brands
-			.Include(x => x.Photo)
 			.FirstOrDefaultAsync(x => x.Id == command.Id);
 			if (brand == null) throw new ValidationException("BrandEntity Not Found");
 			dbContext.Remove(brand);
@@ -101,7 +98,6 @@ namespace Service.Features
 			}
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 			var brand = await dbContext.Brands
-			.Include(x => x.Photo)
 			.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
 			if (brand == null) throw new ValidationException("BrandEntity Not Found");

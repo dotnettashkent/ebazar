@@ -14,6 +14,24 @@ namespace Service.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "FileView",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    FileId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Extension = table.Column<string>(type: "text", nullable: true),
+                    Path = table.Column<string>(type: "text", nullable: true),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileView", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -93,6 +111,21 @@ namespace Service.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_addresses", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "brands",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    is_popular = table.Column<string>(type: "text", nullable: false),
+                    Link = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_brands", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,6 +210,12 @@ namespace Service.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_banners", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_banners_FileView_PhotoId",
+                        column: x => x.PhotoId,
+                        principalTable: "FileView",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -196,27 +235,6 @@ namespace Service.Data.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "brands",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    is_popular = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "text", nullable: false),
-                    PhotoId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_brands", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_brands_files_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "files",
-                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -376,7 +394,34 @@ namespace Service.Data.Migrations
                         principalColumn: "id");
                 });
 
-           
+            migrationBuilder.CreateTable(
+                name: "OrderEntityProductEntity",
+                columns: table => new
+                {
+                    OrdersId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderEntityProductEntity", x => new { x.OrdersId, x.ProductsId });
+                    table.ForeignKey(
+                        name: "FK_OrderEntityProductEntity_orders_OrdersId",
+                        column: x => x.OrdersId,
+                        principalTable: "orders",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderEntityProductEntity_products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderEntityProductEntity_ProductsId",
+                table: "OrderEntityProductEntity",
+                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserIdentities_Id",
@@ -431,11 +476,6 @@ namespace Service.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_banners_PhotoId",
                 table: "banners",
-                column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_brands_PhotoId",
-                table: "brands",
                 column: "PhotoId");
 
             migrationBuilder.CreateIndex(
@@ -495,6 +535,9 @@ namespace Service.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "OrderEntityProductEntity");
+
+            migrationBuilder.DropTable(
                 name: "UserIdentities");
 
             migrationBuilder.DropTable(
@@ -527,6 +570,8 @@ namespace Service.Data.Migrations
             migrationBuilder.DropTable(
                 name: "Users");
 
+            migrationBuilder.DropTable(
+                name: "FileView");
 
             migrationBuilder.DropTable(
                 name: "couriers");

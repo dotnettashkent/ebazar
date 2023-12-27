@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
+using Stl.CommandR;
 
 namespace Server.Controllers.Brand
 {
@@ -9,17 +10,18 @@ namespace Server.Controllers.Brand
 	public class BrandController : ControllerBase
 	{
 		private readonly IBrandService brandService;
-
-		public BrandController(IBrandService brandService)
+		private readonly ICommander commander;
+		public BrandController(IBrandService brandService, ICommander commander)
 		{
 			this.brandService = brandService;
+			this.commander = commander;
 		}
 
 		[HttpPost("")]
-		public async Task<IActionResult> Create(CreateBrandCommand command, CancellationToken cancellationToken)
+		public Task Create([FromBody] CreateBrandCommand command, CancellationToken cancellationToken)
 		{
-			var brand = brandService.Create(command, cancellationToken);
-			return new ObjectResult(brand);
+			return commander.Call(command, cancellationToken);
 		}
+
 	}
 }
