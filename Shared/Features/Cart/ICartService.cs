@@ -1,6 +1,6 @@
 ﻿namespace Shared.Features
 {
-	public interface ICartService
+	/*public interface ICartService
 	{
-	}
+	}*/
 }

@@ -16,19 +16,17 @@ namespace Service.Data
 		private readonly AuditDbContext _context;
 		public IServiceScopeFactory _serviceScopeFactory;
 
-		//[ActivatorUtilitiesConstructor]
+		[ActivatorUtilitiesConstructor]
 		public AppDbContext(DbContextOptions<AppDbContext> options, IDbContextFactory<AuditDbContext> context,
-		  IServiceScopeFactory serviceScopeFactory) : base(options)
+			IServiceScopeFactory serviceScopeFactory) : base(options)
 		{
 			_serviceScopeFactory = serviceScopeFactory;
 			_context = context.CreateDbContext();
 		}
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        
 
-        // Stl.Fusion.EntityFramework tables
-        public DbSet<DbUser<string>> StlFusionUsers { get; protected set; } = null!;
+		// Stl.Fusion.EntityFramework tables
+		public DbSet<DbUser<string>> StlFusionUsers { get; protected set; } = null!;
 		public DbSet<DbUserIdentity<string>> UserIdentities { get; protected set; } = null!;
 		public DbSet<DbSessionInfo<string>> Sessions { get; protected set; } = null!;
 		public DbSet<DbKeyValue> KeyValues { get; protected set; } = null!;

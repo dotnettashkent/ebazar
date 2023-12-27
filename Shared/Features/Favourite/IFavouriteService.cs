@@ -7,7 +7,7 @@ using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
-	public interface IFavouriteService
+	public interface IFavouriteService : IComputeService
 	{
 		[ComputeMethod]
 		Task<TableResponse<FavouriteView>> GetAll(long UserId, CancellationToken cancellationToken = default);

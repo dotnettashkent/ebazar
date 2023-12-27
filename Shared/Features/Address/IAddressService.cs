@@ -7,7 +7,7 @@ using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
-	public interface IAddressService : IComputeService
+	/*public interface IAddressService : IComputeService
 	{
 		//[ComputeMethod]
 		Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
@@ -20,5 +20,5 @@ namespace Shared.Features
 		[CommandHandler]
 		Task Delete(DeleteBannerCommand command, CancellationToken cancellationToken = default);
 		Task<Unit> Invalidate() { return TaskExt.UnitTask; }
-	}
+	}*/
 }
