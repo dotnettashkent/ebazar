@@ -1,16 +1,17 @@
-using Microsoft.EntityFrameworkCore;
-using Service.Data;
 using Stl.Fusion;
-using Server.Infrastructure.ServiceCollection;
+using Service.Data;
 using EF.Audit.Core;
+using Microsoft.EntityFrameworkCore;
+using Server.Infrastructure.ServiceCollection;
 
+#region Builder
 var builder = WebApplication.CreateBuilder(args);
-
 var services = builder.Services;
 var cfg = builder.Configuration;
 var env = builder.Environment;
+#endregion
 
-// Database
+#region Database
 var dbType = cfg.GetValue<string>("DatabaseProviderConfiguration:ProviderType");
 services.AddDataBase<AppDbContext>(env, cfg, (DataBaseType)Enum.Parse(typeof(DataBaseType), dbType, true));
 
@@ -20,18 +21,16 @@ services.AddDbContextFactory<AuditDbContext>(options =>
 	// Configure options for AuditDbContext
 	options.UseNpgsql(cfg.GetConnectionString("Default"));
 });
-
+#endregion
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocument();
-builder.Services.AddDbContext<AppDbContext>(options =>
-	options.UseNpgsql(cfg.GetConnectionString("Default")));
 
-// STL.Fusion
+#region STL.Fusion
 IComputedState.DefaultOptions.MustFlowExecutionContext = true;
 builder.Services.AddFusionServices();
+#endregion
 
 var app = builder.Build();
 
