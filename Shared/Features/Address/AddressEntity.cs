@@ -10,6 +10,9 @@ namespace Shared.Features
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public long Id { get; set; }
 
+		[Column("user_id")]
+		public long UserId { get; set; }
+
 		[Column("region")]
 		public string Region { get; set; } = null!;
 
