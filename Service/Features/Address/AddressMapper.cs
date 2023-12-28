@@ -26,5 +26,7 @@ namespace Service.Features.Address
 		private static partial AddressEntity From(this AddressView FileView);
 
 		public static partial void From(AddressView userView, AddressEntity userEntity);
+
+		#endregion
 	}
 }

@@ -34,10 +34,6 @@ namespace Shared.Features
 		[Column("delivery_comment")]
 		public string? DeliveryComment { get; set; }
 
-		[Column("user_id")]
-		public long UserId { get; set; }
-
-
 		//Relations
 		public virtual ICollection<UserEntity> User { get; set; } = new List<UserEntity>();
 	}
