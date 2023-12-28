@@ -33,7 +33,6 @@ namespace Shared.Features
 		[Column("password")]
 		public string Password { get; set; } = null!;
 
-
 		[Column("gender")]
 		public Gender Gender { get; set; }
 
@@ -46,10 +45,9 @@ namespace Shared.Features
 		public DateTime? UpdatedAt { get; set; }
 
 		//Relations
-
 		public virtual CartEntity? Cart { get; set;}
-		public virtual ICollection<OrderEntity>? Orders { get; set; } = new List<OrderEntity>();
 		public virtual FavouriteEntity? Favourites { get; set; } 
-
+		public virtual ICollection<OrderEntity>? Orders { get; set; } = new List<OrderEntity>();
+		public virtual ICollection<AddressEntity> Addresses { get; set; } = new List<AddressEntity>();
 	}
 }
