@@ -100,6 +100,7 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
                     region = table.Column<string>(type: "text", nullable: false),
                     district = table.Column<string>(type: "text", nullable: false),
                     street = table.Column<string>(type: "text", nullable: false),
@@ -270,12 +271,36 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AddressEntityUserEntity",
+                columns: table => new
+                {
+                    AddressesId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AddressEntityUserEntity", x => new { x.AddressesId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_AddressEntityUserEntity_addresses_AddressesId",
+                        column: x => x.AddressesId,
+                        principalTable: "addresses",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AddressEntityUserEntity_project_users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "project_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "carts",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    product_id = table.Column<long>(type: "bigint", nullable: false),
+                    product_ids = table.Column<List<string>>(type: "text[]", nullable: false),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
                     product_count = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -419,6 +444,11 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AddressEntityUserEntity_UserId",
+                table: "AddressEntityUserEntity",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderEntityProductEntity_ProductsId",
                 table: "OrderEntityProductEntity",
                 column: "ProductsId");
@@ -535,6 +565,9 @@ namespace Service.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AddressEntityUserEntity");
+
+            migrationBuilder.DropTable(
                 name: "OrderEntityProductEntity");
 
             migrationBuilder.DropTable(
@@ -550,9 +583,6 @@ namespace Service.Data.Migrations
                 name: "_Sessions");
 
             migrationBuilder.DropTable(
-                name: "addresses");
-
-            migrationBuilder.DropTable(
                 name: "banners");
 
             migrationBuilder.DropTable(
@@ -560,6 +590,9 @@ namespace Service.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "product_category");
+
+            migrationBuilder.DropTable(
+                name: "addresses");
 
             migrationBuilder.DropTable(
                 name: "orders");

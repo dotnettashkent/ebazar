@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231227125221_Initial")]
+    [Migration("20231230131726_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,6 +25,21 @@ namespace Service.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AddressEntityUserEntity", b =>
+                {
+                    b.Property<long>("AddressesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AddressesId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AddressEntityUserEntity");
+                });
 
             modelBuilder.Entity("OrderEntityProductEntity", b =>
                 {
@@ -81,6 +96,10 @@ namespace Service.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("street");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
@@ -175,9 +194,10 @@ namespace Service.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("product_count");
 
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("product_id");
+                    b.Property<List<string>>("ProductIds")
+                        .IsRequired()
+                        .HasColumnType("text[]")
+                        .HasColumnName("product_ids");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint")
@@ -784,6 +804,21 @@ namespace Service.Data.Migrations
                     b.HasIndex("ExpiresAt");
 
                     b.ToTable("_KeyValues");
+                });
+
+            modelBuilder.Entity("AddressEntityUserEntity", b =>
+                {
+                    b.HasOne("Shared.Features.AddressEntity", null)
+                        .WithMany()
+                        .HasForeignKey("AddressesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Features.UserEntity", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OrderEntityProductEntity", b =>
