@@ -36,50 +36,43 @@ namespace Service.Features
 			if (!String.IsNullOrEmpty(options.Search))
 			{
 				category = category.Where(s =>
-					s.Id.ToString().Contains(options.Search)
+						 s.Name.Contains(options.Search)
 				);
 			}
 
-			category = category.Include(x => x.Photo);
-			category = category.Include(x => x.PhotoMobile);
-			category = category.Where(x => x.Locale.Equals(options.Lang));
-
 			Sorting(ref category, options);
 
-			category = category.Paginate(options);
-
-			List<ProductCategoryEntity> tags = new List<ProductCategoryEntity>();
-			foreach (var item in category)
-			{
-				var tagsById = await GetFor(item.Id, item.Locale, cancellationToken);
-				if (tagsById is not null)
-					tags.Add(tagsById);
-			}
-			var count = tags.Count();
-			return new TableResponse<ProductCategoryView>() { Items = tags.MapToViewList(), TotalItems = count };
+			var count = await category.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
+			var items = await category.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
+			return new TableResponse<ProductCategoryView>() { Items = items.MapToViewList(), TotalItems = count };
 		}
 
 		[ComputeMethod]
-		public async virtual Task<List<ProductCategoryView>> Get(long Id, CancellationToken cancellationToken = default)
+		public async virtual Task<ProductCategoryView> Get(long Id, CancellationToken cancellationToken = default)
 		{
-			await Invalidate();
-
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
+			var category = await dbContext.ProductCategories
+				.FirstOrDefaultAsync(x => x.Id == Id);
 
-			var tags = await dbContext.ProductCategories
-				.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile)
-				.Where(x => x.Id == Id)
-				.ToListAsync(cancellationToken);
-
-			return tags.Select(tag => tag.MapToView()).ToList();
+			return category == null ? throw new ValidationException("ProductSubCategoryEntity Not Found") : category.MapToView();
 		}
 		#endregion
 		#region Mutations
 		public async virtual Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			throw new Exception();
+			if (Computed.IsInvalidating())
+			{
+				_ = await Invalidate();
+				return;
+			}
+
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			ProductCategoryEntity category = new ProductCategoryEntity();
+			Reattach(category, command.Entity, dbContext);
+
+			dbContext.Update(category);
+			await dbContext.SaveChangesAsync();
 		}
 
 		public async virtual Task Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken = default)
@@ -87,20 +80,32 @@ namespace Service.Features
 			if (Computed.IsInvalidating())
 			{
 				_ = await Invalidate();
+				return;
 			}
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			var tag = await dbContext.ProductCategories
-			.Where(x => x.Id == command.Id).ToListAsync();
-
-			if (tag == null) 
-				throw new ValidationException("ProductCategoryEntity Not Found");
-			dbContext.Remove(tag);
+			var category = await dbContext.ProductCategories
+				.FirstOrDefaultAsync(x => x.Id == command.Id);
+			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+			dbContext.Remove(category);
 			await dbContext.SaveChangesAsync();
 		}
 
 		public async virtual Task Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			throw new Exception();
+			if (Computed.IsInvalidating())
+			{
+				_ = await Invalidate();
+				return;
+			}
+			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			var category = await dbContext.ProductCategories
+				.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
+
+			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+
+			Reattach(category, command.Entity, dbContext);
+
+			await dbContext.SaveChangesAsync();
 		}
 
 		
