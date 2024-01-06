@@ -11,7 +11,7 @@ namespace Shared.Features
 		public long Id { get; set; }
 
 		[Column("product_ids")]
-		public List<string>? ProductIds { get; set; }
+		public List<string> ProductIds { get; set; } = new List<string>();
 
 		[Column("user_id")]
 		public long UserId { get; set; }

@@ -18,6 +18,7 @@ namespace Server
 			fusion.AddService<IProductService, ProductService>();
 			fusion.AddService<IProductCategoryService, ProductCategoryService>();
 			fusion.AddService<IUserService, UserService>();
+			fusion.AddService<ICartService, CartService>();
 
 			return fusion;
 		}

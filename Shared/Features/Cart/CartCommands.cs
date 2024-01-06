@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Shared.Features
 {
 	[DataContract, MemoryPackable]
-	public partial record CreateCartCommand([property: DataMember] Session Session, [property: DataMember] CartView Entity) : ISessionCommand<CartView>;
+	public partial record CreateCartCommand([property: DataMember] Session Session, [property: DataMember] long productId) : ISessionCommand<CartView>;
 
 	[DataContract, MemoryPackable]
 	public partial record UpdateCartCommand([property: DataMember] Session Session, [property: DataMember] CartView Entity) : ISessionCommand<CartView>;

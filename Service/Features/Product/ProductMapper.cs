@@ -15,17 +15,17 @@ namespace Service.Features
 
 		#region Internal
 
-		[MapProperty("Photo", "PhotoView")]
-		[MapProperty("PhotoMobile", "PhotoMobileView")]
+		/*[MapProperty("Photo", "PhotoView")]
+		[MapProperty("PhotoMobile", "PhotoMobileView")]*/
 		private static partial ProductView To(this ProductEntity src);
-		[MapProperty("Photo", "PhotoView")]
-		[MapProperty("PhotoMobile", "PhotoMobileView")]
+		/*[MapProperty("Photo", "PhotoView")]
+		[MapProperty("PhotoMobile", "PhotoMobileView")]*/
 		private static partial List<ProductView> ToList(this List<ProductEntity> src);
-		[MapProperty("PhotoView", "Photo")]
-		[MapProperty("PhotoMobileView", "PhotoMobile")]
+		/*[MapProperty("PhotoView", "Photo")]
+		[MapProperty("PhotoMobileView", "PhotoMobile")]*/
 		private static partial ProductEntity From(this ProductView ProductCategoryView);
-		[MapProperty("PhotoView", "Photo")]
-		[MapProperty("PhotoMobileView", "PhotoMobile")]
+		/*[MapProperty("PhotoView", "Photo")]
+		[MapProperty("PhotoMobileView", "PhotoMobile")]*/
 		public static partial void From(ProductView personView, ProductEntity personEntity);
 		#endregion
 	}

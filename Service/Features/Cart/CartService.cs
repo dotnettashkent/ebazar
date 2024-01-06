@@ -1,15 +1,14 @@
-﻿using Stl.Async;
+﻿using Microsoft.EntityFrameworkCore;
 using Service.Data;
-using Shared.Features;
-using System.Reactive;
 using Service.Features.Cart;
+using Shared.Features;
 using Shared.Infrastructures;
-using Stl.Fusion.EntityFramework;
 using Shared.Infrastructures.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+using Stl.Async;
 using Stl.Fusion;
-using Stl.Collections;
+using Stl.Fusion.EntityFramework;
+using System.ComponentModel.DataAnnotations;
+using System.Reactive;
 
 namespace Service.Features
 {
@@ -17,12 +16,10 @@ namespace Service.Features
 	{
 		#region Initialize
 		private readonly DbHub<AppDbContext> dbHub;
-		private readonly IProductService productService;
 
-		public CartService(DbHub<AppDbContext> dbHub, IProductService productService)
+		public CartService(DbHub<AppDbContext> dbHub)
 		{
 			this.dbHub = dbHub;
-			this.productService = productService;
 		}
 		#endregion
 
@@ -45,7 +42,9 @@ namespace Service.Features
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var cart = await dbContext.Carts
-			.FirstOrDefaultAsync(x => x.Id == Id);
+				.Include(s => s.Products)
+				.Include(s => s.User)
+				.FirstOrDefaultAsync(x => x.Id == Id);
 
 			return cart == null ? throw new ValidationException("CartEntity Not Found") : cart.MapToView();
 		}
@@ -62,14 +61,13 @@ namespace Service.Features
 			}
 
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+			var product = await dbContext.Products.FirstOrDefaultAsync(x => x.Id == command.productId);
 			var cart = new CartEntity();
-			var ids = command.Entity.ProductIds;
-			var product = await dbContext.Products.FirstOrDefaultAsync(x => x.Id.ToString() == command.Entity.ProductIds.FirstOrDefault());
-
-			List<string> a = cart.ProductIds;
-			a.
-
+			cart.ProductIds.Add(product.Id.ToString());
+			dbContext.Carts.Add(cart);
+			await dbContext.SaveChangesAsync(cancellationToken);
 		}
+
 
 		public async virtual Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default)
 		{

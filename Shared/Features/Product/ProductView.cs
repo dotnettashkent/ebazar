@@ -20,8 +20,7 @@ namespace Shared.Features
         [property : DataMember] public string? PriceType { get; set; }
         [property : DataMember] public bool IsFreeDelivery { get; set; } = false;
         [property : DataMember] public DateTime DeliveryTime { get; set; }
-        [property : DataMember] public FileView? PhotoView { get; set; }
-        [property : DataMember] public FileView? PhotoMobileView {  get; set; }
+        [property: DataMember] public string? Photo { get; set; }
         [property : DataMember] public string? Tag {  get; set; }
         [property : DataMember] public decimal? Weight { get; set; }
         [property: DataMember] public bool IsActive { get; set; } = false;

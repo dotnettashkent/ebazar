@@ -16,8 +16,11 @@ namespace Shared.Features
         [Column("name")]
         public string Name { get; set; } = null!;
 
+        /// <summary>
+        /// split ('|') each description
+		/// </summary>
         [Column("description")]
-        public string Description { get; set; } = null!;
+		public string Description { get; set; } = null!;
 
         [Column("brand_name")]
         public string BrandName { get; set; } = null!;
@@ -43,12 +46,8 @@ namespace Shared.Features
         [Column("is_delivery_free")]
         public bool IsDeliveryFree { get; set; }
 
-
-        [Column("photo_id")]
-        public FileEntity? Photo { get; set; }
-
-        [Column("photo_mobile_id")]
-        public FileEntity? PhotoMobile {  get; set; }
+        [Column("photo")]
+        public string Photo { get; set; } = null!;
 
         [Column("tag")]
         public string? Tag {  get; set; }
