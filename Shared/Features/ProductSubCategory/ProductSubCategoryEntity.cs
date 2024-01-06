@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
-	[Table("product_category")]
-	public class ProductCategoryEntity
+	[Table("product_sub_category")]
+	public class ProductSubCategoryEntity
 	{
 		[Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
 		public long Id { get; set; }

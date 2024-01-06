@@ -79,35 +79,7 @@ namespace Service.Features
 		#region Mutations
 		public async virtual Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
-			{
-				_ = await Invalidate();
-			}
-
-			if (command.Entity.Count != 3)
-				throw new Exception("ProductCategory must be in 3 languages!");
-
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-
-			try
-			{
-				var maxId = await dbContext.ProductCategories.Select(x => x.Id).MaxAsync();
-				maxId++;
-
-				foreach (var item in command.Entity)
-				{
-					ProductCategoryEntity category = new ProductCategoryEntity();
-					category = Reattach(category, item, dbContext);
-					category.Id = maxId;
-					dbContext.ProductCategories.Add(category);
-				}
-
-				await dbContext.SaveChangesAsync();
-			}
-			catch (Exception e)
-			{
-				throw;
-			}
+			throw new Exception();
 		}
 
 		public async virtual Task Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken = default)
@@ -128,47 +100,10 @@ namespace Service.Features
 
 		public async virtual Task Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
-			{
-				foreach (var entity in command.Entity)
-				{
-					_ = await GetFor(entity.Id, entity.Locale, cancellationToken);
-				}
-				return;
-			}
-
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-
-			foreach (var entityToUpdate in command.Entity)
-			{
-				var tag = await dbContext.ProductCategories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entityToUpdate.Id && x.Locale == entityToUpdate.Locale);
-
-				if (tag == null)
-				{
-					throw new ValidationException($"ProductCategoryEntity with Id {entityToUpdate.Id} not found");
-				}
-
-				Reattach(tag, entityToUpdate, dbContext);
-
-				dbContext.Update(tag);
-			}
-
-			await dbContext.SaveChangesAsync();
+			throw new Exception();
 		}
 
-		[ComputeMethod]
-		public async virtual Task<ProductCategoryEntity?> GetFor(long id, string locale, CancellationToken cancellationToken = default)
-		{
-			var dbContext = dbHub.CreateDbContext();
-			await using var _ = dbContext.ConfigureAwait(false);
-
-			var tag = await dbContext.ProductCategories
-				.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile)
-				.FirstOrDefaultAsync(x => x.Id == id && x.Locale == locale);
-
-			return tag is null ? null : tag;
-		}
+		
 		#endregion
 		#region Helpers
 
@@ -185,7 +120,7 @@ namespace Service.Features
 		private void Sorting(ref IQueryable<ProductCategoryEntity> tag, TableOptions options) => tag = options.SortLabel switch
 		{
 			"Id" => tag.Ordering(options, o => o.Id),
-			"Status" => tag.Ordering(options, o => o.IsPopular),
+			"Name" => tag.Ordering(options, o => o.Name),
 			_ => tag.OrderBy(o => o.Id),
 
 		};

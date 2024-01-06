@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Shared.Features
 {
@@ -9,7 +10,7 @@ namespace Shared.Features
     public partial class ProductView
     {
         [property : DataMember] public long Id { get; set; }
-        [property: DataMember] public string Locale { get; set; } = null!;
+        [property : DataMember] public string Locale { get; set; } = null!;
         [property : DataMember] public string? Name { get; set; } 
         [property : DataMember] public string? Description { get; set; } 
         [property : DataMember] public string? BrandName { get; set; } 
@@ -20,16 +21,46 @@ namespace Shared.Features
         [property : DataMember] public string? PriceType { get; set; }
         [property : DataMember] public bool IsFreeDelivery { get; set; } = false;
         [property : DataMember] public DateTime DeliveryTime { get; set; }
-        [property: DataMember] public string? Photo { get; set; }
+        [property : DataMember] public string? Photo { get; set; }
         [property : DataMember] public string? Tag {  get; set; }
         [property : DataMember] public decimal? Weight { get; set; }
-        [property: DataMember] public bool IsActive { get; set; } = false;
+        [property : DataMember] public bool IsActive { get; set; } = false;
         [property : DataMember] public bool IsPopular { get; set; } = false;
         [property : DataMember] public bool IsHoliday { get; set; } = false;
         [property : DataMember] public bool IsBigSale { get; set; } = false;
 
-        [property: DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [property: DataMember] public DateTime? UpdatedAt { get; set; }
+        [property : DataMember] [JsonIgnore] public ProductCategoryView ProductCategoryView { get; set; }
+		[property : DataMember] [JsonIgnore] public ProductSubCategoryView ProductSubCategoryView { get; set; }
+
+		[property : DataMember] public string? ProductCategory {
+            get 
+            {
+                return ProductCategoryView.Name;
+            }
+            set
+            {
+				if (ProductCategoryView != null)
+				{
+					ProductCategoryView.Name = value;
+				}
+			}
+        }
+		[property : DataMember] public string? ProductSubCategory {
+			get
+			{
+				return ProductSubCategoryView.Name;
+			}
+			set
+			{
+				if (ProductSubCategoryView != null)
+				{
+					ProductSubCategoryView.Name = value;
+				}
+			}
+		}
+
+		[property : DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [property : DataMember] public DateTime? UpdatedAt { get; set; }
 
 		//Relations
 		public virtual CartView? CartView { get; set; }

@@ -67,6 +67,14 @@ namespace Shared.Features
         [Column("is_big_sale")]
         public bool IsBigSale { get; set; }
 
+
+        [Column("product_category_id")]
+        public ProductCategoryEntity Category { get; set; } = null!;
+
+        [Column("product_sub_category_id")]
+        public ProductSubCategoryEntity SubCategory { get; set; } = null!;
+
+
         [Column("created_at")]
         public DateTime CreatedAt { get; set;} = DateTime.UtcNow;
 
