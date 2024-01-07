@@ -31,4 +31,9 @@
 		<ProjectReference Include="..\Shared\Shared.csproj" />
 		<PackageReference Include="UFile.Shared" Version="1.0.7" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
+	  <Folder Include="Properties\" />
+	  <Folder Include="Pages\" />
+	</ItemGroup>
 </Project>
