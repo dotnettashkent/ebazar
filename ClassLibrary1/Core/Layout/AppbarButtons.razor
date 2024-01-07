@@ -1,0 +1,5 @@
+﻿
+<MudTooltip Duration="1000" Text="@(LayoutService.IsDarkMode ? @L["SwitchToLightTheme"] : @L["SwitchToDarkTheme"])">
+    <MudIconButton Icon="@(LayoutService.IsDarkMode ? @Icons.Material.Rounded.LightMode : @Icons.Material.Outlined.DarkMode)" 
+    Color="Color.Inherit" OnClick="@LayoutService.ToggleDarkMode"/>
+</MudTooltip>

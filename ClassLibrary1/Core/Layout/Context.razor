@@ -1,0 +1,30 @@
+﻿@using Stl.Fusion.Blazor
+@using Stl.Fusion.Blazor.Authentication
+@using Stl.OS
+@implements IDisposable
+@inject BlazorCircuitContext BlazorCircuitContext
+@inject ISessionResolver SessionProvider
+
+<CascadingAuthState UsePresenceReporter="true">
+    @ChildContent
+</CascadingAuthState>
+
+@code {
+    [Parameter]
+    public string SessionId { get; set; } = Session.Default.Id;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+
+    protected override void OnInitialized()
+    {
+        SessionProvider.Session = new Session(SessionId);
+
+        if (!BlazorCircuitContext.IsPrerendering)
+            BlazorCircuitContext.RootComponent = this;
+    }
+
+    public void Dispose()
+        => BlazorCircuitContext.Dispose();
+}

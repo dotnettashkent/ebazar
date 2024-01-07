@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IAuthService AuthService
+@inject Session Session
+@inherits MixedStateComponent<RoleAttributeView,string>
+@{
+    var error = State.Error;
+    var Attributes = State.LastNonErrorValue ?? null;
+}
+@if (Attributes != null)
+{
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Main))
+    {
+        <MudNavGroup Title=@L["MainPage"] Expanded="false" Icon="@Icons.Material.Filled.AutoAwesomeMotion">
+            <MudNavGroup Title=@L["ForBusiness"] Expanded="false" Icon="@Icons.Material.Filled.AutoAwesomeMotion">
+                <MudNavLink Href="/business/frequently" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["FrequentlyServices"]</MudNavLink>
+                    <MudNavLink Href="/business/sliders" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["sliders"]</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title=@L["ForIndividuals"] Expanded="false" Icon="@Icons.Material.Filled.AutoAwesomeMotion">
+                    <MudNavLink Href="/individuals/frequently" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["FrequentlyServices"]</MudNavLink>
+                    <MudNavLink Href="/individuals/sliders" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["sliders"]</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title=@L["ForOperators"] Expanded="false" Icon="@Icons.Material.Filled.AutoAwesomeMotion"></MudNavGroup>
+                <MudNavGroup Title=@L["ForAgents"] Expanded="false" Icon="@Icons.Material.Filled.AutoAwesomeMotion"> </MudNavGroup>
+                <MudNavGroup Title=@L["aboutcompany"] Expanded="false" Icon="@Icons.Material.Filled.AutoAwesomeMotion">
+                    <MudNavLink Href="/about-company" Match="NavLinkMatch.All" IconColor="Color.Inherit">@L["aboutcompany"]</MudNavLink>
+                </MudNavGroup>
+                <MudNavLink Href="/banners" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["banners"]</MudNavLink>
+            </MudNavGroup>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Menu))
+    {
+        <MudNavLink Href="/menus" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["menus"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Page))
+    {
+        <MudNavLink Href="/pages" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["pages"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Section))
+    {
+        <MudNavLink Href="/sections" Match="NavLinkMatch.All" Icon="@Icons.Material.TwoTone.Pageview" IconColor="Color.Inherit">@L["sections"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.New))
+    {
+        <MudNavLink Href="/news" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Newspaper" IconColor="Color.Inherit">@L["news"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Licence))
+    {
+        <MudNavLink Href="/licenses" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AutoAwesomeMotion" IconColor="Color.Inherit">@L["licenses"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Event))
+    {
+        <MudNavLink Href="/events" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AutoAwesomeMotion" IconColor="Color.Inherit">@L["events"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Tag))
+    {
+        <MudNavLink Href="/tags" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Pageview" IconColor="Color.Inherit">@L["tags"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Office))
+    {
+        <MudNavLink Href="/centers" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AutoAwesomeMotion" IconColor="Color.Inherit">@L["centers"]</MudNavLink>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Offer))
+    {
+        <_Standards></_Standards>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Gold))
+    {
+        <MudNavGroup Title=@L["Gold"] Expanded="false" Icon="@Icons.Material.Filled.MonetizationOn">
+            <MudNavLink Href="/gncategorycodes" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AutoAwesomeMotion" IconColor="Color.Inherit">@L["categorycodes"]</MudNavLink>
+                <MudNavLink Href="/goldnumbers" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AutoFixHigh" IconColor="Color.Warning">@L["goldnumbers"]</MudNavLink>
+            </MudNavGroup>
+    }
+    @if (Attributes!.Attributes.ExistAccess(AccessService.Administration))
+    {
+        <MudNavGroup Title=@L["Administration"] Expanded="false" Icon="@Icons.Material.Filled.AdminPanelSettings">
+            <MudNavLink Href="/section-types" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Article" IconColor="Color.Inherit">@L["templates"]</MudNavLink>
+                <MudNavLink Href="/propertygroups" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Article" IconColor="Color.Inherit">@L["propertygroups"]</MudNavLink>
+                <MudNavLink Href="/attributes" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Article" IconColor="Color.Inherit">@L["attributes"]</MudNavLink>
+            </MudNavGroup>
+    }
+}
+@code {
+    private AuthUser? User { get; set; }
+
+    protected override MutableState<string>.Options GetMutableStateOptions()
+                         => new() { InitialValue = Roles.Admin.ToString() };
+
+    protected override async Task<RoleAttributeView> ComputeState(CancellationToken cancellationToken = default)
+    {
+        User = await AuthService.GetAsync(Session);
+        MutableState.Value = User.Role;
+        return await AuthService.GetAccessesAsync(MutableState.Value);
+    }
+
+
+}
