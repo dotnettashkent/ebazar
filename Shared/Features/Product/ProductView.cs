@@ -32,40 +32,16 @@ namespace Shared.Features
         [property : DataMember] [JsonIgnore] public ProductCategoryView ProductCategoryView { get; set; }
 		[property : DataMember] [JsonIgnore] public ProductSubCategoryView ProductSubCategoryView { get; set; }
 
-		[property : DataMember] public string? ProductCategory {
-            get 
-            {
-                return ProductCategoryView.Name;
-            }
-            set
-            {
-				if (ProductCategoryView != null)
-				{
-					ProductCategoryView.Name = value;
-				}
-			}
-        }
-		[property : DataMember] public string? ProductSubCategory {
-			get
-			{
-				return ProductSubCategoryView.Name;
-			}
-			set
-			{
-				if (ProductSubCategoryView != null)
-				{
-					ProductSubCategoryView.Name = value;
-				}
-			}
-		}
+		[property: DataMember] public string? ProductCategory { get; set; }
+		[property : DataMember] public string? ProductSubCategory { get; set; }
 
 		[property : DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [property : DataMember] public DateTime? UpdatedAt { get; set; }
 
 		//Relations
-		public virtual CartView? CartView { get; set; }
-		public virtual ICollection<OrderView> OrdersView { get; set; } = new List<OrderView>();
-		public virtual FavouriteView? FavouriteView { get; set; }
+		[JsonIgnore] public virtual CartView? CartView { get; set; }
+		[JsonIgnore] public virtual ICollection<OrderView> OrdersView { get; set; } = new List<OrderView>();
+		[JsonIgnore] public virtual FavouriteView? FavouriteView { get; set; }
 
 
 		public override bool Equals(object? o)

@@ -4,7 +4,6 @@ using Service.Data;
 using Shared.Features;
 using System.Reactive;
 using Shared.Infrastructures;
-using Service.Features;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
@@ -30,8 +29,9 @@ namespace Service.Features
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var product = from s in dbContext.Products select s;
-			product = product.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile);
+			product = product.Include(p => p.Category);
+			product = product.Include(p => p.SubCategory);
+
 			if (!String.IsNullOrEmpty(options.Search))
 			{
 				product = product.Where(s =>
@@ -51,12 +51,10 @@ namespace Service.Features
 		{
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
-			var offering = await dbContext.Products
-				.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile)
+			var product = await dbContext.Products
 				.FirstOrDefaultAsync(x => x.Id == Id);
 			
-			return offering == null ? throw new ValidationException("ProductEntity Not Found") : offering.MapToView();
+			return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView();
 		}
 		#endregion
 
@@ -145,8 +143,6 @@ namespace Service.Features
 			await using var _ = dbContext.ConfigureAwait(false);
 
 			var tag = await dbContext.Products
-				.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile)
 				.FirstOrDefaultAsync(x => x.Id == id && x.Locale == locale);
 
 			return tag is null ? null : tag;
