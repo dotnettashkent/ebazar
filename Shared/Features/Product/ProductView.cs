@@ -29,11 +29,8 @@ namespace Shared.Features
         [property : DataMember] public bool IsHoliday { get; set; } = false;
         [property : DataMember] public bool IsBigSale { get; set; } = false;
 
-        [property : DataMember] [JsonIgnore] public ProductCategoryView? ProductCategoryView { get; set; }
-		[property : DataMember] [JsonIgnore] public ProductSubCategoryView? ProductSubCategoryView { get; set; }
-
-		[property: DataMember] public string? ProductCategory { get; set; }
-		[property : DataMember] public string? ProductSubCategory { get; set; }
+		[property: DataMember] public string? Category { get; set; }
+		[property : DataMember] public string? SubCategory { get; set; }
 
 		[property : DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [property : DataMember] public DateTime? UpdatedAt { get; set; }

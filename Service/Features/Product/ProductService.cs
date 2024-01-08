@@ -29,9 +29,6 @@ namespace Service.Features
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var product = from s in dbContext.Products select s;
-			product = product.Include(p => p.Category);
-			product = product.Include(p => p.SubCategory);
-
 			if (!String.IsNullOrEmpty(options.Search))
 			{
 				product = product.Where(s =>
@@ -63,8 +60,12 @@ namespace Service.Features
 		{
 			if (Computed.IsInvalidating())
 			{
-				_ = await Invalidate();
-			}
+                foreach (var item in command.Entity)
+                {
+                    _ = await GetFor(item.Id, item.Locale, cancellationToken);
+                }
+                _ = await Invalidate();
+            }
 
 			if (command.Entity.Count != 3)
 				throw new Exception("Product must be in 3 languages!");

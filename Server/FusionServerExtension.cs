@@ -14,9 +14,7 @@ namespace Server
 			fusion.AddService<IBrandService, BrandService>();
 			fusion.AddService<ICourierService, CourierService>();
 			fusion.AddService<IFavouriteService, FavouriteService>();
-			fusion.AddService<IFileService, FileService>();
 			fusion.AddService<IProductService, ProductService>();
-			fusion.AddService<IProductCategoryService, ProductCategoryService>();
 			fusion.AddService<IUserService, UserService>();
 			fusion.AddService<ICartService, CartService>();
 

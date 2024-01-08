@@ -67,11 +67,10 @@ namespace Shared.Features
         [Column("is_big_sale")]
         public bool IsBigSale { get; set; }
 
-
-        [Column("product_category_id")]
+        [Column("category")]
         public string Category { get; set; } = null!;
 
-        [Column("product_sub_category_id")]
+        [Column("sub_category")]
         public string SubCategory { get; set; } = null!;
 
 
