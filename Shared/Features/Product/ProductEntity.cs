@@ -69,10 +69,10 @@ namespace Shared.Features
 
 
         [Column("product_category_id")]
-        public ProductCategoryEntity Category { get; set; } = null!;
+        public string Category { get; set; } = null!;
 
         [Column("product_sub_category_id")]
-        public ProductSubCategoryEntity SubCategory { get; set; } = null!;
+        public string SubCategory { get; set; } = null!;
 
 
         [Column("created_at")]

@@ -1,4 +1,4 @@
-﻿using Shared.Infrastructures.Extensions;
+﻿/*using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
 using Stl.Async;
 using Stl.CommandR.Configuration;
@@ -22,3 +22,4 @@ namespace Shared.Features
 		Task<Unit> Invalidate() { return TaskExt.UnitTask; }
 	}
 }
+*/

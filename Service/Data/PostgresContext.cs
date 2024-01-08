@@ -17,8 +17,8 @@ namespace Service.Data
 		public virtual DbSet<FileEntity> Files { get; set; }
 		public virtual DbSet<OrderEntity> Orders { get; set; }
 		public virtual DbSet<ProductEntity> Products { get; set; }
-		public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
-		public virtual DbSet<ProductSubCategoryEntity> ProductSubCategories { get; set; }
+		/*public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
+		public virtual DbSet<ProductSubCategoryEntity> ProductSubCategories { get; set; }*/
 		public virtual DbSet<UserEntity> UsersEntities { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,4 +1,4 @@
-﻿using Stl.Async;
+﻿/*using Stl.Async;
 using Stl.Fusion;
 using Service.Data;
 using Shared.Features;
@@ -132,3 +132,4 @@ namespace Service.Features
 		#endregion
 	}
 }
+*/
