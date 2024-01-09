@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240108110113_Initial")]
+    [Migration("20240109091143_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -488,6 +488,9 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("locale");
 
+                    b.Property<string>("LocaleEntityCode")
+                        .HasColumnType("text");
+
                     b.Property<int>("MaxCount")
                         .HasColumnType("integer")
                         .HasColumnName("max_count");
@@ -533,6 +536,8 @@ namespace Service.Data.Migrations
                     b.HasIndex("CartId");
 
                     b.HasIndex("FavouriteId");
+
+                    b.HasIndex("LocaleEntityCode");
 
                     b.ToTable("products");
                 });
@@ -593,6 +598,16 @@ namespace Service.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("project_users");
+                });
+
+            modelBuilder.Entity("Shared.LocaleEntity", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("Locales");
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbSessionInfo<string>", b =>
@@ -836,6 +851,10 @@ namespace Service.Data.Migrations
                         .WithMany("Products")
                         .HasForeignKey("FavouriteId");
 
+                    b.HasOne("Shared.LocaleEntity", null)
+                        .WithMany("ProductEntity")
+                        .HasForeignKey("LocaleEntityCode");
+
                     b.Navigation("Cart");
 
                     b.Navigation("Favourite");
@@ -872,6 +891,11 @@ namespace Service.Data.Migrations
                     b.Navigation("Favourites");
 
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Shared.LocaleEntity", b =>
+                {
+                    b.Navigation("ProductEntity");
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbUser<string>", b =>

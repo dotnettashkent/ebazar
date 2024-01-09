@@ -1,5 +1,6 @@
 ﻿using Shared.Features;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 
 namespace Service.Data
 {
@@ -20,11 +21,13 @@ namespace Service.Data
 		/*public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
 		public virtual DbSet<ProductSubCategoryEntity> ProductSubCategories { get; set; }*/
 		public virtual DbSet<UserEntity> UsersEntities { get; set; }
+		public virtual DbSet<LocaleEntity> Locales { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-
-		}
+            
+        }
 	}
 }

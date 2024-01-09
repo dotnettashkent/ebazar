@@ -35,8 +35,9 @@ namespace Shared.Features
 		[property : DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [property : DataMember] public DateTime? UpdatedAt { get; set; }
 
-		//Relations
-		[JsonIgnore] public virtual CartView? CartView { get; set; }
+        //Relations
+
+        [JsonIgnore] public virtual CartView? CartView { get; set; }
 		[JsonIgnore] public virtual ICollection<OrderView> OrdersView { get; set; } = new List<OrderView>();
 		[JsonIgnore] public virtual FavouriteView? FavouriteView { get; set; }
 

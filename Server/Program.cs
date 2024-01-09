@@ -3,6 +3,7 @@ using Service.Data;
 using EF.Audit.Core;
 using Microsoft.EntityFrameworkCore;
 using Server.Infrastructure.ServiceCollection;
+using Microsoft.AspNetCore.Localization;
 
 #region Builder
 var builder = WebApplication.CreateBuilder(args);

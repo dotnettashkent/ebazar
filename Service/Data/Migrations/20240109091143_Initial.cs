@@ -32,6 +32,17 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Locales",
+                columns: table => new
+                {
+                    Code = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locales", x => x.Code);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -360,11 +371,17 @@ namespace Service.Data.Migrations
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CartId = table.Column<long>(type: "bigint", nullable: true),
-                    FavouriteId = table.Column<long>(type: "bigint", nullable: true)
+                    FavouriteId = table.Column<long>(type: "bigint", nullable: true),
+                    LocaleEntityCode = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_products", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_products_Locales_LocaleEntityCode",
+                        column: x => x.LocaleEntityCode,
+                        principalTable: "Locales",
+                        principalColumn: "Code");
                     table.ForeignKey(
                         name: "FK_products_carts_CartId",
                         column: x => x.CartId,
@@ -497,6 +514,11 @@ namespace Service.Data.Migrations
                 name: "IX_products_FavouriteId",
                 table: "products",
                 column: "FavouriteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_LocaleEntityCode",
+                table: "products",
+                column: "LocaleEntityCode");
         }
 
         /// <inheritdoc />
@@ -546,6 +568,9 @@ namespace Service.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "couriers");
+
+            migrationBuilder.DropTable(
+                name: "Locales");
 
             migrationBuilder.DropTable(
                 name: "carts");

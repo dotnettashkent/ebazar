@@ -53,52 +53,68 @@ namespace Service.Features
 			
 			return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView();
 		}
-		#endregion
+        #endregion
 
-		#region Mutations
-		public async virtual Task Create(CreateProductCommand command, CancellationToken cancellationToken = default)
-		{
-			if (Computed.IsInvalidating())
-			{
-                foreach (var item in command.Entity)
-                {
-                    _ = await GetFor(item.Id, item.Locale, cancellationToken);
-                }
+        #region Mutations
+        public async virtual Task Create(CreateProductCommand command, CancellationToken cancellationToken = default)
+        {
+            if (Computed.IsInvalidating())
+            {
                 _ = await Invalidate();
+                return;
             }
 
-			if (command.Entity.Count != 3)
-				throw new Exception("Product must be in 3 languages!");
+            if (command.Entity.Count != 3)
+                throw new Exception("Product must be 3 language!");
 
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            long maxId = 0;
 
-			try
-			{
-				var maxId = await dbContext.Products.Select(x => x.Id).MaxAsync();
-				maxId++;
+            // Check if there are any records in the Products table
+            if (await dbContext.Products.AnyAsync())
+            {
+                // If there are records, get the maximum Id
+                maxId = await dbContext.Products.Select(x => x.Id).MaxAsync();
+            }
 
-				foreach (var item in command.Entity)
-				{
-					ProductEntity category = new ProductEntity();
-					category = Reattach(category, item, dbContext);
-					category.Id = maxId;
-					dbContext.Products.Add(category);
-				}
-				await dbContext.SaveChangesAsync();
-			}
-			catch (Exception e)
-			{
-				throw;
-			}
-		}
+            // Increment maxId by 1
+            maxId++;
 
-		public async virtual Task Delete(DeleteProductCommand command, CancellationToken cancellationToken = default)
+            try
+            {
+				var all = new List<ProductEntity>();
+                for (int i = 0; i < command.Entity.Count; i++)
+                {
+                    ProductEntity section = new ProductEntity();
+
+                    // Create a new instance of ProductEntity for each item
+                    section = Reattach(section, command.Entity[i], dbContext);
+
+                    // Set the Id and Locale for each entity
+                    section.Id = maxId; // Set your desired Id here
+					all.Add(section);
+                    // Attach the entity to the DbContext
+                }
+				dbContext.AddRange(all);
+                // Save changes to the database
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+
+
+        public async virtual Task Delete(DeleteProductCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
-			{
-				_ = await Invalidate();
-			}
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 			var tag = await dbContext.Products
 			.Where(x => x.Id == command.Id).ToListAsync();
 
@@ -109,16 +125,13 @@ namespace Service.Features
 		}
 		public async virtual Task Update(UpdateProductCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
-			{
-				foreach (var entity in command.Entity)
-				{
-					_ = await GetFor(entity.Id, entity.Locale, cancellationToken);
-				}
-				return;
-			}
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
 
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 
 			foreach (var entityToUpdate in command.Entity)
 			{
@@ -135,18 +148,6 @@ namespace Service.Features
 			}
 
 			await dbContext.SaveChangesAsync();
-		}
-
-		[ComputeMethod]
-		public async virtual Task<ProductEntity?> GetFor(long id, string locale, CancellationToken cancellationToken = default)
-		{
-			var dbContext = dbHub.CreateDbContext();
-			await using var _ = dbContext.ConfigureAwait(false);
-
-			var tag = await dbContext.Products
-				.FirstOrDefaultAsync(x => x.Id == id && x.Locale == locale);
-
-			return tag is null ? null : tag;
 		}
 
 		#endregion

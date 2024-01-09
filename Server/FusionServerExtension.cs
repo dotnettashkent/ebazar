@@ -1,8 +1,10 @@
 ﻿using Service.Features;
 using Service.Features.Courier;
 using Service.Features.User;
+using Shared;
 using Shared.Features;
 using Stl.Fusion;
+using UtcNew.Services;
 
 namespace Server
 {
@@ -17,8 +19,8 @@ namespace Server
 			fusion.AddService<IProductService, ProductService>();
 			fusion.AddService<IUserService, UserService>();
 			fusion.AddService<ICartService, CartService>();
-
-			return fusion;
+            fusion.AddService<ILocaleService, LocaleService>();
+            return fusion;
 		}
 	}
 }

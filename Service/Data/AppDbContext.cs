@@ -32,7 +32,7 @@ namespace Service.Data
 		public DbSet<DbKeyValue> KeyValues { get; protected set; } = null!;
 		public DbSet<DbOperation> Operations { get; protected set; } = null!;
 
-		public override int SaveChanges()
+		/*public override int SaveChanges()
 		{
 			AddTimestamps();
 			return base.SaveChanges();
@@ -49,7 +49,7 @@ namespace Service.Data
 		private void AddTimestamps()
 		{
 			var entities = ChangeTracker.Entries()
-			.Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+				.Where(x => x.Entity is BaseEntity && (x.State == EntityState.Added || x.State == EntityState.Modified || x.State == EntityState.Detached || x.State == EntityState.Unchanged || x.State == EntityState.Deleted));
 
 			foreach (var entity in entities)
 			{
@@ -62,6 +62,6 @@ namespace Service.Data
 				((BaseEntity)entity.Entity).UpdatedAt = now;
 			}
 
-		}
+		}*/
 	}
 }
