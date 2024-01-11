@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Shared.Features
 {
+	[Table("brands")]
 	public class BrandEntity
 	{
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,7 +19,7 @@ namespace Shared.Features
 
 		public string Link { get; set; } = null!;
 
-		[Column("photo_id")]
-		public FileEntity? Photo { get; set; }
+		/*[Column("photo_id")]
+		public FileEntity? Photo { get; set; }*/
 	}
 }

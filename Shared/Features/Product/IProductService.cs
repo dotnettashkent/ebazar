@@ -1,18 +1,21 @@
-﻿using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using Stl.CommandR.Configuration;
+﻿using Stl.Async;
 using Stl.Fusion;
 using System.Reactive;
+using Shared.Infrastructures;
+using Stl.CommandR.Configuration;
+using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
     public interface IProductService : IComputeService
     {
         [ComputeMethod]
-        Task<TableResponse<ProductView>> GetAll(TableOptions options , CancellationToken cancellationToken = default);
+        Task<TableResponse<ProductResultView>> GetAll(TableOptions options , CancellationToken cancellationToken = default);
         [ComputeMethod]
         Task<ProductView> Get(long Id, CancellationToken cancellationToken = default);
+
+        [ComputeMethod]
+        Task<ProductResultView> GetById(long Id, CancellationToken cancellationToken = default);
         [CommandHandler]
         Task Create(CreateProductCommand command, CancellationToken cancellationToken = default);
         [CommandHandler]

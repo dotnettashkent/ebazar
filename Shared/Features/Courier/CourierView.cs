@@ -1,6 +1,5 @@
 ﻿using MemoryPack;
 using Stl.Fusion.Blazor;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace Shared.Features

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("orders")]
 	public class OrderEntity
 	{
 		[Column("id")]

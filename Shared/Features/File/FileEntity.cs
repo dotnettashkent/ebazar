@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Shared.Features
 {
     [MemoryPackable]
+    [Table("files")]
 	public partial class FileEntity : BaseEntity
     {
         [Column("name")]

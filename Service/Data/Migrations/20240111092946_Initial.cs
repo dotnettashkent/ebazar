@@ -8,53 +8,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Service.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialFirst : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    region = table.Column<string>(type: "text", nullable: false),
-                    district = table.Column<string>(type: "text", nullable: false),
-                    street = table.Column<string>(type: "text", nullable: false),
-                    home_number = table.Column<string>(type: "text", nullable: false),
-                    home_or_office = table.Column<int>(type: "integer", nullable: false),
-                    domophone_code = table.Column<string>(type: "text", nullable: true),
-                    delivery_comment = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Couriers",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    order_id = table.Column<long>(type: "bigint", nullable: false),
-                    last_name = table.Column<string>(type: "text", nullable: false),
-                    first_name = table.Column<string>(type: "text", nullable: false),
-                    middle_name = table.Column<string>(type: "text", nullable: false),
-                    phone_number = table.Column<string>(type: "text", nullable: false),
-                    password = table.Column<string>(type: "text", nullable: false),
-                    passport_number = table.Column<string>(type: "text", nullable: false),
-                    passport_letter = table.Column<string>(type: "text", nullable: false),
-                    passport_PINFL = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Couriers", x => x.id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "FileView",
                 columns: table => new
@@ -74,23 +32,14 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Files",
+                name: "Locales",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    file_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    extension = table.Column<string>(type: "text", nullable: true),
-                    path = table.Column<string>(type: "text", nullable: true),
-                    size = table.Column<long>(type: "bigint", nullable: false),
-                    type = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    Code = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Files", x => x.id);
+                    table.PrimaryKey("PK_Locales", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,28 +54,6 @@ namespace Service.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UsersEntities",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    first_name = table.Column<string>(type: "text", nullable: false),
-                    last_name = table.Column<string>(type: "text", nullable: false),
-                    middle_name = table.Column<string>(type: "text", nullable: true),
-                    email = table.Column<string>(type: "text", nullable: true),
-                    phone_number = table.Column<string>(type: "text", nullable: false),
-                    password = table.Column<string>(type: "text", nullable: false),
-                    gender = table.Column<int>(type: "integer", nullable: false),
-                    date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UsersEntities", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -179,7 +106,107 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Banners",
+                name: "addresses",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    region = table.Column<string>(type: "text", nullable: false),
+                    district = table.Column<string>(type: "text", nullable: false),
+                    street = table.Column<string>(type: "text", nullable: false),
+                    home_number = table.Column<string>(type: "text", nullable: false),
+                    home_or_office = table.Column<int>(type: "integer", nullable: false),
+                    domophone_code = table.Column<string>(type: "text", nullable: true),
+                    delivery_comment = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_addresses", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "brands",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    is_popular = table.Column<string>(type: "text", nullable: false),
+                    Link = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_brands", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "couriers",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    order_id = table.Column<long>(type: "bigint", nullable: false),
+                    last_name = table.Column<string>(type: "text", nullable: false),
+                    first_name = table.Column<string>(type: "text", nullable: false),
+                    middle_name = table.Column<string>(type: "text", nullable: false),
+                    phone_number = table.Column<string>(type: "text", nullable: false),
+                    password = table.Column<string>(type: "text", nullable: false),
+                    passport_number = table.Column<string>(type: "text", nullable: false),
+                    passport_letter = table.Column<string>(type: "text", nullable: false),
+                    passport_PINFL = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_couriers", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "files",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    file_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    extension = table.Column<string>(type: "text", nullable: true),
+                    path = table.Column<string>(type: "text", nullable: true),
+                    size = table.Column<long>(type: "bigint", nullable: false),
+                    type = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_files", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "project_users",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    first_name = table.Column<string>(type: "text", nullable: false),
+                    last_name = table.Column<string>(type: "text", nullable: false),
+                    middle_name = table.Column<string>(type: "text", nullable: true),
+                    email = table.Column<string>(type: "text", nullable: true),
+                    phone_number = table.Column<string>(type: "text", nullable: false),
+                    password = table.Column<string>(type: "text", nullable: false),
+                    gender = table.Column<int>(type: "integer", nullable: false),
+                    date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_project_users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "banners",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
@@ -194,66 +221,13 @@ namespace Service.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Banners", x => x.id);
+                    table.PrimaryKey("PK_banners", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Banners_FileView_PhotoId",
+                        name: "FK_banners_FileView_PhotoId",
                         column: x => x.PhotoId,
                         principalTable: "FileView",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Brands",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    is_popular = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "text", nullable: false),
-                    PhotoId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Brands", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Brands_Files_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "Files",
-                        principalColumn: "id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductCategories",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    locale = table.Column<string>(type: "text", nullable: false),
-                    main_name = table.Column<string>(type: "text", nullable: false),
-                    main_link = table.Column<string>(type: "text", nullable: false),
-                    second_name = table.Column<string>(type: "text", nullable: false),
-                    second_link = table.Column<string>(type: "text", nullable: false),
-                    third_name = table.Column<string>(type: "text", nullable: false),
-                    third_link = table.Column<string>(type: "text", nullable: false),
-                    is_popular = table.Column<bool>(type: "boolean", nullable: false),
-                    PhotoId = table.Column<long>(type: "bigint", nullable: true),
-                    PhotoMobileId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductCategories", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Files_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "Files",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Files_PhotoMobileId",
-                        column: x => x.PhotoMobileId,
-                        principalTable: "Files",
-                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -276,48 +250,71 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
+                name: "AddressEntityUserEntity",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    product_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    product_count = table.Column<int>(type: "integer", nullable: false)
+                    AddressesId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Carts", x => x.id);
+                    table.PrimaryKey("PK_AddressEntityUserEntity", x => new { x.AddressesId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_Carts_UsersEntities_user_id",
-                        column: x => x.user_id,
-                        principalTable: "UsersEntities",
+                        name: "FK_AddressEntityUserEntity_addresses_AddressesId",
+                        column: x => x.AddressesId,
+                        principalTable: "addresses",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AddressEntityUserEntity_project_users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "project_users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Favorites",
+                name: "carts",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    product_id = table.Column<List<long>>(type: "bigint[]", nullable: false)
+                    product_ids = table.Column<List<long>>(type: "bigint[]", nullable: false),
+                    user_id = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favorites", x => x.id);
+                    table.PrimaryKey("PK_carts", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Favorites_UsersEntities_user_id",
+                        name: "FK_carts_project_users_user_id",
                         column: x => x.user_id,
-                        principalTable: "UsersEntities",
+                        principalTable: "project_users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "favourites",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    product_ids = table.Column<List<long>>(type: "bigint[]", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_favourites", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_favourites_project_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "project_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "orders",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
@@ -330,30 +327,31 @@ namespace Service.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.id);
+                    table.PrimaryKey("PK_orders", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Orders_Couriers_courier_id",
+                        name: "FK_orders_couriers_courier_id",
                         column: x => x.courier_id,
-                        principalTable: "Couriers",
+                        principalTable: "couriers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_UsersEntities_user_id",
+                        name: "FK_orders_project_users_user_id",
                         column: x => x.user_id,
-                        principalTable: "UsersEntities",
+                        principalTable: "project_users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "products",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    locale = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
+                    name_uz = table.Column<string>(type: "text", nullable: false),
+                    name_ru = table.Column<string>(type: "text", nullable: false),
+                    description_uz = table.Column<string>(type: "text", nullable: false),
+                    description_ru = table.Column<string>(type: "text", nullable: false),
                     brand_name = table.Column<string>(type: "text", nullable: false),
                     count = table.Column<int>(type: "integer", nullable: false),
                     max_count = table.Column<int>(type: "integer", nullable: false),
@@ -362,41 +360,39 @@ namespace Service.Data.Migrations
                     discount_percent = table.Column<decimal>(type: "numeric", nullable: false),
                     price_type = table.Column<string>(type: "text", nullable: false),
                     is_delivery_free = table.Column<bool>(type: "boolean", nullable: false),
-                    PhotoId = table.Column<long>(type: "bigint", nullable: true),
-                    PhotoMobileId = table.Column<long>(type: "bigint", nullable: true),
+                    photo = table.Column<string>(type: "text", nullable: false),
                     tag = table.Column<string>(type: "text", nullable: true),
                     weight = table.Column<decimal>(type: "numeric", nullable: false),
+                    unit = table.Column<string>(type: "text", nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     is_popular = table.Column<bool>(type: "boolean", nullable: false),
                     is_holiday = table.Column<bool>(type: "boolean", nullable: false),
                     is_big_sale = table.Column<bool>(type: "boolean", nullable: false),
+                    category = table.Column<string>(type: "text", nullable: false),
+                    sub_category = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CartId = table.Column<long>(type: "bigint", nullable: true),
-                    FavouriteId = table.Column<long>(type: "bigint", nullable: true)
+                    FavouriteId = table.Column<long>(type: "bigint", nullable: true),
+                    LocaleEntityCode = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.id);
+                    table.PrimaryKey("PK_products", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Products_Carts_CartId",
+                        name: "FK_products_Locales_LocaleEntityCode",
+                        column: x => x.LocaleEntityCode,
+                        principalTable: "Locales",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_products_carts_CartId",
                         column: x => x.CartId,
-                        principalTable: "Carts",
+                        principalTable: "carts",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_Products_Favorites_FavouriteId",
+                        name: "FK_products_favourites_FavouriteId",
                         column: x => x.FavouriteId,
-                        principalTable: "Favorites",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_Products_Files_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "Files",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_Products_Files_PhotoMobileId",
-                        column: x => x.PhotoMobileId,
-                        principalTable: "Files",
+                        principalTable: "favourites",
                         principalColumn: "id");
                 });
 
@@ -411,85 +407,28 @@ namespace Service.Data.Migrations
                 {
                     table.PrimaryKey("PK_OrderEntityProductEntity", x => new { x.OrdersId, x.ProductsId });
                     table.ForeignKey(
-                        name: "FK_OrderEntityProductEntity_Orders_OrdersId",
+                        name: "FK_OrderEntityProductEntity_orders_OrdersId",
                         column: x => x.OrdersId,
-                        principalTable: "Orders",
+                        principalTable: "orders",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderEntityProductEntity_Products_ProductsId",
+                        name: "FK_OrderEntityProductEntity_products_ProductsId",
                         column: x => x.ProductsId,
-                        principalTable: "Products",
+                        principalTable: "products",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Banners_PhotoId",
-                table: "Banners",
-                column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Brands_PhotoId",
-                table: "Brands",
-                column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Carts_user_id",
-                table: "Carts",
-                column: "user_id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Favorites_user_id",
-                table: "Favorites",
-                column: "user_id",
-                unique: true);
+                name: "IX_AddressEntityUserEntity_UserId",
+                table: "AddressEntityUserEntity",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderEntityProductEntity_ProductsId",
                 table: "OrderEntityProductEntity",
                 column: "ProductsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_courier_id",
-                table: "Orders",
-                column: "courier_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_user_id",
-                table: "Orders",
-                column: "user_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductCategories_PhotoId",
-                table: "ProductCategories",
-                column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductCategories_PhotoMobileId",
-                table: "ProductCategories",
-                column: "PhotoMobileId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_CartId",
-                table: "Products",
-                column: "CartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_FavouriteId",
-                table: "Products",
-                column: "FavouriteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_PhotoId",
-                table: "Products",
-                column: "PhotoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_PhotoMobileId",
-                table: "Products",
-                column: "PhotoMobileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserIdentities_Id",
@@ -540,25 +479,57 @@ namespace Service.Data.Migrations
                 name: "IX__Sessions_UserId_IsSignOutForced",
                 table: "_Sessions",
                 columns: new[] { "UserId", "IsSignOutForced" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_banners_PhotoId",
+                table: "banners",
+                column: "PhotoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_carts_user_id",
+                table: "carts",
+                column: "user_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_favourites_user_id",
+                table: "favourites",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_orders_courier_id",
+                table: "orders",
+                column: "courier_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_orders_user_id",
+                table: "orders",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_CartId",
+                table: "products",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_FavouriteId",
+                table: "products",
+                column: "FavouriteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_LocaleEntityCode",
+                table: "products",
+                column: "LocaleEntityCode");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Addresses");
-
-            migrationBuilder.DropTable(
-                name: "Banners");
-
-            migrationBuilder.DropTable(
-                name: "Brands");
+                name: "AddressEntityUserEntity");
 
             migrationBuilder.DropTable(
                 name: "OrderEntityProductEntity");
-
-            migrationBuilder.DropTable(
-                name: "ProductCategories");
 
             migrationBuilder.DropTable(
                 name: "UserIdentities");
@@ -573,31 +544,43 @@ namespace Service.Data.Migrations
                 name: "_Sessions");
 
             migrationBuilder.DropTable(
-                name: "FileView");
+                name: "banners");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "brands");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "files");
+
+            migrationBuilder.DropTable(
+                name: "addresses");
+
+            migrationBuilder.DropTable(
+                name: "orders");
+
+            migrationBuilder.DropTable(
+                name: "products");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Couriers");
+                name: "FileView");
 
             migrationBuilder.DropTable(
-                name: "Carts");
+                name: "couriers");
 
             migrationBuilder.DropTable(
-                name: "Favorites");
+                name: "Locales");
 
             migrationBuilder.DropTable(
-                name: "Files");
+                name: "carts");
 
             migrationBuilder.DropTable(
-                name: "UsersEntities");
+                name: "favourites");
+
+            migrationBuilder.DropTable(
+                name: "project_users");
         }
     }
 }

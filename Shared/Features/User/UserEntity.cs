@@ -1,10 +1,11 @@
-﻿using MemoryPack;
-using Shared.Infrastructures;
+﻿using Shared.Infrastructures;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace Shared.Features
 {
+	[Table("project_users")]
 	public class UserEntity
 	{
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -32,7 +33,6 @@ namespace Shared.Features
 		[Column("password")]
 		public string Password { get; set; } = null!;
 
-
 		[Column("gender")]
 		public Gender Gender { get; set; }
 
@@ -45,10 +45,9 @@ namespace Shared.Features
 		public DateTime? UpdatedAt { get; set; }
 
 		//Relations
-
-		public virtual CartEntity? Cart { get; set;}
+		public virtual CartEntity Cart { get; set;} = new CartEntity();
+		public virtual ICollection<FavouriteEntity>? Favourites { get; set; } = new List<FavouriteEntity>(); 
 		public virtual ICollection<OrderEntity>? Orders { get; set; } = new List<OrderEntity>();
-		public virtual FavouriteEntity? Favourites { get; set; } 
-
+		public virtual ICollection<AddressEntity> Addresses { get; set; } = new List<AddressEntity>();
 	}
 }

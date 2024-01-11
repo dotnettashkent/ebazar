@@ -1,35 +1,54 @@
+using Stl.Fusion;
+using Service.Data;
 using EF.Audit.Core;
 using Microsoft.EntityFrameworkCore;
-using Service.Data;
+using Server.Infrastructure.ServiceCollection;
+using Microsoft.AspNetCore.Localization;
 
+#region Builder
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var cfg = builder.Configuration;
+var env = builder.Environment;
+#endregion
 
-// Add services to the container.
+#region Database
+var dbType = cfg.GetValue<string>("DatabaseProviderConfiguration:ProviderType");
+services.AddDataBase<AppDbContext>(env, cfg, (DataBaseType)Enum.Parse(typeof(DataBaseType), dbType, true));
+
+// Register IDbContextFactory<AuditDbContext> before AddDataBase<AppDbContext>
+services.AddDbContextFactory<AuditDbContext>(options =>
+{
+    // Configure options for AuditDbContext
+    options.UseNpgsql(cfg.GetConnectionString("Default"));
+});
+#endregion
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(options =>
-	options.UseNpgsql(builder.Configuration
-		.GetConnectionString("Default")));
-//builder.Services.AddTransient<IDbContextFactory<AuditDbContext>, YourAuditDbContextFactory>();
+builder.Services.AddSwaggerDocument();
+
+#region STL.Fusion
+IComputedState.DefaultOptions.MustFlowExecutionContext = true;
+builder.Services.AddFusionServices();
+#endregion
+
 var app = builder.Build();
-var dbContextFactory = app.Services.GetRequiredService<IDbContextFactory<AppDbContext>>();
-using var dbContext = dbContextFactory.CreateDbContext();
-await dbContext.Database.MigrateAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+    app.UseOpenApi();
+    app.UseSwaggerUi3();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

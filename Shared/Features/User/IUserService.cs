@@ -1,9 +1,9 @@
-﻿using Shared.Infrastructures.Extensions;
-using Shared.Infrastructures;
-using Stl.Async;
-using Stl.CommandR.Configuration;
+﻿using Stl.Async;
 using Stl.Fusion;
 using System.Reactive;
+using Shared.Infrastructures;
+using Stl.CommandR.Configuration;
+using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
@@ -13,6 +13,13 @@ namespace Shared.Features
 		Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 		//[ComputeMethod]
 		Task<UserView> GetById(long id, CancellationToken cancellationToken = default);
+
+		Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default);
+
+		Task<UserView> Login(string email, string password);
+
+		Task<UserView> GetByToken(string token);
+
 		[CommandHandler]
 		Task Create(CreateUserCommand command, CancellationToken cancellationToken = default);
 		[CommandHandler]

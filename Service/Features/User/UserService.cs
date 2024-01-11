@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Stl.Async;
+using Stl.Fusion;
+using System.Data;
 using Service.Data;
 using Shared.Features;
-using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Reactive;
-using System.Security.Principal;
+using Shared.Infrastructures;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructures.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features.User
 {
@@ -18,15 +17,16 @@ namespace Service.Features.User
 		#region Initialize
 
 		private readonly DbHub<AppDbContext> dbHub;
+		private readonly IProductService productService;
+        public UserService(DbHub<AppDbContext> dbHub, IProductService productService)
+        {
+            this.dbHub = dbHub;
+            this.productService = productService;
+        }
+        #endregion
 
-		public UserService(DbHub<AppDbContext> dbHub)
-		{
-			this.dbHub = dbHub;
-		}
-		#endregion
-
-		#region Queries
-		public async virtual Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+        #region Queries
+        public async virtual Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
@@ -57,10 +57,24 @@ namespace Service.Features.User
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var user = await dbContext.UsersEntities
-			.FirstOrDefaultAsync(x => x.Id == id);
+				.Include(x => x.Cart)
+				.Include(x => x.Orders)
+				.Include(x => x.Addresses)
+				.Include(x => x.Favourites)
+				.FirstOrDefaultAsync(x => x.Id == id);
 
 			return user == null ? throw new ValidationException("User was not found") : user.MapToView();
 		}
+
+		public async virtual Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default)
+		{
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var user = await dbContext.UsersEntities
+                .FirstOrDefaultAsync(x => x.Id == Id);
+
+            return user == null ? throw new ValidationException("User was not found") : user.MapToResultView();
+        }
 		#endregion
 
 		#region Mutations
@@ -71,13 +85,20 @@ namespace Service.Features.User
 				_ = await Invalidate();
 				return;
 			}
-
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			UserEntity goldnumber = new UserEntity();
-			Reattach(goldnumber, command.Entity, dbContext);
+			var exists = dbContext.UsersEntities.FirstOrDefaultAsync(x => x.Email == command.Entity.Email).Result;
+			if (exists == null)
+			{
+				UserEntity goldnumber = new UserEntity();
+				Reattach(goldnumber, command.Entity, dbContext);
 
-			dbContext.Update(goldnumber);
-			await dbContext.SaveChangesAsync(cancellationToken);
+				dbContext.Update(goldnumber);
+				await dbContext.SaveChangesAsync(cancellationToken);
+			}
+			else
+			{
+				throw new Exception("This email already exists");
+			}
 		}
 		public async virtual Task Delete(DeleteUserCommand command, CancellationToken cancellationToken = default)
 		{
@@ -117,9 +138,9 @@ namespace Service.Features.User
 
 		//[ComputeMethod]
 		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
-		private void Reattach(UserEntity user, UserView userView, AppDbContext dbContext)
+		private void Reattach(UserEntity user, UserResultView userView, AppDbContext dbContext)
 		{
-			UserMapper.From(userView, user);
+			UserMapper.FromResult(userView, user);
 		}
 
 		private void Sorting(ref IQueryable<UserEntity> unit, TableOptions options) => unit = options.SortLabel switch
@@ -133,7 +154,27 @@ namespace Service.Features.User
 			_ => unit.OrderBy(o => o.CreatedAt),
 		};
 
-		#endregion
+        public async virtual Task<UserView> Login(string email, string password)
+        {
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var user = await dbContext.UsersEntities
+				.Where(x => x.Email == email && x.Password == password)
+				.Include(x => x.Favourites)
+				.Include(x => x.Cart)
+				.Include(x => x.Orders)
+				.Include(x => x.Addresses)
+				.FirstOrDefaultAsync();
+
+            return user == null ? throw new ValidationException("User was not found") : user.MapToView();
+        }
+
+        public async virtual Task<UserView> GetByToken(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
 
 
@@ -141,5 +182,5 @@ namespace Service.Features.User
 
 
 
-	}
+    }
 }

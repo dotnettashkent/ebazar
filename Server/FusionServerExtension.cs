@@ -1,16 +1,26 @@
 ﻿using Service.Features;
+using Service.Features.Courier;
+using Service.Features.User;
+using Shared;
 using Shared.Features;
 using Stl.Fusion;
+using UtcNew.Services;
 
 namespace Server
 {
-    public static class FusionServerExtension
-    {
-        public static FusionBuilder AddEbazarServices(this FusionBuilder fusion)
-        {
-            fusion.AddService<IProductCategoryService, ProductCategoryService>();
-            fusion.AddService<IFileService, FileService>();
+	public static class FusionServerExtension
+	{
+		public static FusionBuilder AddEbazarServices(this FusionBuilder fusion)
+		{
+			fusion.AddService<IBannerService, BannerService>();
+			fusion.AddService<IBrandService, BrandService>();
+			fusion.AddService<ICourierService, CourierService>();
+			fusion.AddService<IFavouriteService, FavouriteService>();
+			fusion.AddService<IProductService, ProductService>();
+			fusion.AddService<IUserService, UserService>();
+			fusion.AddService<ICartService, CartService>();
+            fusion.AddService<ILocaleService, LocaleService>();
             return fusion;
-        }
-    }
+		}
+	}
 }

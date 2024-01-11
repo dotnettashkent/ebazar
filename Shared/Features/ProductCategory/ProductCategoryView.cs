@@ -1,4 +1,4 @@
-﻿using MemoryPack;
+﻿/*using MemoryPack;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
 
@@ -10,16 +10,7 @@ namespace Shared.Features
 	public partial class ProductCategoryView
 	{
 		[property : DataMember] public long Id { get; set; }
-		[property: DataMember] public string Locale { get; set; } = null!;
-		[property : DataMember] public string? MainName { get; set; }
-		[property : DataMember] public string? MainLink { get; set; }
-		[property : DataMember] public string? SecondName { get; set; }
-		[property : DataMember] public string? SecondLink { get; set; }
-		[property : DataMember] public string? ThirdName { get; set; }
-		[property : DataMember] public string? ThirdLink { get; set; }
-		[property : DataMember] public bool IsPopular { get; set; }
-		[property : DataMember] public FileEntity? PhotoView { get; set; }
-		[property : DataMember] public FileEntity? PhotoMobileView { get; set; }
+		[property: DataMember] public string Name { get; set; } = null!;
 
 		public override bool Equals(object? o)
 		{
@@ -29,3 +20,4 @@ namespace Shared.Features
 		public override int GetHashCode() => Id.GetHashCode();
 	}
 }
+*/

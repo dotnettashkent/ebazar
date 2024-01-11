@@ -1,5 +1,5 @@
-﻿using Riok.Mapperly.Abstractions;
-using Shared.Features;
+﻿using Shared.Features;
+using Riok.Mapperly.Abstractions;
 
 namespace Service.Features
 {

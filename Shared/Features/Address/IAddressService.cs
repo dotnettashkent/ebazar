@@ -1,24 +1,24 @@
-﻿using Shared.Infrastructures.Extensions;
-using Shared.Infrastructures;
-using Stl.Async;
-using Stl.CommandR.Configuration;
+﻿using Stl.Async;
 using Stl.Fusion;
 using System.Reactive;
+using Shared.Infrastructures;
+using Stl.CommandR.Configuration;
+using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
 	public interface IAddressService : IComputeService
 	{
 		//[ComputeMethod]
-		Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
+		Task<TableResponse<AddressView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 		//[ComputeMethod]
-		Task<BannerView> Get(long id, CancellationToken cancellationToken = default);
+		Task<AddressView> Get(long id, CancellationToken cancellationToken = default);
 		[CommandHandler]
-		Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default);
+		Task Create(CreateAddressCommand command, CancellationToken cancellationToken = default);
 		[CommandHandler]
-		Task Update(UpdateBannerCommand command, CancellationToken cancellationToken = default);
+		Task Update(UpdateAddressCommand command, CancellationToken cancellationToken = default);
 		[CommandHandler]
-		Task Delete(DeleteBannerCommand command, CancellationToken cancellationToken = default);
+		Task Delete(DeleteAddressCommand command, CancellationToken cancellationToken = default);
 		Task<Unit> Invalidate() { return TaskExt.UnitTask; }
 	}
 }

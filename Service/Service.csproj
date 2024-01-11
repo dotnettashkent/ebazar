@@ -27,8 +27,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\Migrations\" />
-	  <Folder Include="Features\Address\" />
-	  <Folder Include="Features\Cart\" />
 	  <Folder Include="Features\Order\" />
 	</ItemGroup>
 </Project>

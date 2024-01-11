@@ -9,6 +9,7 @@ namespace Shared.Features
 	public partial class AddressView
 	{
 		[property : DataMember] public long Id { get; set; }
+		[property : DataMember] public long UserId { get; set; }
 		[property : DataMember] public string? Region { get; set; } 
 		[property : DataMember] public string? District { get; set; } 
 		[property : DataMember] public string? Street { get; set; } 

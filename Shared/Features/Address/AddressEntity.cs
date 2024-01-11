@@ -3,11 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
+	[Table("addresses")]
 	public class AddressEntity
 	{
 		[Column("id")]
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public long Id { get; set; }
+
+		[Column("user_id")]
+		public long UserId { get; set; }
 
 		[Column("region")]
 		public string Region { get; set; } = null!;
@@ -29,5 +33,8 @@ namespace Shared.Features
 
 		[Column("delivery_comment")]
 		public string? DeliveryComment { get; set; }
+
+		//Relations
+		public virtual ICollection<UserEntity> User { get; set; } = new List<UserEntity>();
 	}
 }

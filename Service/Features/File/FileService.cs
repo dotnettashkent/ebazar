@@ -1,13 +1,13 @@
-﻿using Service.Data;
-using Shared.Features;
-using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Fusion.EntityFramework;
+﻿using Stl.Async;
 using Stl.Fusion;
-using System.ComponentModel.DataAnnotations;
-using Stl.Async;
+using Service.Data;
+using Shared.Features;
 using System.Reactive;
+using Shared.Infrastructures;
+using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructures.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {

@@ -4,7 +4,6 @@ using Service.Data;
 using Shared.Features;
 using System.Reactive;
 using Shared.Infrastructures;
-using Service.Features;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
@@ -24,18 +23,17 @@ namespace Service.Features
 		#endregion
 
 		#region Queries
-		public async virtual Task<TableResponse<ProductView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+		public async virtual Task<TableResponse<ProductResultView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var product = from s in dbContext.Products select s;
-			product = product.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile);
 			if (!String.IsNullOrEmpty(options.Search))
 			{
 				product = product.Where(s =>
-						 s.Name != null && s.Name.Contains(options.Search)
+						 s.NameUz != null && s.NameUz.Contains(options.Search)
+						 || s.NameRu.Contains(options.Search)
 				);
 			}
 
@@ -45,112 +43,82 @@ namespace Service.Features
 			var count = await product.AsNoTracking().CountAsync();
 			var items = await product.AsNoTracking().Paginate(options).ToListAsync();
 
-			return new TableResponse<ProductView>() { Items = items.MapToViewList(), TotalItems = count };
+			return new TableResponse<ProductResultView>() { Items = items.MapToViewListResult(), TotalItems = count };
 		}
-		public async virtual Task<ProductView> Get(long Id, CancellationToken cancellationToken = default)
+		public async virtual Task<ProductResultView> GetById(long Id, CancellationToken cancellationToken = default)
 		{
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
-			var offering = await dbContext.Products
-				.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile)
+			var product = await dbContext.Products
 				.FirstOrDefaultAsync(x => x.Id == Id);
 			
-			return offering == null ? throw new ValidationException("ProductEntity Not Found") : offering.MapToView();
-		}
-		#endregion
-
-		#region Mutations
-		public async virtual Task Create(CreateProductCommand command, CancellationToken cancellationToken = default)
-		{
-			if (Computed.IsInvalidating())
-			{
-				_ = await Invalidate();
-			}
-
-			if (command.Entity.Count != 3)
-				throw new Exception("Product must be in 3 languages!");
-
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-
-			try
-			{
-				var maxId = await dbContext.Products.Select(x => x.Id).MaxAsync();
-				maxId++;
-
-				foreach (var item in command.Entity)
-				{
-					ProductEntity category = new ProductEntity();
-					category = Reattach(category, item, dbContext);
-					category.Id = maxId;
-					dbContext.Products.Add(category);
-				}
-				await dbContext.SaveChangesAsync();
-			}
-			catch (Exception e)
-			{
-				throw;
-			}
+			return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView();
 		}
 
-		public async virtual Task Delete(DeleteProductCommand command, CancellationToken cancellationToken = default)
-		{
-			if (Computed.IsInvalidating())
-			{
-				_ = await Invalidate();
-			}
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			var tag = await dbContext.Products
-			.Where(x => x.Id == command.Id).ToListAsync();
+        public async virtual Task<ProductView> Get(long Id, CancellationToken cancellationToken = default)
+        {
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var product = await dbContext.Products
+                .FirstOrDefaultAsync(x => x.Id == Id);
 
-			if (tag == null)
+            return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView2();
+        }
+        #endregion
+
+        #region Mutations
+        public async virtual Task Create(CreateProductCommand command, CancellationToken cancellationToken = default)
+        {
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
+
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            ProductEntity entity = new ProductEntity();
+            Reattach(entity, command.Entity, dbContext);
+
+            dbContext.Update(entity);
+            await dbContext.SaveChangesAsync();
+        }
+
+
+
+        public async virtual Task Delete(DeleteProductCommand command, CancellationToken cancellationToken = default)
+		{
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            var entity = await dbContext.Products
+            .FirstOrDefaultAsync(x => x.Id == command.Id);
+            
+			if (entity == null) 
 				throw new ValidationException("ProductEntity Not Found");
-			dbContext.Remove(tag);
-			await dbContext.SaveChangesAsync();
-		}
+            dbContext.Remove(entity);
+            await dbContext.SaveChangesAsync();
+        }
 		public async virtual Task Update(UpdateProductCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
-			{
-				foreach (var entity in command.Entity)
-				{
-					_ = await GetFor(entity.Id, entity.Locale, cancellationToken);
-				}
-				return;
-			}
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            var entity = await dbContext.Products
+				.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            if (entity == null) 
+				throw new ValidationException("ProductEntity Not Found");
 
-			foreach (var entityToUpdate in command.Entity)
-			{
-				var tag = await dbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entityToUpdate.Id && x.Locale == entityToUpdate.Locale);
+            Reattach(entity, command.Entity, dbContext);
 
-				if (tag == null)
-				{
-					throw new ValidationException($"ProductEntity with Id {entityToUpdate.Id} not found");
-				}
-
-				Reattach(tag, entityToUpdate, dbContext);
-
-				dbContext.Update(tag);
-			}
-
-			await dbContext.SaveChangesAsync();
-		}
-
-		[ComputeMethod]
-		public async virtual Task<ProductEntity?> GetFor(long id, string locale, CancellationToken cancellationToken = default)
-		{
-			var dbContext = dbHub.CreateDbContext();
-			await using var _ = dbContext.ConfigureAwait(false);
-
-			var tag = await dbContext.Products
-				.Include(x => x.Photo)
-				.Include(x => x.PhotoMobile)
-				.FirstOrDefaultAsync(x => x.Id == id && x.Locale == locale);
-
-			return tag is null ? null : tag;
-		}
+            await dbContext.SaveChangesAsync();
+        }
 
 		#endregion
 
@@ -158,19 +126,21 @@ namespace Service.Features
 		//[ComputeMethod]
 		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
 
-		private ProductEntity Reattach(ProductEntity entity, ProductView view, AppDbContext dbContext)
+		private ProductEntity Reattach(ProductEntity entity, ProductResultView view, AppDbContext dbContext)
 		{
-			ProductMapper.From(view, entity);
+			ProductMapper.From2(view, entity);
 			return entity;
 
 		}
 
 		private void Sorting(ref IQueryable<ProductEntity> offering, TableOptions options) => offering = options.SortLabel switch
 		{
-			"Name" => offering.Ordering(options, o => o.Name),
-			"BrandName" => offering.Ordering(options, o => o.BrandName),
-			"Description" => offering.Ordering(options, o => o.Description),
-			"Price" => offering.Ordering(options, o => o.Price),
+            "NameUz" => offering.Ordering(options, o => o.NameUz),
+            "NameRu" => offering.Ordering(options, o => o.NameRu),
+            "BrandName" => offering.Ordering(options, o => o.BrandName),
+            "DescriptionUz" => offering.Ordering(options, o => o.DescriptionUz),
+            "DescriptionRu" => offering.Ordering(options, o => o.DescriptionRu),
+            "Price" => offering.Ordering(options, o => o.Price),
 			"DiscountPrice" => offering.Ordering(options, o => o.DiscountPrice),
 			"Tag" => offering.Ordering(options, o => o.Tag),
 			"CreatedAt" => offering.Ordering(options, o => o.CreatedAt),

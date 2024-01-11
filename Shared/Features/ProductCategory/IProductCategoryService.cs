@@ -1,9 +1,9 @@
-﻿using Shared.Infrastructures.Extensions;
-using Shared.Infrastructures;
-using Stl.Async;
-using Stl.CommandR.Configuration;
+﻿/*using Stl.Async;
 using Stl.Fusion;
 using System.Reactive;
+using Shared.Infrastructures;
+using Stl.CommandR.Configuration;
+using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
@@ -12,7 +12,7 @@ namespace Shared.Features
 		[ComputeMethod]
 		Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 		[ComputeMethod]
-		Task<List<ProductCategoryView>> Get(long Id, CancellationToken cancellationToken = default);
+		Task<ProductCategoryView> Get(long Id, CancellationToken cancellationToken = default);
 		[CommandHandler]
 		Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default);
 		[CommandHandler]
@@ -22,3 +22,4 @@ namespace Shared.Features
 		Task<Unit> Invalidate() { return TaskExt.UnitTask; }
 	}
 }
+*/
