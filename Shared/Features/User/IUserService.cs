@@ -14,6 +14,8 @@ namespace Shared.Features
 		//[ComputeMethod]
 		Task<UserView> GetById(long id, CancellationToken cancellationToken = default);
 
+		Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default);
+
 		Task<UserView> Login(string email, string password);
 
 		Task<UserView> GetByToken(string token);

@@ -56,10 +56,24 @@ namespace Service.Features.User
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var user = await dbContext.UsersEntities
-			.FirstOrDefaultAsync(x => x.Id == id);
+				.Include(x => x.Cart)
+				.Include(x => x.Orders)
+				.Include(x => x.Addresses)
+				.Include(x => x.Favourites)
+				.FirstOrDefaultAsync(x => x.Id == id);
 
 			return user == null ? throw new ValidationException("User was not found") : user.MapToView();
 		}
+
+		public async virtual Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default)
+		{
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var user = await dbContext.UsersEntities
+                .FirstOrDefaultAsync(x => x.Id == Id);
+
+            return user == null ? throw new ValidationException("User was not found") : user.MapToResultView();
+        }
 		#endregion
 
 		#region Mutations
@@ -123,9 +137,9 @@ namespace Service.Features.User
 
 		//[ComputeMethod]
 		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
-		private void Reattach(UserEntity user, UserView userView, AppDbContext dbContext)
+		private void Reattach(UserEntity user, UserResultView userView, AppDbContext dbContext)
 		{
-			UserMapper.From(userView, user);
+			UserMapper.FromResult(userView, user);
 		}
 
 		private void Sorting(ref IQueryable<UserEntity> unit, TableOptions options) => unit = options.SortLabel switch
