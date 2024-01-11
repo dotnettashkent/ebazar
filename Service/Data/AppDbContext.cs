@@ -32,7 +32,7 @@ namespace Service.Data
 		public DbSet<DbKeyValue> KeyValues { get; protected set; } = null!;
 		public DbSet<DbOperation> Operations { get; protected set; } = null!;
 
-		/*public override int SaveChanges()
+		public override int SaveChanges()
 		{
 			AddTimestamps();
 			return base.SaveChanges();
@@ -62,6 +62,6 @@ namespace Service.Data
 				((BaseEntity)entity.Entity).UpdatedAt = now;
 			}
 
-		}*/
+		}
 	}
 }

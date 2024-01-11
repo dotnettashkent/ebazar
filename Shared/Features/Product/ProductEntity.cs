@@ -6,20 +6,29 @@ namespace Shared.Features
     [Table("products")]
     public class ProductEntity
     {
+        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public long Id { get; set; }
 
-        [Column("locale")]
-        public string Locale { get; set; } = null!;
+        [Column("name_uz")]
+        public string NameUz { get; set; } = null!;
 
-        [Column("name")]
-        public string Name { get; set; } = null!;
+        [Column("name_ru")]
+        public string NameRu { get; set; } = null!;
 
         /// <summary>
         /// split ('|') each description
 		/// </summary>
-        [Column("description")]
-		public string Description { get; set; } = null!;
+        [Column("description_uz")]
+		public string DescriptionUz { get; set; } = null!;
+
+        /// <summary>
+        /// split ('|') each description
+		/// </summary>
+        [Column("description_ru")]
+        public string DescriptionRu { get; set; } = null!;
+
+
 
         [Column("brand_name")]
         public string BrandName { get; set; } = null!;
@@ -53,6 +62,9 @@ namespace Shared.Features
 
         [Column("weight")]
         public decimal Weight { get; set; }
+
+        [Column("unit")]
+        public string? Unit { get; set; }
 
         [Column("is_active")]
         public bool IsActive { get; set; }

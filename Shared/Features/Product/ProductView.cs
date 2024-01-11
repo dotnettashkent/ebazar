@@ -10,9 +10,11 @@ namespace Shared.Features
     public partial class ProductView
     {
         [property : DataMember] public long Id { get; set; }
-        [property : DataMember] public string Locale { get; set; } = null!;
-        [property : DataMember] public string? Name { get; set; } 
-        [property : DataMember] public string? Description { get; set; } 
+        [property : DataMember] public string? NameUz { get; set; }
+        [property : DataMember] public string? NameRu { get; set; }
+        [property : DataMember] public string? DescriptionUz { get; set; }
+        [property : DataMember] public string? DescriptionRu { get; set; }
+
         [property : DataMember] public string? BrandName { get; set; } 
         [property : DataMember] public int? Count { get; set; }
         [property : DataMember] public int? MaxCount { get; set; }
@@ -20,10 +22,10 @@ namespace Shared.Features
         [property : DataMember] public decimal? DiscountPrice { get; set; }
         [property : DataMember] public string? PriceType { get; set; }
         [property : DataMember] public bool IsFreeDelivery { get; set; } = false;
-        [property : DataMember] public DateTime DeliveryTime { get; set; }
         [property : DataMember] public string? Photo { get; set; }
         [property : DataMember] public string? Tag {  get; set; }
         [property : DataMember] public decimal? Weight { get; set; }
+        [property : DataMember] public string? Unit { get; set; }
         [property : DataMember] public bool IsActive { get; set; } = false;
         [property : DataMember] public bool IsPopular { get; set; } = false;
         [property : DataMember] public bool IsHoliday { get; set; } = false;

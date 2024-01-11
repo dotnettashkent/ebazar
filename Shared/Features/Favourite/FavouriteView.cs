@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 namespace Shared.Features
 {
 
@@ -10,10 +11,10 @@ namespace Shared.Features
 	{
 		[property : DataMember]	public long Id { get; set; }
 		[property : DataMember]	public long UserId { get; set; }
-		[property : DataMember] public List<long> ProductIds { get; set; } = new List<long>();
-
+		[property : DataMember] public List<long> Products { get; set; } = new List<long>();
+			
 		//Relations
-		public virtual ICollection<ProductView> ProductsView { get; set; } = new List<ProductView>();
-		public virtual UserView? UserView { get; set; }
+		[JsonIgnore] public virtual ICollection<ProductView>? ProductView { get; set; }
+        [JsonIgnore] public virtual UserView? UserView { get; set; }
 	}
 }

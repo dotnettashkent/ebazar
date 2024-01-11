@@ -14,16 +14,16 @@ namespace Service.Features
 
 		#region Internal
 
-		[MapProperty("Products", "ProductsView")]
+		[MapProperty("ProductEntity", "ProductView")]
 		[MapProperty("User", "UserView")]
 		private static partial FavouriteView To(this FavouriteEntity src);
 		[MapProperty("Products", "ProductsView")]
 		[MapProperty("User", "UserView")]
 		private static partial List<FavouriteView> ToList(this List<FavouriteEntity> src);
-		[MapProperty("ProductsView", "Products")]
+		[MapProperty("ProductView", "ProductEntity")]
 		[MapProperty("UserView", "User")]
 		private static partial FavouriteEntity From(this FavouriteView BannerView);
-		[MapProperty("ProductsView", "Products")]
+		[MapProperty("ProductView", "ProductEntity")]
 		[MapProperty("UserView", "User")]
 		public static partial void From(FavouriteView personView, FavouriteEntity personEntity);
 		#endregion

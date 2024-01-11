@@ -13,6 +13,11 @@ namespace Shared.Features
 		Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 		//[ComputeMethod]
 		Task<UserView> GetById(long id, CancellationToken cancellationToken = default);
+
+		Task<UserView> Login(string email, string password);
+
+		Task<UserView> GetByToken(string token);
+
 		[CommandHandler]
 		Task Create(CreateUserCommand command, CancellationToken cancellationToken = default);
 		[CommandHandler]

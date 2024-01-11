@@ -32,7 +32,8 @@ namespace Service.Features
 			if (!String.IsNullOrEmpty(options.Search))
 			{
 				product = product.Where(s =>
-						 s.Name != null && s.Name.Contains(options.Search)
+						 s.NameUz != null && s.NameUz.Contains(options.Search)
+						 || s.NameRu.Contains(options.Search)
 				);
 			}
 
@@ -64,45 +65,12 @@ namespace Service.Features
                 return;
             }
 
-            if (command.Entity.Count != 3)
-                throw new Exception("Product must be 3 language!");
-
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            long maxId = 0;
+            ProductEntity entity = new ProductEntity();
+            Reattach(entity, command.Entity, dbContext);
 
-            // Check if there are any records in the Products table
-            if (await dbContext.Products.AnyAsync())
-            {
-                // If there are records, get the maximum Id
-                maxId = await dbContext.Products.Select(x => x.Id).MaxAsync();
-            }
-
-            // Increment maxId by 1
-            maxId++;
-
-            try
-            {
-				var all = new List<ProductEntity>();
-                for (int i = 0; i < command.Entity.Count; i++)
-                {
-                    ProductEntity section = new ProductEntity();
-
-                    // Create a new instance of ProductEntity for each item
-                    section = Reattach(section, command.Entity[i], dbContext);
-
-                    // Set the Id and Locale for each entity
-                    section.Id = maxId; // Set your desired Id here
-					all.Add(section);
-                    // Attach the entity to the DbContext
-                }
-				dbContext.AddRange(all);
-                // Save changes to the database
-                await dbContext.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            dbContext.Update(entity);
+            await dbContext.SaveChangesAsync();
         }
 
 
@@ -115,14 +83,14 @@ namespace Service.Features
                 return;
             }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			var tag = await dbContext.Products
-			.Where(x => x.Id == command.Id).ToListAsync();
-
-			if (tag == null)
+            var entity = await dbContext.Products
+            .FirstOrDefaultAsync(x => x.Id == command.Id);
+            
+			if (entity == null) 
 				throw new ValidationException("ProductEntity Not Found");
-			dbContext.Remove(tag);
-			await dbContext.SaveChangesAsync();
-		}
+            dbContext.Remove(entity);
+            await dbContext.SaveChangesAsync();
+        }
 		public async virtual Task Update(UpdateProductCommand command, CancellationToken cancellationToken = default)
 		{
             if (Computed.IsInvalidating())
@@ -130,25 +98,17 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
-
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            var entity = await dbContext.Products
+				.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-			foreach (var entityToUpdate in command.Entity)
-			{
-				var tag = await dbContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entityToUpdate.Id && x.Locale == entityToUpdate.Locale);
+            if (entity == null) 
+				throw new ValidationException("ProductEntity Not Found");
 
-				if (tag == null)
-				{
-					throw new ValidationException($"ProductEntity with Id {entityToUpdate.Id} not found");
-				}
+            Reattach(entity, command.Entity, dbContext);
 
-				Reattach(tag, entityToUpdate, dbContext);
-
-				dbContext.Update(tag);
-			}
-
-			await dbContext.SaveChangesAsync();
-		}
+            await dbContext.SaveChangesAsync();
+        }
 
 		#endregion
 
@@ -165,10 +125,12 @@ namespace Service.Features
 
 		private void Sorting(ref IQueryable<ProductEntity> offering, TableOptions options) => offering = options.SortLabel switch
 		{
-			"Name" => offering.Ordering(options, o => o.Name),
-			"BrandName" => offering.Ordering(options, o => o.BrandName),
-			"Description" => offering.Ordering(options, o => o.Description),
-			"Price" => offering.Ordering(options, o => o.Price),
+            "NameUz" => offering.Ordering(options, o => o.NameUz),
+            "NameRu" => offering.Ordering(options, o => o.NameRu),
+            "BrandName" => offering.Ordering(options, o => o.BrandName),
+            "DescriptionUz" => offering.Ordering(options, o => o.DescriptionUz),
+            "DescriptionRu" => offering.Ordering(options, o => o.DescriptionRu),
+            "Price" => offering.Ordering(options, o => o.Price),
 			"DiscountPrice" => offering.Ordering(options, o => o.DiscountPrice),
 			"Tag" => offering.Ordering(options, o => o.Tag),
 			"CreatedAt" => offering.Ordering(options, o => o.CreatedAt),

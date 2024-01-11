@@ -46,7 +46,7 @@ namespace Shared.Features
 
 		//Relations
 		public virtual CartEntity? Cart { get; set;}
-		public virtual FavouriteEntity? Favourites { get; set; } 
+		public virtual ICollection<FavouriteEntity>? Favourites { get; set; } = new List<FavouriteEntity>(); 
 		public virtual ICollection<OrderEntity>? Orders { get; set; } = new List<OrderEntity>();
 		public virtual ICollection<AddressEntity> Addresses { get; set; } = new List<AddressEntity>();
 	}

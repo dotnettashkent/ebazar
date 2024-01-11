@@ -300,7 +300,7 @@ namespace Service.Data.Migrations
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
-                    product_id = table.Column<List<long>>(type: "bigint[]", nullable: false)
+                    product_ids = table.Column<List<long>>(type: "bigint[]", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -348,9 +348,10 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    locale = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
+                    name_uz = table.Column<string>(type: "text", nullable: false),
+                    name_ru = table.Column<string>(type: "text", nullable: false),
+                    description_uz = table.Column<string>(type: "text", nullable: false),
+                    description_ru = table.Column<string>(type: "text", nullable: false),
                     brand_name = table.Column<string>(type: "text", nullable: false),
                     count = table.Column<int>(type: "integer", nullable: false),
                     max_count = table.Column<int>(type: "integer", nullable: false),
@@ -362,6 +363,7 @@ namespace Service.Data.Migrations
                     photo = table.Column<string>(type: "text", nullable: false),
                     tag = table.Column<string>(type: "text", nullable: true),
                     weight = table.Column<decimal>(type: "numeric", nullable: false),
+                    unit = table.Column<string>(type: "text", nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
                     is_popular = table.Column<bool>(type: "boolean", nullable: false),
                     is_holiday = table.Column<bool>(type: "boolean", nullable: false),
@@ -492,8 +494,7 @@ namespace Service.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_favourites_user_id",
                 table: "favourites",
-                column: "user_id",
-                unique: true);
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_orders_courier_id",

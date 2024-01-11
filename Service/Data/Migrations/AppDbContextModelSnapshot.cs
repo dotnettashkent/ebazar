@@ -279,10 +279,10 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<List<long>>("ProductIds")
+                    b.Property<List<long>>("Products")
                         .IsRequired()
                         .HasColumnType("bigint[]")
-                        .HasColumnName("product_id");
+                        .HasColumnName("product_ids");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint")
@@ -290,8 +290,7 @@ namespace Service.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("favourites");
                 });
@@ -444,10 +443,15 @@ namespace Service.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("DescriptionRu")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("description");
+                        .HasColumnName("description_ru");
+
+                    b.Property<string>("DescriptionUz")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description_uz");
 
                     b.Property<decimal>("DiscountPercent")
                         .HasColumnType("numeric")
@@ -480,11 +484,6 @@ namespace Service.Data.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_popular");
 
-                    b.Property<string>("Locale")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("locale");
-
                     b.Property<string>("LocaleEntityCode")
                         .HasColumnType("text");
 
@@ -492,10 +491,15 @@ namespace Service.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("max_count");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameRu")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasColumnName("name_ru");
+
+                    b.Property<string>("NameUz")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name_uz");
 
                     b.Property<string>("Photo")
                         .IsRequired()
@@ -519,6 +523,10 @@ namespace Service.Data.Migrations
                     b.Property<string>("Tag")
                         .HasColumnType("text")
                         .HasColumnName("tag");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("text")
+                        .HasColumnName("unit");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -811,8 +819,8 @@ namespace Service.Data.Migrations
             modelBuilder.Entity("Shared.Features.FavouriteEntity", b =>
                 {
                     b.HasOne("Shared.Features.UserEntity", "User")
-                        .WithOne("Favourites")
-                        .HasForeignKey("Shared.Features.FavouriteEntity", "UserId")
+                        .WithMany("Favourites")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -845,7 +853,7 @@ namespace Service.Data.Migrations
                         .HasForeignKey("CartId");
 
                     b.HasOne("Shared.Features.FavouriteEntity", "Favourite")
-                        .WithMany("Products")
+                        .WithMany("ProductEntity")
                         .HasForeignKey("FavouriteId");
 
                     b.HasOne("Shared.LocaleEntity", null)
@@ -878,7 +886,7 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.FavouriteEntity", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("ProductEntity");
                 });
 
             modelBuilder.Entity("Shared.Features.UserEntity", b =>

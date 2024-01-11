@@ -5,7 +5,6 @@ using Service.Data;
 using Shared.Features;
 using System.Reactive;
 using Shared.Infrastructures;
-using System.Security.Principal;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
@@ -71,13 +70,20 @@ namespace Service.Features.User
 				_ = await Invalidate();
 				return;
 			}
-
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			UserEntity goldnumber = new UserEntity();
-			Reattach(goldnumber, command.Entity, dbContext);
+			var exists = dbContext.UsersEntities.FirstOrDefaultAsync(x => x.Email == command.Entity.Email).Result;
+			if (exists == null)
+			{
+				UserEntity goldnumber = new UserEntity();
+				Reattach(goldnumber, command.Entity, dbContext);
 
-			dbContext.Update(goldnumber);
-			await dbContext.SaveChangesAsync(cancellationToken);
+				dbContext.Update(goldnumber);
+				await dbContext.SaveChangesAsync(cancellationToken);
+			}
+			else
+			{
+				throw new Exception("This email already exists");
+			}
 		}
 		public async virtual Task Delete(DeleteUserCommand command, CancellationToken cancellationToken = default)
 		{
@@ -133,7 +139,26 @@ namespace Service.Features.User
 			_ => unit.OrderBy(o => o.CreatedAt),
 		};
 
-		#endregion
+        public async virtual Task<UserView> Login(string email, string password)
+        {
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var user = await dbContext.UsersEntities
+				.Where(x => x.Email == email && x.Password == password)
+				.Include(x => x.Favourites)
+				.Include(x => x.Orders)
+				.Include(x => x.Addresses)
+				.FirstOrDefaultAsync();
+
+            return user == null ? throw new ValidationException("User was not found") : user.MapToView();
+        }
+
+        public async virtual Task<UserView> GetByToken(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
 
 
@@ -141,5 +166,5 @@ namespace Service.Features.User
 
 
 
-	}
+    }
 }

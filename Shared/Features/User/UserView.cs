@@ -2,6 +2,7 @@
 using Shared.Infrastructures;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Shared.Features
 {
@@ -19,9 +20,9 @@ namespace Shared.Features
 		[property : DataMember] public Gender? Gender { get; set; }
 		[property : DataMember] public DateTime? DateOfBirth { get; set; }
 
-		public virtual CartView? CartView { get; set; }
-		public virtual ICollection<OrderView>? OrdersView { get; set; } = new List<OrderView>();
-		public virtual FavouriteView? FavouritesView { get; set; }
-
+		[JsonIgnore] public virtual CartView? CartView { get; set; }
+		[JsonIgnore] public virtual ICollection<FavouriteView>? FavouritesView { get; set; } = new List<FavouriteView>();
+		[JsonIgnore] public virtual ICollection<OrderView>? OrdersView { get; set; } = new List<OrderView>();
+		[JsonIgnore] public virtual ICollection<AddressView> Addresses {  get; set; } = new List<AddressView>();  
 	}
 }
