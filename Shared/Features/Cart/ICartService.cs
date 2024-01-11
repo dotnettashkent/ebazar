@@ -10,7 +10,7 @@ namespace Shared.Features
 	public interface ICartService : IComputeService
 	{
 		//[ComputeMethod]
-		Task<TableResponse<CartView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
+		Task<TableResponse<ProductView>> GetAll(long UserId, CancellationToken cancellationToken = default);
 
 		[CommandHandler]
 		Task Create(CreateCartCommand command, CancellationToken cancellationToken = default);

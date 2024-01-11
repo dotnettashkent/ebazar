@@ -9,7 +9,7 @@ namespace Shared.Features
 	public partial class CartView
 	{
 		[property : DataMember] public long Id { get; set; }
-		[property: DataMember] public List<ProductView> Products { get; set; } = new List<ProductView>();
+		[property: DataMember] public List<long> Products { get; set; } = new List<long>();
 		[property : DataMember] public long UserId { get; set; }
 		
 		
