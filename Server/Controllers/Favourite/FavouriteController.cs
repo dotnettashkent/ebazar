@@ -19,13 +19,13 @@ namespace Server.Controllers.Favourite
         }
 
         [HttpPost("")]
-        public Task Create([FromBody] CreateFavouriteCommand command, CancellationToken cancellationToken)
+        public Task Create([FromBody] CreateCartCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
 
         [HttpDelete("")]
-        public Task Delete([FromBody] DeleteFavouriteCommand command, CancellationToken cancellationToken)
+        public Task Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
