@@ -3,11 +3,8 @@ using Stl.Fusion;
 using Service.Data;
 using System.Reactive;
 using Shared.Features;
-using Shared.Infrastructures;
 using Stl.Fusion.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {

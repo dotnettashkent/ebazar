@@ -31,7 +31,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/favourites")]
-        public Task<TableResponse<ProductView>> GetAll(long userId)
+        public Task<TableResponse<ProductResultView>> GetAll(long userId)
         {
             return cartService.GetAll(userId);
         }

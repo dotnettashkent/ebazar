@@ -7,7 +7,12 @@ namespace Service.Features
 	public static partial class UserMapper
 	{
 		#region Usable
-		public static UserView MapToView(this UserEntity src) => src.To();
+		public static UserView MapToView(this UserEntity src)
+		{
+			var target = src.To();
+
+			return target;
+		}
         public static UserResultView MapToResultView(this UserEntity src) => src.ToResult();
         public static List<UserView> MapToViewList(this List<UserEntity> src) => src.ToList();
 		public static UserEntity MapFromView(this UserView src) => src.From();

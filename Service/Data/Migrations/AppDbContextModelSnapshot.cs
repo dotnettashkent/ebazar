@@ -187,9 +187,9 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<List<string>>("ProductIds")
+                    b.Property<List<long>>("ProductIds")
                         .IsRequired()
-                        .HasColumnType("text[]")
+                        .HasColumnType("bigint[]")
                         .HasColumnName("product_ids");
 
                     b.Property<long>("UserId")

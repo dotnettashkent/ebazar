@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240110133215_Initial")]
+    [Migration("20240111092946_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -190,9 +190,9 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<List<string>>("ProductIds")
+                    b.Property<List<long>>("ProductIds")
                         .IsRequired()
-                        .HasColumnType("text[]")
+                        .HasColumnType("bigint[]")
                         .HasColumnName("product_ids");
 
                     b.Property<long>("UserId")

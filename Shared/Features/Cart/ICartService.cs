@@ -1,16 +1,15 @@
-﻿using Shared.Infrastructures.Extensions;
-using Shared.Infrastructures;
-using Stl.Async;
-using Stl.CommandR.Configuration;
+﻿using Stl.Async;
 using Stl.Fusion;
 using System.Reactive;
+using Stl.CommandR.Configuration;
+using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
 	public interface ICartService : IComputeService
 	{
 		//[ComputeMethod]
-		Task<TableResponse<ProductView>> GetAll(long UserId, CancellationToken cancellationToken = default);
+		Task<TableResponse<ProductResultView>> GetAll(long UserId, CancellationToken cancellationToken = default);
 
 		[CommandHandler]
 		Task Create(CreateCartCommand command, CancellationToken cancellationToken = default);

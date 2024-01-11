@@ -22,7 +22,7 @@ namespace Service.Features
         #endregion
 
         #region Queries
-        public async virtual Task<TableResponse<ProductView>> GetAll(long UserId, CancellationToken cancellationToken = default)
+        public async virtual Task<TableResponse<ProductResultView>> GetAll(long UserId, CancellationToken cancellationToken = default)
 		{
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
@@ -35,14 +35,14 @@ namespace Service.Features
             {
                 listProductId.AddRange(item.ProductIds);
             }
-            var productList = new List<ProductView>();
+            var productList = new List<ProductResultView>();
             foreach (var item in listProductId)
             {
-                var productGetResult = productService.Get(item, cancellationToken).Result;
+                var productGetResult = productService.GetById(item, cancellationToken).Result;
                 productList.Add(productGetResult);
             }
             var count = productList.Count();
-            return new TableResponse<ProductView>() { Items = productList, TotalItems = count };
+            return new TableResponse<ProductResultView>() { Items = productList, TotalItems = count };
         }
 
 		#endregion

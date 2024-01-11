@@ -279,7 +279,7 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    product_ids = table.Column<List<string>>(type: "text[]", nullable: false),
+                    product_ids = table.Column<List<long>>(type: "bigint[]", nullable: false),
                     user_id = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>

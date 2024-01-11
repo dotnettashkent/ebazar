@@ -17,15 +17,16 @@ namespace Service.Features.User
 		#region Initialize
 
 		private readonly DbHub<AppDbContext> dbHub;
+		private readonly IProductService productService;
+        public UserService(DbHub<AppDbContext> dbHub, IProductService productService)
+        {
+            this.dbHub = dbHub;
+            this.productService = productService;
+        }
+        #endregion
 
-		public UserService(DbHub<AppDbContext> dbHub)
-		{
-			this.dbHub = dbHub;
-		}
-		#endregion
-
-		#region Queries
-		public async virtual Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+        #region Queries
+        public async virtual Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
@@ -160,6 +161,7 @@ namespace Service.Features.User
             var user = await dbContext.UsersEntities
 				.Where(x => x.Email == email && x.Password == password)
 				.Include(x => x.Favourites)
+				.Include(x => x.Cart)
 				.Include(x => x.Orders)
 				.Include(x => x.Addresses)
 				.FirstOrDefaultAsync();
