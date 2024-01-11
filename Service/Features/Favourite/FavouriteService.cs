@@ -32,15 +32,19 @@ namespace Service.Features
 			var favourites = from s in dbContext.Favorites select s;
 			favourites = favourites.Where(x => x.UserId == UserId);
 			
-			var listProduct = new List<long>();
+			var listProductId = new List<long>();
 			foreach (var item in favourites)
 			{
-				listProduct.AddRange(item.Products);
+                listProductId.AddRange(item.Products);
 			}
-
-			var count = await users.AsNoTracking().CountAsync();
-			var items = await users.AsNoTracking().ToListAsync();
-			return new TableResponse<FavouriteView>() { Items = items.MapToViewList(), TotalItems = count };
+			var productList = new List<ProductView>();
+			foreach (var item in listProductId)
+			{
+				var productGetResult = productService.Get(item,cancellationToken).Result;
+				productList.Add(productGetResult);
+			}
+			var count = productList.Count();
+			return new TableResponse<ProductView>() { Items = productList, TotalItems = count};
 		}
 
 		#endregion

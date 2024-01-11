@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
+using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
 
 namespace Server.Controllers.Favourite
 {
-    [Route("api/[controller]")]
+    [Route("api/favourite")]
     [ApiController]
     public class FavouriteController : ControllerBase
     {
@@ -28,6 +28,12 @@ namespace Server.Controllers.Favourite
         public Task Delete([FromBody] DeleteFavouriteCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
+        }
+
+        [HttpGet("get/favourites")]
+        public Task<TableResponse<ProductView>> GetAll(long userId)
+        {
+            return favouriteService.GetAll(userId);
         }
     }
 }
