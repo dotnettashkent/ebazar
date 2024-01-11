@@ -11,14 +11,13 @@ namespace Shared.Features
 	{
 		//[ComputeMethod]
 		Task<TableResponse<CartView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
-		//[ComputeMethod]
-		Task<CartView> Get(long Id, CancellationToken cancellationToken = default);
+
 		[CommandHandler]
 		Task Create(CreateCartCommand command, CancellationToken cancellationToken = default);
-		[CommandHandler]
-		Task Update(UpdateCartCommand command, CancellationToken cancellationToken = default);
+		
 		[CommandHandler]
 		Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default);
+		
 		Task<Unit> Invalidate() { return TaskExt.UnitTask; }
 	}
 }

@@ -5,11 +5,13 @@ using System.Runtime.Serialization;
 namespace Shared.Features
 {
 	[DataContract, MemoryPackable]
-	public partial record CreateCartCommand([property: DataMember] Session Session, [property: DataMember] long productId) : ISessionCommand<CartView>;
+	public partial record CreateCartCommand(
+		[property: DataMember] Session Session, 
+		[property: DataMember] CartView Entity) : ISessionCommand<CartView>;
+
 
 	[DataContract, MemoryPackable]
-	public partial record UpdateCartCommand([property: DataMember] Session Session, [property: DataMember] CartView Entity) : ISessionCommand<CartView>;
-
-	[DataContract, MemoryPackable]
-	public partial record DeleteCartCommand([property: DataMember] Session Session, [property: DataMember] long Id) : ISessionCommand<CartView>;
+	public partial record DeleteCartCommand(
+		[property: DataMember] Session Session, 
+		[property: DataMember] CartView Entity) : ISessionCommand<CartView>;
 }
