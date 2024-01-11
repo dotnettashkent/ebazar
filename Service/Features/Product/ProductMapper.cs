@@ -7,21 +7,28 @@ namespace Service.Features
 	public static partial class ProductMapper
 	{
 		#region Usable
-		public static ProductView MapToView(this ProductEntity src) => src.To();
-		public static List<ProductView> MapToViewList(this List<ProductEntity> src) => src.ToList();
-		public static ProductEntity MapFromView(this ProductView src) => src.From();
+		public static ProductResultView MapToView(this ProductEntity src) => src.To2();
+        public static ProductView MapToView2(this ProductEntity src) => src.To();
+        public static List<ProductView> MapToViewList(this List<ProductEntity> src) => src.ToList();
+        public static List<ProductResultView> MapToViewListResult(this List<ProductEntity> src) => src.ToListResult();
+        public static ProductEntity MapFromView(this ProductView src) => src.From();
+        public static ProductEntity MapFromResult(this ProductResultView src) => src.From2();
 
-		#endregion
+        #endregion
 
 
-		#region Internal
+        #region Internal
 
-		/*[MapProperty("Photo", "PhotoView")]
+        /*[MapProperty("Photo", "PhotoView")]
 		[MapProperty("PhotoMobile", "PhotoMobileView")]*/
-		private static partial ProductView To(this ProductEntity src);
-		/*[MapProperty("Photo", "PhotoView")]
+        private static partial ProductView To(this ProductEntity src);
+        private static partial ProductResultView To2(this ProductEntity src);
+        /*[MapProperty("Photo", "PhotoView")]
 		[MapProperty("PhotoMobile", "PhotoMobileView")]*/
-		private static partial List<ProductView> ToList(this List<ProductEntity> src);
+        private static partial List<ProductView> ToList(this List<ProductEntity> src);
+
+
+        private static partial List<ProductResultView> ToListResult(this List<ProductEntity> src);
 
         /*[MapProperty("PhotoView", "Photo")]
 		[MapProperty("PhotoMobileView", "PhotoMobile")]*/
@@ -29,6 +36,11 @@ namespace Service.Features
 		/*[MapProperty("PhotoView", "Photo")]
 		[MapProperty("PhotoMobileView", "PhotoMobile")]*/
 		public static partial void From(ProductView personView, ProductEntity personEntity);
-		#endregion
-	}
+
+        private static partial ProductEntity From2(this ProductResultView ProductCategoryView);
+        /*[MapProperty("PhotoView", "Photo")]
+		[MapProperty("PhotoMobileView", "PhotoMobile")]*/
+        public static partial void From2(ProductResultView personView, ProductEntity personEntity);
+        #endregion
+    }
 }

@@ -60,7 +60,7 @@ namespace Service.Features
             var exists = dbContext.Carts.FirstOrDefault(x => x.UserId == command.Entity.UserId);
             if (exists != null)
             {
-                exists.ProductIds.AddRange(command.Entity.Products);
+                exists.ProductIds.AddRange(command.Entity.ProductIds);
             }
             else
             {
@@ -81,7 +81,7 @@ namespace Service.Features
                 return;
             }
             var products = new List<long>();
-            products.AddRange(command.Entity.Products);
+            products.AddRange(command.Entity.ProductIds);
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var exists = dbContext.Carts.FirstOrDefault(x => x.UserId == command.Entity.UserId);
             if (exists != null)

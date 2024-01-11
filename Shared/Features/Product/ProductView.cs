@@ -55,7 +55,7 @@ namespace Shared.Features
 
     [DataContract, MemoryPackable]
     [ParameterComparer(typeof(ByValueParameterComparer))]
-    public partial class ProductCreate
+    public partial class ProductResultView
     {
         [property: DataMember] public long Id { get; set; }
         [property: DataMember] public string? NameUz { get; set; }

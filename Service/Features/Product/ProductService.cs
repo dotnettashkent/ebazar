@@ -23,7 +23,7 @@ namespace Service.Features
 		#endregion
 
 		#region Queries
-		public async virtual Task<TableResponse<ProductView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+		public async virtual Task<TableResponse<ProductResultView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
@@ -43,9 +43,9 @@ namespace Service.Features
 			var count = await product.AsNoTracking().CountAsync();
 			var items = await product.AsNoTracking().Paginate(options).ToListAsync();
 
-			return new TableResponse<ProductView>() { Items = items.MapToViewList(), TotalItems = count };
+			return new TableResponse<ProductResultView>() { Items = items.MapToViewListResult(), TotalItems = count };
 		}
-		public async virtual Task<ProductView> Get(long Id, CancellationToken cancellationToken = default)
+		public async virtual Task<ProductResultView> GetById(long Id, CancellationToken cancellationToken = default)
 		{
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
@@ -54,6 +54,16 @@ namespace Service.Features
 			
 			return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView();
 		}
+
+        public async virtual Task<ProductView> Get(long Id, CancellationToken cancellationToken = default)
+        {
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var product = await dbContext.Products
+                .FirstOrDefaultAsync(x => x.Id == Id);
+
+            return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView2();
+        }
         #endregion
 
         #region Mutations
@@ -116,9 +126,9 @@ namespace Service.Features
 		//[ComputeMethod]
 		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
 
-		private ProductEntity Reattach(ProductEntity entity, ProductView view, AppDbContext dbContext)
+		private ProductEntity Reattach(ProductEntity entity, ProductResultView view, AppDbContext dbContext)
 		{
-			ProductMapper.From(view, entity);
+			ProductMapper.From2(view, entity);
 			return entity;
 
 		}
