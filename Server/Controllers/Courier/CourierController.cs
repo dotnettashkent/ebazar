@@ -20,18 +20,18 @@ namespace Server.Controllers.Courier
         }
 
         [HttpPost("create")]
-        public Task Create([FromBody] CreateBrandCommand command, CancellationToken cancellationToken)
+        public Task Create([FromBody] CreateCourierCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
         [HttpPut("udpate")]
-        public Task Update([FromBody] UpdateBrandCommand command, CancellationToken cancellationToken)
+        public Task Update([FromBody] UpdateCourierCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
 
         [HttpDelete("delete")]
-        public async Task Delete([FromBody] DeleteBrandCommand command, CancellationToken cancellationToken)
+        public async Task Delete([FromBody] DeleteCourierCommand command, CancellationToken cancellationToken)
         {
             await commander.Call(command, cancellationToken);
         }
