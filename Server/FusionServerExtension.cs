@@ -1,10 +1,8 @@
-﻿using Service.Features;
-using Service.Features.Courier;
-using Service.Features.User;
-using Shared;
+﻿using Stl.Fusion;
 using Shared.Features;
-using Stl.Fusion;
-using UtcNew.Services;
+using Service.Features;
+using Service.Features.User;
+using Service.Features.Courier;
 
 namespace Server
 {
@@ -12,14 +10,15 @@ namespace Server
 	{
 		public static FusionBuilder AddEbazarServices(this FusionBuilder fusion)
 		{
-			fusion.AddService<IBannerService, BannerService>();
+            fusion.AddService<IAddressService, AddressService>();
+            fusion.AddService<IBannerService, BannerService>();
 			fusion.AddService<IBrandService, BrandService>();
+			fusion.AddService<ICartService, CartService>();
 			fusion.AddService<ICourierService, CourierService>();
 			fusion.AddService<IFavouriteService, FavouriteService>();
 			fusion.AddService<IProductService, ProductService>();
 			fusion.AddService<IUserService, UserService>();
-			fusion.AddService<ICartService, CartService>();
-            fusion.AddService<ILocaleService, LocaleService>();
+            //fusion.AddService<ILocaleService, LocaleService>();
             return fusion;
 		}
 	}
