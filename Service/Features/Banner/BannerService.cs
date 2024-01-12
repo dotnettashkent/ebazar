@@ -53,7 +53,6 @@ public class BannerService : IBannerService
 		var dbContext = _dbHub.CreateDbContext();
 		await using var _ = dbContext.ConfigureAwait(false);
 		var Banner = await dbContext.Banners
-		.Include(x => x.Photo)
 		.Where(x => x.Id == Id).ToListAsync();
 
 		return Banner == null ? throw new ValidationException("BannerEntity Not Found") : Banner.MapToViewList();
