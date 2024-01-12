@@ -48,41 +48,33 @@ public class BannerService : IBannerService
 	}
 
 	//[ComputeMethod]
-	public async virtual Task<List<BannerView>> Get(long Id, CancellationToken cancellationToken = default)
+	public async virtual Task<BannerView> Get(long Id, CancellationToken cancellationToken = default)
 	{
 		var dbContext = _dbHub.CreateDbContext();
 		await using var _ = dbContext.ConfigureAwait(false);
 		var Banner = await dbContext.Banners
-		.Where(x => x.Id == Id).ToListAsync();
+		.FirstOrDefaultAsync(x => x.Id == Id);
 
-		return Banner == null ? throw new ValidationException("BannerEntity Not Found") : Banner.MapToViewList();
+		return Banner == null ? throw new ValidationException("BannerEntity Not Found") : Banner.MapToView();
 	}
 	#endregion
 	#region Mutations
 	public virtual async Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default)
 	{
-		if (Computed.IsInvalidating())
-		{
-			_ = await Invalidate();
-			return;
-		}
+        if (Computed.IsInvalidating())
+        {
+            _ = await Invalidate();
+            return;
+        }
 
-		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
-		long maxId = 1;
-		var entity = await dbContext.Banners.OrderByDescending(entity => entity.Id).FirstOrDefaultAsync(cancellationToken);
-		if (entity != null) maxId = entity.Id + 1;
+        await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+        BannerEntity category = new BannerEntity();
+        Reattach(category, command.Entity, dbContext);
 
-		foreach (var item in command.Entity)
-		{
-			var Banner = new BannerEntity();
-			Reattach(Banner, item, dbContext);
-			Banner.Id = maxId;
-			dbContext.Add(Banner);
-		}
+        dbContext.Update(category);
+        await dbContext.SaveChangesAsync();
 
-		await dbContext.SaveChangesAsync(cancellationToken);
-
-	}
+    }
 
 
 	public virtual async Task Delete(DeleteBannerCommand command, CancellationToken cancellationToken = default)
