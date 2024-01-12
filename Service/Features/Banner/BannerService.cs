@@ -48,42 +48,33 @@ public class BannerService : IBannerService
 	}
 
 	//[ComputeMethod]
-	public async virtual Task<List<BannerView>> Get(long Id, CancellationToken cancellationToken = default)
+	public async virtual Task<BannerView> Get(long Id, CancellationToken cancellationToken = default)
 	{
 		var dbContext = _dbHub.CreateDbContext();
 		await using var _ = dbContext.ConfigureAwait(false);
 		var Banner = await dbContext.Banners
-		.Include(x => x.Photo)
-		.Where(x => x.Id == Id).ToListAsync();
+		.FirstOrDefaultAsync(x => x.Id == Id);
 
-		return Banner == null ? throw new ValidationException("BannerEntity Not Found") : Banner.MapToViewList();
+		return Banner == null ? throw new ValidationException("BannerEntity Not Found") : Banner.MapToView();
 	}
 	#endregion
 	#region Mutations
 	public virtual async Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default)
 	{
-		if (Computed.IsInvalidating())
-		{
-			_ = await Invalidate();
-			return;
-		}
+        if (Computed.IsInvalidating())
+        {
+            _ = await Invalidate();
+            return;
+        }
 
-		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
-		long maxId = 1;
-		var entity = await dbContext.Banners.OrderByDescending(entity => entity.Id).FirstOrDefaultAsync(cancellationToken);
-		if (entity != null) maxId = entity.Id + 1;
+        await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+        BannerEntity category = new BannerEntity();
+        Reattach(category, command.Entity, dbContext);
 
-		foreach (var item in command.Entity)
-		{
-			var Banner = new BannerEntity();
-			Reattach(Banner, item, dbContext);
-			Banner.Id = maxId;
-			dbContext.Add(Banner);
-		}
+        dbContext.Update(category);
+        await dbContext.SaveChangesAsync();
 
-		await dbContext.SaveChangesAsync(cancellationToken);
-
-	}
+    }
 
 
 	public virtual async Task Delete(DeleteBannerCommand command, CancellationToken cancellationToken = default)
@@ -95,9 +86,7 @@ public class BannerService : IBannerService
 		}
 		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
 		var Banner = await dbContext.Banners
-		.Include(x => x.Photo)
-		.Where(x => x.Id == command.Id)
-		.ToListAsync(cancellationToken) ?? throw new ValidationException("BannerEntity Not Found");
+		.FirstOrDefaultAsync(x => x.Id == command.Id) ?? throw new ValidationException("BannerEntity Not Found");
 
 		dbContext.RemoveRange(Banner);
 		await dbContext.SaveChangesAsync(cancellationToken);
@@ -106,28 +95,19 @@ public class BannerService : IBannerService
 
 	public virtual async Task Update(UpdateBannerCommand command, CancellationToken cancellationToken = default)
 	{
-		if (Computed.IsInvalidating())
-		{
-			_ = await Invalidate();
-			return;
-		}
-		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+        if (Computed.IsInvalidating())
+        {
+            _ = await Invalidate();
+            return;
+        }
+        await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+        var brand = await dbContext.Banners
+        .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
+        if (brand == null) throw new ValidationException("BannerEntity Not Found");
 
-
-		foreach (var item in command.Entity)
-		{
-			var Banner = dbContext.Banners
-			.Include(x => x.Photo)
-			.First(x => x.Id == item.Id && x.Locale == item.Locale);
-
-			Reattach(Banner, item, dbContext);
-
-			dbContext.Update(Banner);
-		}
-
-
-		await dbContext.SaveChangesAsync(cancellationToken);
+        Reattach(brand, command.Entity, dbContext);
+        await dbContext.SaveChangesAsync(cancellationToken);
 	}
 	#endregion
 
@@ -140,10 +120,6 @@ public class BannerService : IBannerService
 	private void Reattach(BannerEntity Banner, BannerView BannerView, AppDbContext dbContext)
 	{
 		BannerMapper.From(BannerView, Banner);
-		/*if (Banner.Photo != null)
-			Banner.Photo = dbContext.Files
-			.First(x => x.Id == Banner.Photo.Id);*/
-
 	}
 
 	private void Sorting(ref IQueryable<BannerEntity> Banner, TableOptions options) => Banner = options.SortLabel switch

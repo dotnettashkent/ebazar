@@ -8,11 +8,11 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class BrandView
 	{
-		[property: DataMember] public long Id { get; set; }
-		[property: DataMember] public string? Name { get; set; }
-		[property: DataMember] public bool IsPopular { get; set; } = false;
+		[property : DataMember] public long Id { get; set; }
+		[property : DataMember] public string? Name { get; set; }
+		[property : DataMember] public bool IsPopular { get; set; } = false;
 		[property : DataMember] public string? Link { get; set; }
-		//[property: DataMember] public FileView? PhotoView { get; set; }
+		[property : DataMember] public string? PhotoView { get; set; }
 
 	}
 }
