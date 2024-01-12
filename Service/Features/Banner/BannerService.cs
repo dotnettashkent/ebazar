@@ -86,8 +86,7 @@ public class BannerService : IBannerService
 		}
 		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
 		var Banner = await dbContext.Banners
-		.Where(x => x.Id == command.Id)
-		.ToListAsync(cancellationToken) ?? throw new ValidationException("BannerEntity Not Found");
+		.FirstOrDefaultAsync(x => x.Id == command.Id) ?? throw new ValidationException("BannerEntity Not Found");
 
 		dbContext.RemoveRange(Banner);
 		await dbContext.SaveChangesAsync(cancellationToken);
@@ -96,27 +95,19 @@ public class BannerService : IBannerService
 
 	public virtual async Task Update(UpdateBannerCommand command, CancellationToken cancellationToken = default)
 	{
-		if (Computed.IsInvalidating())
-		{
-			_ = await Invalidate();
-			return;
-		}
-		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+        if (Computed.IsInvalidating())
+        {
+            _ = await Invalidate();
+            return;
+        }
+        await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+        var brand = await dbContext.Banners
+        .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
+        if (brand == null) throw new ValidationException("BannerEntity Not Found");
 
-
-		foreach (var item in command.Entity)
-		{
-			var Banner = dbContext.Banners
-			.First(x => x.Id == item.Id && x.Locale == item.Locale);
-
-			Reattach(Banner, item, dbContext);
-
-			dbContext.Update(Banner);
-		}
-
-
-		await dbContext.SaveChangesAsync(cancellationToken);
+        Reattach(brand, command.Entity, dbContext);
+        await dbContext.SaveChangesAsync(cancellationToken);
 	}
 	#endregion
 
