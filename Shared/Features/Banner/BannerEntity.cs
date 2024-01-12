@@ -13,7 +13,7 @@ namespace Shared.Features
         [Column("locale")]
         public string Locale { get; set; } = null!;
 
-        [Column("photo_id")]
+        [Column("photo")]
         public string Photo { get; set; } = null!;
         
         [Column("title")]

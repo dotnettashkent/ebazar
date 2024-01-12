@@ -95,7 +95,6 @@ public class BannerService : IBannerService
 		}
 		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
 		var Banner = await dbContext.Banners
-		.Include(x => x.Photo)
 		.Where(x => x.Id == command.Id)
 		.ToListAsync(cancellationToken) ?? throw new ValidationException("BannerEntity Not Found");
 
@@ -118,7 +117,6 @@ public class BannerService : IBannerService
 		foreach (var item in command.Entity)
 		{
 			var Banner = dbContext.Banners
-			.Include(x => x.Photo)
 			.First(x => x.Id == item.Id && x.Locale == item.Locale);
 
 			Reattach(Banner, item, dbContext);
@@ -140,10 +138,6 @@ public class BannerService : IBannerService
 	private void Reattach(BannerEntity Banner, BannerView BannerView, AppDbContext dbContext)
 	{
 		BannerMapper.From(BannerView, Banner);
-		/*if (Banner.Photo != null)
-			Banner.Photo = dbContext.Files
-			.First(x => x.Id == Banner.Photo.Id);*/
-
 	}
 
 	private void Sorting(ref IQueryable<BannerEntity> Banner, TableOptions options) => Banner = options.SortLabel switch
