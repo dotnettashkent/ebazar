@@ -10,7 +10,7 @@ namespace Shared.Features
     {
         [property : DataMember] public long Id { get; set; }
         [property: DataMember] public string Locale { get; set; } = null!;
-        [property : DataMember] public FileView PhotoView { get; set; } = null!;
+        [property : DataMember] public string PhotoView { get; set; } = null!;
         [property : DataMember] public string Title { get; set; } = null!;
         [property : DataMember] public string Link { get; set; } = null!;
         [property : DataMember] public string? Description { get; set; }

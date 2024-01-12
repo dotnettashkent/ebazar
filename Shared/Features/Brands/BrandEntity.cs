@@ -19,7 +19,7 @@ namespace Shared.Features
 
 		public string Link { get; set; } = null!;
 
-		/*[Column("photo_id")]
-		public FileEntity? Photo { get; set; }*/
+		[Column("photo_id")]
+		public string? Photo { get; set; }
 	}
 }
