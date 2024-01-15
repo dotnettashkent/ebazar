@@ -37,7 +37,7 @@ namespace Service.Features
 			var productList = new List<ProductResultView>();
 			foreach (var item in listProductId)
 			{
-				var productGetResult = productService.GetById(item,cancellationToken).Result;
+				var productGetResult = await productService.GetById(item, cancellationToken);
 				productList.Add(productGetResult);
 			}
 			var count = productList.Count();

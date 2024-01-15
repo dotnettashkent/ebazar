@@ -39,7 +39,7 @@ namespace Service.Features
             var productList = new List<ProductResultView>();
             foreach (var item in listProductId)
             {
-                var productGetResult = productService.GetById(item, cancellationToken).Result;
+                var productGetResult = await productService.GetById(item, cancellationToken);
                 productList.Add(productGetResult);
             }
             var count = productList.Count();
@@ -67,14 +67,31 @@ namespace Service.Features
             }
 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            var products = await dbContext.Products
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
             var exists = dbContext.Orders.FirstOrDefault(x => x.UserId == command.Entity.UserId);
             if (exists != null)
             {
                 exists.ProductIds.AddRange(command.Entity.ProductIds);
+                var ids = exists.ProductIds.ToList();
+                foreach (var item in ids)
+                {
+                    var prod = await productService.Get(item, cancellationToken);
+                    prod.Count--;
+                    prod.InfoCount++;
+                }
             }
             else
             {
                 var category = new OrderEntity();
+                var productIds = command.Entity.ProductIds;
+                foreach (var item in productIds)
+                {
+                    var product = await productService.Get(item, cancellationToken); 
+                    product.Count--;
+                    product.InfoCount++;
+                }
                 Reattach(category, command.Entity, dbContext);
                 dbContext.Update(category);
             }
@@ -103,24 +120,6 @@ namespace Service.Features
             }
 
             await dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        public async virtual Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default)
-        {
-            if (Computed.IsInvalidating())
-            {
-                _ = await Invalidate();
-                return;
-            }
-            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var order = await dbContext.Orders
-            .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
-
-            if (order == null) throw new ValidationException("OrderEntity Not Found");
-
-            Reattach(order, command.Entity, dbContext);
-
-            await dbContext.SaveChangesAsync();
         }
         #endregion
 
