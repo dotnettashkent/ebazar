@@ -35,6 +35,6 @@ namespace Shared.Features
 		public string? DeliveryComment { get; set; }
 
 		//Relations
-		public virtual ICollection<UserEntity> User { get; set; } = new List<UserEntity>();
+		public virtual UserEntity? User { get; set; }
 	}
 }
