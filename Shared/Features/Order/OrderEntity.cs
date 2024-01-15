@@ -8,28 +8,19 @@ namespace Shared.Features
 	[Table("orders")]
 	public class OrderEntity
 	{
-		[Column("id")]
-		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public long Id { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id")]
+        public long Id { get; set; }
 
-		[Column("cart_id")]
-		public long CartId { get; set; }
+        [Column("product_ids")]
+        public List<long> ProductIds { get; set; } = new List<long>();
 
-		[Column("user_id")]
-		public long UserId { get; set; }
+        [Column("user_id")]
+        public long UserId { get; set; }
 
-		[Column("courier_id")]
-		public long CourierId { get; set; }
 
-		[Column("is_success")]
-		public bool IsSuccess { get; set; } = false;
-
-		[Column("user_comment")]
-		public string UserComment { get; set; } = string.Empty;
-
-		//Relations
-		public virtual CartEntity? Cart { get; set; }
-		public virtual UserEntity? User {  get; set; }
-		public virtual CourierEntity? Courier { get; set; }
-	}
+        public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
+        public virtual UserEntity? User { get; set; }
+        public virtual OrderEntity? Order { get; set; }
+    }
 }

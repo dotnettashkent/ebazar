@@ -41,6 +41,9 @@ namespace Shared.Features
         [Column("max_count")]
         public int MaxCount { get; set; }
 
+        [Column("info_count")]
+        public long InfoCount { get; set; }
+
         [Column("price")]
         public decimal Price { get; set; }
         

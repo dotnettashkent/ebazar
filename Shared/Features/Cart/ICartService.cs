@@ -11,6 +11,9 @@ namespace Shared.Features
 		//[ComputeMethod]
 		Task<TableResponse<ProductResultView>> GetAll(long UserId, CancellationToken cancellationToken = default);
 
+		//[ComputeMethod]
+		//Task<ProductResultView> Get(long Id, CancellationToken cancellationToken= default);
+
 		[CommandHandler]
 		Task Create(CreateCartCommand command, CancellationToken cancellationToken = default);
 		

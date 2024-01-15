@@ -42,6 +42,10 @@ namespace Shared.Features
         [JsonPropertyName("max_count")]
         public int? MaxCount { get; set; }
 
+        [property : DataMember]
+        [JsonPropertyName("info_count")]
+        public long InfoCount { get; set; }
+
         [property : DataMember] 
         [JsonPropertyName("price")]
         public decimal? Price { get; set; }

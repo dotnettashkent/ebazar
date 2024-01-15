@@ -9,16 +9,11 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class OrderView
 	{
-		[property : DataMember] [JsonPropertyName("id")] public long Id { get; set; }
-		[property : DataMember] [JsonPropertyName("cart_id")] public long CartId { get; set; }
-		[property : DataMember] [JsonPropertyName("user_id")] public long UserId { get; set; }
-		[property : DataMember] [JsonPropertyName("courier_id")] public long CourierId { get; set; }
-		[property : DataMember] [JsonPropertyName("is_success")] public bool IsSuccess { get; set; } = false;
-		[property : DataMember] [JsonPropertyName("user_commment")] public string UserComment { get; set; } = string.Empty;
+        [property: DataMember][JsonPropertyName("id")] public long Id { get; set; }
+        [property: DataMember][JsonPropertyName("product_id")] public List<long> ProductIds { get; set; } = new List<long>();
+        [property: DataMember][JsonPropertyName("user_id")] public long UserId { get; set; }
 
-		//Relations
-		public virtual ICollection<ProductView> ProductsView { get; set; } = new List<ProductView>();
-		public virtual UserView? UserView { get; set; }
-		public virtual CourierView? CourierView { get; set; }
-	}
+        [JsonIgnore][property: DataMember] public virtual ICollection<ProductView> ProductsView { get; set; } = new List<ProductView>();
+        [JsonIgnore][property: DataMember] public virtual UserView? UserView { get; set; }
+    }
 }
