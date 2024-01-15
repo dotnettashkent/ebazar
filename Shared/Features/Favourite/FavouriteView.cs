@@ -9,9 +9,9 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class FavouriteView
 	{
-		[property : DataMember]	public long Id { get; set; }
-		[property : DataMember]	public long UserId { get; set; }
-		[property : DataMember] public List<long> Products { get; set; } = new List<long>();
+		[property : DataMember]	[JsonPropertyName("id")] public long Id { get; set; }
+		[property : DataMember]	[JsonPropertyName("user_id")] public long UserId { get; set; }
+		[property : DataMember] [JsonPropertyName("products")] public List<long> Products { get; set; } = new List<long>();
 			
 		//Relations
 		[JsonIgnore] public virtual ICollection<ProductView>? ProductView { get; set; }

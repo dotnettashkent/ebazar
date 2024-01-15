@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Shared.Features
 {
@@ -8,14 +9,13 @@ namespace Shared.Features
     [ParameterComparer(typeof(ByValueParameterComparer))]
     public partial class BannerView
     {
-        [property : DataMember] public long Id { get; set; }
-        [property: DataMember] public string Locale { get; set; } = null!;
-        [property : DataMember] public string PhotoView { get; set; } = null!;
-        [property : DataMember] public string Title { get; set; } = null!;
-        [property : DataMember] public string Link { get; set; } = null!;
-        [property : DataMember] public string? Description { get; set; }
-
-        [property : DataMember] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [property: DataMember] public DateTime? UpdatedAt { get; set; }
+        [property : DataMember] [JsonPropertyName("id")] public long Id { get; set; }
+        [property : DataMember] [JsonPropertyName("locale")] public string Locale { get; set; } = null!;
+        [property : DataMember] [JsonPropertyName("photo")] public string PhotoView { get; set; } = null!;
+        [property : DataMember] [JsonPropertyName("title")] public string Title { get; set; } = null!;
+        [property : DataMember] [JsonPropertyName("link")] public string Link { get; set; } = null!;
+        [property : DataMember] [JsonPropertyName("description")] public string? Description { get; set; }
+        [property : DataMember] [JsonPropertyName("created_at")] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [property : DataMember] [JsonPropertyName("updated_at")] public DateTime? UpdatedAt { get; set; }
     }
 }
