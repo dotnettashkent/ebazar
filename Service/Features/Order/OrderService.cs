@@ -7,7 +7,6 @@ using Service.Features.Order;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
@@ -46,15 +45,6 @@ namespace Service.Features
             return new TableResponse<ProductResultView>() { Items = productList, TotalItems = count };
         }
 
-        /*public async virtual Task<ProductResultView> Get(long Id, CancellationToken cancellationToken = default)
-        {
-            var dbContext = dbHub.CreateDbContext();
-            await using var _ = dbContext.ConfigureAwait(false);
-            var order = await dbContext.Orders
-            .FirstOrDefaultAsync(x => x.Id == Id);
-
-            return order == null ? throw new ValidationException("OrderEntity Not Found") : order.MapToView();
-        }*/
         #endregion
 
         #region Mutations
