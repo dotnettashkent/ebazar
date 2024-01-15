@@ -26,8 +26,86 @@ namespace Service.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+
+			modelBuilder.Entity<AddressEntity>(entity =>
+			{
+				entity.HasKey(x => x.Id).HasName("address_pkey");
+				entity.HasOne(x => x.User).WithMany(x => x.Addresses)
+				.HasForeignKey(x => x.UserId)
+				.HasConstraintName("address_id_fkey");
+            });
+
+			modelBuilder.Entity<CartEntity>(entity =>
+			{
+				entity.HasOne(c => c.User)
+				.WithOne(u => u.Cart)
+				.HasForeignKey<CartEntity>(c => c.UserId);
+			});
+
+            modelBuilder.Entity<FavouriteEntity>(entity =>
+            {
+                entity.HasOne(c => c.User)
+                .WithMany(u => u.Favourites)
+                .HasForeignKey(c => c.UserId);
+            });
+
+            modelBuilder.Entity<CourierEntity>(entity =>
+            {
+				entity.HasKey(x => x.Id).HasName("courier_pkey");
+				entity.HasMany(c => c.Orders)
+				.WithOne(c => c.Courier).
+				HasForeignKey(x => x.CourierId);
+            });
+
+            modelBuilder.Entity<OrderEntity>(entity =>
+            {
+                entity.HasKey(x => x.Id).HasName("order_pkey");
+                entity.HasOne(c => c.Courier)
+                .WithMany(c => c.Orders).
+                HasForeignKey(x => x.CourierId);
+            });
+
+            modelBuilder.Entity<ProductEntity>(entity =>
+            {
+                entity.HasKey(x => x.Id).HasName("product_pkey");
+
+				entity.HasOne(x => x.Cart)
+				.WithMany(c => c.Products)
+				.HasForeignKey(x => x.CartId)
+				.HasConstraintName("cart_id_fkey");
+
+                entity.HasOne(x => x.Favourite)
+                .WithMany(c => c.ProductEntity)
+                .HasForeignKey(x => x.FavouriteId)
+                .HasConstraintName("favourite_id_fkey");
+
+            });
+
+			modelBuilder.Entity<UserEntity>(entity =>
+			{
+				entity.HasKey(x => x.Id).HasName("user_pkey");
+
+				entity.HasOne(u => u.Cart)
+				.WithOne(c => c.User)
+				.HasForeignKey<CartEntity>(c => c.UserId);
+
+				entity.HasMany(u => u.Favourites)
+					.WithOne(f => f.User)
+					.HasForeignKey(f => f.UserId)
+					.OnDelete(DeleteBehavior.Cascade); // Adjust delete behavior as needed
+
+				entity.HasMany(u => u.Orders)
+					.WithOne(o => o.User)
+					.HasForeignKey(o => o.UserId)
+					.OnDelete(DeleteBehavior.Cascade); // Adjust delete behavior as needed
+
+				entity.HasMany(u => u.Addresses)
+					.WithOne(a => a.User)
+					.HasForeignKey(a => a.UserId)
+					.OnDelete(DeleteBehavior.Cascade);
+			});
+
 			base.OnModelCreating(modelBuilder);
-            
         }
 	}
 }

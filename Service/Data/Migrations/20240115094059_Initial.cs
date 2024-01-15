@@ -14,24 +14,6 @@ namespace Service.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "FileView",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    FileId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Extension = table.Column<string>(type: "text", nullable: true),
-                    Path = table.Column<string>(type: "text", nullable: true),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FileView", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Locales",
                 columns: table => new
                 {
@@ -106,23 +88,22 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "addresses",
+                name: "banners",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    region = table.Column<string>(type: "text", nullable: false),
-                    district = table.Column<string>(type: "text", nullable: false),
-                    street = table.Column<string>(type: "text", nullable: false),
-                    home_number = table.Column<string>(type: "text", nullable: false),
-                    home_or_office = table.Column<int>(type: "integer", nullable: false),
-                    domophone_code = table.Column<string>(type: "text", nullable: true),
-                    delivery_comment = table.Column<string>(type: "text", nullable: true)
+                    locale = table.Column<string>(type: "text", nullable: false),
+                    photo = table.Column<string>(type: "text", nullable: false),
+                    title = table.Column<string>(type: "text", nullable: false),
+                    link = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_addresses", x => x.id);
+                    table.PrimaryKey("PK_banners", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -133,7 +114,8 @@ namespace Service.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false),
                     is_popular = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "text", nullable: false)
+                    Link = table.Column<string>(type: "text", nullable: false),
+                    photo = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -160,7 +142,7 @@ namespace Service.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_couriers", x => x.id);
+                    table.PrimaryKey("courier_pkey", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,32 +184,7 @@ namespace Service.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_project_users", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "banners",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    locale = table.Column<string>(type: "text", nullable: false),
-                    PhotoId = table.Column<long>(type: "bigint", nullable: false),
-                    title = table.Column<string>(type: "text", nullable: false),
-                    link = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_banners", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_banners_FileView_PhotoId",
-                        column: x => x.PhotoId,
-                        principalTable: "FileView",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("user_pkey", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -250,24 +207,26 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AddressEntityUserEntity",
+                name: "addresses",
                 columns: table => new
                 {
-                    AddressesId = table.Column<long>(type: "bigint", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    region = table.Column<string>(type: "text", nullable: false),
+                    district = table.Column<string>(type: "text", nullable: false),
+                    street = table.Column<string>(type: "text", nullable: false),
+                    home_number = table.Column<string>(type: "text", nullable: false),
+                    home_or_office = table.Column<int>(type: "integer", nullable: false),
+                    domophone_code = table.Column<string>(type: "text", nullable: true),
+                    delivery_comment = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AddressEntityUserEntity", x => new { x.AddressesId, x.UserId });
+                    table.PrimaryKey("address_pkey", x => x.id);
                     table.ForeignKey(
-                        name: "FK_AddressEntityUserEntity_addresses_AddressesId",
-                        column: x => x.AddressesId,
-                        principalTable: "addresses",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AddressEntityUserEntity_project_users_UserId",
-                        column: x => x.UserId,
+                        name: "address_id_fkey",
+                        column: x => x.user_id,
                         principalTable: "project_users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -327,7 +286,13 @@ namespace Service.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_orders", x => x.id);
+                    table.PrimaryKey("order_pkey", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_orders_carts_cart_id",
+                        column: x => x.cart_id,
+                        principalTable: "carts",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_orders_couriers_courier_id",
                         column: x => x.courier_id,
@@ -348,6 +313,8 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    cart_id = table.Column<long>(type: "bigint", nullable: false),
+                    favourite_id = table.Column<long>(type: "bigint", nullable: false),
                     name_uz = table.Column<string>(type: "text", nullable: false),
                     name_ru = table.Column<string>(type: "text", nullable: false),
                     description_uz = table.Column<string>(type: "text", nullable: false),
@@ -372,63 +339,29 @@ namespace Service.Data.Migrations
                     sub_category = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CartId = table.Column<long>(type: "bigint", nullable: true),
-                    FavouriteId = table.Column<long>(type: "bigint", nullable: true),
                     LocaleEntityCode = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_products", x => x.id);
+                    table.PrimaryKey("product_pkey", x => x.id);
                     table.ForeignKey(
                         name: "FK_products_Locales_LocaleEntityCode",
                         column: x => x.LocaleEntityCode,
                         principalTable: "Locales",
                         principalColumn: "Code");
                     table.ForeignKey(
-                        name: "FK_products_carts_CartId",
-                        column: x => x.CartId,
+                        name: "cart_id_fkey",
+                        column: x => x.cart_id,
                         principalTable: "carts",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_products_favourites_FavouriteId",
-                        column: x => x.FavouriteId,
+                        name: "favourite_id_fkey",
+                        column: x => x.favourite_id,
                         principalTable: "favourites",
-                        principalColumn: "id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderEntityProductEntity",
-                columns: table => new
-                {
-                    OrdersId = table.Column<long>(type: "bigint", nullable: false),
-                    ProductsId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderEntityProductEntity", x => new { x.OrdersId, x.ProductsId });
-                    table.ForeignKey(
-                        name: "FK_OrderEntityProductEntity_orders_OrdersId",
-                        column: x => x.OrdersId,
-                        principalTable: "orders",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderEntityProductEntity_products_ProductsId",
-                        column: x => x.ProductsId,
-                        principalTable: "products",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AddressEntityUserEntity_UserId",
-                table: "AddressEntityUserEntity",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderEntityProductEntity_ProductsId",
-                table: "OrderEntityProductEntity",
-                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserIdentities_Id",
@@ -481,9 +414,9 @@ namespace Service.Data.Migrations
                 columns: new[] { "UserId", "IsSignOutForced" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_banners_PhotoId",
-                table: "banners",
-                column: "PhotoId");
+                name: "IX_addresses_user_id",
+                table: "addresses",
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_carts_user_id",
@@ -497,6 +430,12 @@ namespace Service.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_orders_cart_id",
+                table: "orders",
+                column: "cart_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_orders_courier_id",
                 table: "orders",
                 column: "courier_id");
@@ -507,30 +446,24 @@ namespace Service.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_products_CartId",
-                table: "products",
-                column: "CartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_products_FavouriteId",
-                table: "products",
-                column: "FavouriteId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_products_LocaleEntityCode",
                 table: "products",
                 column: "LocaleEntityCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_cart_id",
+                table: "products",
+                column: "cart_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_favourite_id",
+                table: "products",
+                column: "favourite_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AddressEntityUserEntity");
-
-            migrationBuilder.DropTable(
-                name: "OrderEntityProductEntity");
-
             migrationBuilder.DropTable(
                 name: "UserIdentities");
 
@@ -544,6 +477,9 @@ namespace Service.Data.Migrations
                 name: "_Sessions");
 
             migrationBuilder.DropTable(
+                name: "addresses");
+
+            migrationBuilder.DropTable(
                 name: "banners");
 
             migrationBuilder.DropTable(
@@ -553,9 +489,6 @@ namespace Service.Data.Migrations
                 name: "files");
 
             migrationBuilder.DropTable(
-                name: "addresses");
-
-            migrationBuilder.DropTable(
                 name: "orders");
 
             migrationBuilder.DropTable(
@@ -563,9 +496,6 @@ namespace Service.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "FileView");
 
             migrationBuilder.DropTable(
                 name: "couriers");

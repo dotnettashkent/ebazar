@@ -27,6 +27,5 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\Migrations\" />
-	  <Folder Include="Features\Order\" />
 	</ItemGroup>
 </Project>

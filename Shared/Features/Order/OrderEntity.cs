@@ -28,7 +28,7 @@ namespace Shared.Features
 		public string UserComment { get; set; } = string.Empty;
 
 		//Relations
-		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
+		public virtual CartEntity? Cart { get; set; }
 		public virtual UserEntity? User {  get; set; }
 		public virtual CourierEntity? Courier { get; set; }
 	}
