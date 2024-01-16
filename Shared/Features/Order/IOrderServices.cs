@@ -3,16 +3,17 @@ using Stl.Fusion;
 using System.Reactive;
 using Stl.CommandR.Configuration;
 using Shared.Infrastructures.Extensions;
+using Shared.Infrastructures;
 
 namespace Shared.Features
 {
 	public interface IOrderServices : IComputeService
 	{
         //[ComputeMethod]
-        Task<TableResponse<ProductResultView>> GetAll(long UserId, CancellationToken cancellationToken = default);
+        Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 
         //[ComputeMethod]
-        //Task<ProductResultView> Get(long Id, CancellationToken cancellationToken = default);
+        Task<OrderView> Get(long Id, CancellationToken cancellationToken = default);
 
         [CommandHandler]
         Task Create(CreateOrderCommand command, CancellationToken cancellationToken = default);

@@ -44,26 +44,11 @@ namespace Service.Data
 
             modelBuilder.Entity<FavouriteEntity>(entity =>
             {
-                entity.HasOne(c => c.User)
-                .WithMany(u => u.Favourites)
-                .HasForeignKey(c => c.UserId);
+				entity.HasOne(c => c.User)
+				.WithOne(u => u.Favourite);
             });
 
-            modelBuilder.Entity<CourierEntity>(entity =>
-            {
-				entity.HasKey(x => x.Id).HasName("courier_pkey");
-				entity.HasMany(c => c.Orders)
-				.WithOne(c => c.Courier).
-				HasForeignKey(x => x.CourierId);
-            });
 
-            modelBuilder.Entity<OrderEntity>(entity =>
-            {
-                entity.HasKey(x => x.Id).HasName("order_pkey");
-                entity.HasOne(c => c.Courier)
-                .WithMany(c => c.Orders).
-                HasForeignKey(x => x.CourierId);
-            });
 
             modelBuilder.Entity<ProductEntity>(entity =>
             {
@@ -81,18 +66,13 @@ namespace Service.Data
 
             });
 
-			modelBuilder.Entity<UserEntity>(entity =>
+			/*modelBuilder.Entity<UserEntity>(entity =>
 			{
 				entity.HasKey(x => x.Id).HasName("user_pkey");
 
 				entity.HasOne(u => u.Cart)
 				.WithOne(c => c.User)
 				.HasForeignKey<CartEntity>(c => c.UserId);
-
-				entity.HasMany(u => u.Favourites)
-					.WithOne(f => f.User)
-					.HasForeignKey(f => f.UserId)
-					.OnDelete(DeleteBehavior.Cascade); // Adjust delete behavior as needed
 
 				entity.HasMany(u => u.Orders)
 					.WithOne(o => o.User)
@@ -103,7 +83,7 @@ namespace Service.Data
 					.WithOne(a => a.User)
 					.HasForeignKey(a => a.UserId)
 					.OnDelete(DeleteBehavior.Cascade);
-			});
+			});*/
 
 			base.OnModelCreating(modelBuilder);
         }

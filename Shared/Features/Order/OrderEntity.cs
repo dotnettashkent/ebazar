@@ -10,13 +10,47 @@ namespace Shared.Features
         [Column("id")]
         public long Id { get; set; }
 
-        [Column("product_ids")]
-        public List<long> ProductIds { get; set; } = new List<long>();
-
         [Column("user_id")]
         public long UserId { get; set; }
 
-        public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
+        [Column("cart_id")]
+        public long CartId { get; set; }
+
+        [Column("city")]
+        public string City { get; set; } = null!;
+
+        [Column("region")]
+        public string Region { get; set; } = null!;
+
+        [Column("street")]
+        public string Street { get; set; } = null!;
+
+        [Column("home_number")]
+        public string HomeNumber { get; set; } = null!;
+
+        [Column("comment_for_courier")]
+        public string CommentForCourier { get; set; } = null!;
+
+        [Column("delivery_time")]
+        public string? DeliveryTime { get; set; } = null!;
+
+        [Column("payment_type")]
+        public string PaymentType { get; set; } = null!;
+
+        [Column("first_name")]
+        public string FirstName { get; set; } = null!;
+
+        [Column("last_name")]
+        public string LastName { get; set; } = null!;
+
+        [Column("extra_phone_number")]
+        public string ExtraPhoneNumber { get; set; } = null!;
+
+
+        //Relations
+
+        public virtual CartEntity? Cart { get; set; }
         public virtual UserEntity? User { get; set; }
+
     }
 }

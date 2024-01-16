@@ -47,7 +47,7 @@ namespace Shared.Features
 		public DateTime? DateOfBirth { get; set; }
 
 		public virtual CartView CartView { get; set; } = new CartView();
-		public virtual ICollection<FavouriteView>? FavouritesView { get; set; } = new List<FavouriteView>();
+		public virtual FavouriteView? FavouritesView { get; set; }
 		public virtual ICollection<OrderView>? OrdersView { get; set; } = new List<OrderView>();
 		public virtual ICollection<AddressView> Addresses {  get; set; } = new List<AddressView>();  
 	}

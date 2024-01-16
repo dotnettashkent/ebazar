@@ -17,7 +17,6 @@ namespace Shared.Features
 		[property : DataMember] [JsonPropertyName("home_number")] public string? HomeNumber { get; set; } 
 		[property : DataMember] [JsonPropertyName("home_or_office")] public int HomeOrOffice { get; set; }
 		[property : DataMember] [JsonPropertyName("domophone_code")] public string? DomophoneCode { get; set; }
-		[property : DataMember] [JsonPropertyName("delivery_comment")] public string? DeliveryComment { get; set; }
 
 	}
 }

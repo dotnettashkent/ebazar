@@ -31,10 +31,8 @@ namespace Shared.Features
 		[Column("domophone_code")]
 		public string? DomophoneCode { get; set; }
 
-		[Column("delivery_comment")]
-		public string? DeliveryComment { get; set; }
-
         //Relations
         public virtual UserEntity? User { get; set; }
+		public virtual AddressEntity? Address { get; set; }
 	}
 }
