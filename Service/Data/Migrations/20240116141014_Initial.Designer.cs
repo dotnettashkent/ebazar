@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240115094059_Initial")]
+    [Migration("20240116141014_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -35,9 +35,8 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("DeliveryComment")
-                        .HasColumnType("text")
-                        .HasColumnName("delivery_comment");
+                    b.Property<long?>("AddressId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("District")
                         .IsRequired()
@@ -71,8 +70,9 @@ namespace Service.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id")
-                        .HasName("address_pkey");
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("UserId");
 
@@ -245,8 +245,7 @@ namespace Service.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id")
-                        .HasName("courier_pkey");
+                    b.HasKey("Id");
 
                     b.ToTable("couriers");
                 });
@@ -271,7 +270,8 @@ namespace Service.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("favourites");
                 });
@@ -336,30 +336,72 @@ namespace Service.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("cart_id");
 
-                    b.Property<long>("CourierId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("courier_id");
-
-                    b.Property<bool>("IsSuccess")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_success");
-
-                    b.Property<string>("UserComment")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("user_comment");
+                        .HasColumnName("city");
+
+                    b.Property<string>("CommentForCourier")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("comment_for_courier");
+
+                    b.Property<long?>("CourierEntityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DeliveryTime")
+                        .HasColumnType("text")
+                        .HasColumnName("delivery_time");
+
+                    b.Property<string>("ExtraPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("extra_phone_number");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("HomeNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("home_number");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("payment_type");
+
+                    b.Property<List<long>>("ProductIds")
+                        .IsRequired()
+                        .HasColumnType("bigint[]");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("region");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("street");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id")
-                        .HasName("order_pkey");
+                    b.HasKey("Id");
 
                     b.HasIndex("CartId")
                         .IsUnique();
 
-                    b.HasIndex("CourierId");
+                    b.HasIndex("CourierEntityId");
 
                     b.HasIndex("UserId");
 
@@ -418,6 +460,10 @@ namespace Service.Data.Migrations
                     b.Property<long>("FavouriteId")
                         .HasColumnType("bigint")
                         .HasColumnName("favourite_id");
+
+                    b.Property<int>("InfoCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("info_count");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
@@ -491,8 +537,7 @@ namespace Service.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("weight");
 
-                    b.HasKey("Id")
-                        .HasName("product_pkey");
+                    b.HasKey("Id");
 
                     b.HasIndex("CartId");
 
@@ -556,8 +601,7 @@ namespace Service.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id")
-                        .HasName("user_pkey");
+                    b.HasKey("Id");
 
                     b.ToTable("project_users");
                 });
@@ -723,12 +767,17 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.AddressEntity", b =>
                 {
+                    b.HasOne("Shared.Features.AddressEntity", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
                     b.HasOne("Shared.Features.UserEntity", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("address_id_fkey");
+                        .IsRequired();
+
+                    b.Navigation("Address");
 
                     b.Navigation("User");
                 });
@@ -747,8 +796,8 @@ namespace Service.Data.Migrations
             modelBuilder.Entity("Shared.Features.FavouriteEntity", b =>
                 {
                     b.HasOne("Shared.Features.UserEntity", "User")
-                        .WithMany("Favourites")
-                        .HasForeignKey("UserId")
+                        .WithOne("Favourite")
+                        .HasForeignKey("Shared.Features.FavouriteEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -763,11 +812,9 @@ namespace Service.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Shared.Features.CourierEntity", "Courier")
+                    b.HasOne("Shared.Features.CourierEntity", null)
                         .WithMany("Orders")
-                        .HasForeignKey("CourierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourierEntityId");
 
                     b.HasOne("Shared.Features.UserEntity", "User")
                         .WithMany("Orders")
@@ -776,8 +823,6 @@ namespace Service.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Cart");
-
-                    b.Navigation("Courier");
 
                     b.Navigation("User");
                 });
@@ -788,15 +833,13 @@ namespace Service.Data.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("cart_id_fkey");
+                        .IsRequired();
 
                     b.HasOne("Shared.Features.FavouriteEntity", "Favourite")
                         .WithMany("ProductEntity")
                         .HasForeignKey("FavouriteId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("favourite_id_fkey");
+                        .IsRequired();
 
                     b.HasOne("Shared.LocaleEntity", null)
                         .WithMany("ProductEntity")
@@ -837,10 +880,9 @@ namespace Service.Data.Migrations
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Cart");
 
-                    b.Navigation("Favourites");
+                    b.Navigation("Favourite");
 
                     b.Navigation("Orders");
                 });

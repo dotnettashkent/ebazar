@@ -27,7 +27,7 @@ namespace Service.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 
-			modelBuilder.Entity<AddressEntity>(entity =>
+			/*modelBuilder.Entity<AddressEntity>(entity =>
 			{
 				entity.HasKey(x => x.Id).HasName("address_pkey");
 				entity.HasOne(x => x.User).WithMany(x => x.Addresses)
@@ -64,7 +64,7 @@ namespace Service.Data
                 .HasForeignKey(x => x.FavouriteId)
                 .HasConstraintName("favourite_id_fkey");
 
-            });
+            });*/
 
 			/*modelBuilder.Entity<UserEntity>(entity =>
 			{

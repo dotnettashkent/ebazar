@@ -23,7 +23,7 @@ namespace Service.Features
 
         [MapProperty("Cart", "CartView")]
 		[MapProperty("Orders", "OrdersView")]
-		[MapProperty("Favourites", "FavouritesView")]
+		[MapProperty("Favourite", "FavouritesView")]
 		private static partial UserView To(this UserEntity src);
 
         private static partial UserResultView ToResult(this UserEntity src);
@@ -35,12 +35,12 @@ namespace Service.Features
 
 		[MapProperty("CartView", "Cart")]
 		[MapProperty("OrdersView", "Orders")]
-		[MapProperty("FavouritesView", "Favourites")]
+		[MapProperty("FavouritesView", "Favourite")]
 		private static partial UserEntity From(this UserView FileView);
 
 		[MapProperty("CartView", "Cart")]
 		[MapProperty("OrdersView", "Orders")]
-		[MapProperty("FavouritesView", "Favourites")]
+		[MapProperty("FavouritesView", "Favourite")]
 		public static partial void From(UserView userView, UserEntity userEntity);
 
 

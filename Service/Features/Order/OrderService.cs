@@ -5,8 +5,9 @@ using Shared.Features;
 using System.Reactive;
 using Service.Features.Order;
 using Stl.Fusion.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
+using Shared.Infrastructures;
+using System.Net;
 
 namespace Service.Features
 {
@@ -15,36 +16,42 @@ namespace Service.Features
         #region Initialize
         private readonly DbHub<AppDbContext> dbHub;
         private readonly IProductService productService;
-        public OrderService(DbHub<AppDbContext> dbHub, IProductService productService)
+        private readonly ICartService cartService;
+        private readonly IUserService userService;
+        public OrderService(DbHub<AppDbContext> dbHub, IProductService productService, ICartService cartService, IUserService userService)
         {
             this.dbHub = dbHub;
             this.productService = productService;
+            this.cartService = cartService;
+            this.userService = userService;
         }
         #endregion
         #region Queries
-        public async virtual Task<TableResponse<ProductResultView>> GetAll(long  UserId, CancellationToken cancellationToken = default)
+        public async virtual Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
-            var favourites = from s in dbContext.Orders select s;
-            favourites = favourites.Where(x => x.UserId == UserId);
+            var orders = from s in dbContext.Orders select s;
+            var ordersResponse = new List<OrderView>();
+            /*foreach (var order in orders)
+            {
+                var userId = order.UserId;
+                var cart =  await cartService.GetAll(userId,cancellationToken);
+                foreach (var item in cart.Items)
+                {
+                    order.ProductIds.Add(item.Id);
+                }
+            }*/
 
-            var listProductId = new List<long>();
-            foreach (var item in favourites)
-            {
-                listProductId.AddRange(item.ProductIds);
-            }
-            var productList = new List<ProductResultView>();
-            foreach (var item in listProductId)
-            {
-                var productGetResult = await productService.GetById(item, cancellationToken);
-                productList.Add(productGetResult);
-            }
-            var count = productList.Count();
-            return new TableResponse<ProductResultView>() { Items = productList, TotalItems = count };
+            return null;
+
         }
 
+        public Task<OrderView> Get(long Id, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Mutations
@@ -55,61 +62,35 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
-
+            
+            var userProducts = await cartService.GetAll(command.Entity.UserId,cancellationToken);
+            foreach (var item in userProducts.Items)
+            {
+                command.Entity.ProductIds.Add(item.Id);
+            }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var products = await dbContext.Products
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
-            var exists = dbContext.Orders.FirstOrDefault(x => x.UserId == command.Entity.UserId);
-            if (exists != null)
+            var order = new OrderEntity();
+            Reattach(order,command.Entity, dbContext);
+            var sameProduct = dbContext.Products.AsQueryable();
+            foreach (var item in sameProduct)
             {
-                exists.ProductIds.AddRange(command.Entity.ProductIds);
-                var ids = exists.ProductIds.ToList();
-                foreach (var item in ids)
+                foreach (var item2 in command.Entity.ProductIds)
                 {
-                    var prod = await productService.Get(item, cancellationToken);
-                    prod.Count--;
-                    prod.InfoCount++;
+                    if (item.Id == item2)
+                    {
+                        item.InfoCount++;
+                        item.Count--;
+                    }
                 }
+                await dbContext.SaveChangesAsync();
             }
-            else
-            {
-                var category = new OrderEntity();
-                var productIds = command.Entity.ProductIds;
-                foreach (var item in productIds)
-                {
-                    var product = await productService.Get(item, cancellationToken); 
-                    product.Count--;
-                    product.InfoCount++;
-                }
-                Reattach(category, command.Entity, dbContext);
-                dbContext.Update(category);
-            }
-
+            dbContext.Update(order);
             await dbContext.SaveChangesAsync();
         }
 
         public async virtual Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default)
         {
-
-            if (Computed.IsInvalidating())
-            {
-                _ = await Invalidate();
-                return;
-            }
-            var products = new List<long>();
-            products.AddRange(command.Entity.ProductIds);
-            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var exists = dbContext.Orders.FirstOrDefault(x => x.UserId == command.Entity.UserId);
-            if (exists != null)
-            {
-                foreach (var item in products)
-                {
-                    exists.ProductIds.Remove(item);
-                }
-            }
-
-            await dbContext.SaveChangesAsync(cancellationToken);
+            throw new NotImplementedException();
         }
         #endregion
 

@@ -46,6 +46,7 @@ namespace Shared.Features
         [Column("extra_phone_number")]
         public string ExtraPhoneNumber { get; set; } = null!;
 
+        public List<long> ProductIds { get; set; } = new List<long>();
 
         //Relations
 
