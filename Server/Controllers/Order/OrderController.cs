@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
 using Stl.CommandR;
 
-namespace Server.Controllers.Order
+namespace Server.Controllers
 {
     [Route("api/order")]
     [ApiController]
@@ -17,9 +17,10 @@ namespace Server.Controllers.Order
             this.commander = commander;
         }
 
-        public Task<OrderView> Create(CreateOrderCommand command, CancellationToken cancellationToken)
+        [HttpPost("")]
+        public Task Create(CreateOrderCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
-        }
+        }   
     }
 }

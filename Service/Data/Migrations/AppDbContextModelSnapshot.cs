@@ -159,6 +159,9 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
                     b.Property<List<long>>("ProductIds")
                         .IsRequired()
                         .HasColumnType("bigint[]")
@@ -169,6 +172,8 @@ namespace Service.Data.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -324,10 +329,6 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CartId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("cart_id");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text")
@@ -384,18 +385,14 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("street");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
+                    b.Property<long?>("UserEntityId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId")
-                        .IsUnique();
-
                     b.HasIndex("CourierEntityId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("orders");
                 });
@@ -753,11 +750,17 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
                 {
+                    b.HasOne("Shared.Features.OrderEntity", "Order")
+                        .WithMany("CartEntity")
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("Shared.Features.UserEntity", "User")
                         .WithOne("Cart")
                         .HasForeignKey("Shared.Features.CartEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
 
                     b.Navigation("User");
                 });
@@ -775,25 +778,15 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.OrderEntity", b =>
                 {
-                    b.HasOne("Shared.Features.CartEntity", "Cart")
-                        .WithOne("Order")
-                        .HasForeignKey("Shared.Features.OrderEntity", "CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Shared.Features.CourierEntity", null)
                         .WithMany("Orders")
                         .HasForeignKey("CourierEntityId");
 
-                    b.HasOne("Shared.Features.UserEntity", "User")
+                    b.HasOne("Shared.Features.UserEntity", "UserEntity")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserEntityId");
 
-                    b.Navigation("Cart");
-
-                    b.Navigation("User");
+                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("Shared.Features.ProductEntity", b =>
@@ -822,8 +815,6 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
                 {
-                    b.Navigation("Order");
-
                     b.Navigation("Products");
                 });
 
@@ -835,6 +826,11 @@ namespace Service.Data.Migrations
             modelBuilder.Entity("Shared.Features.FavouriteEntity", b =>
                 {
                     b.Navigation("ProductEntity");
+                });
+
+            modelBuilder.Entity("Shared.Features.OrderEntity", b =>
+                {
+                    b.Navigation("CartEntity");
                 });
 
             modelBuilder.Entity("Shared.Features.UserEntity", b =>

@@ -13,11 +13,12 @@ namespace Server
             fusion.AddService<IAddressService, AddressService>();
             fusion.AddService<IBannerService, BannerService>();
 			fusion.AddService<IBrandService, BrandService>();
-			fusion.AddService<ICartService, CartService>();
+			//fusion.AddService<ICartService, CartService>();
 			fusion.AddService<ICourierService, CourierService>();
 			fusion.AddService<IFavouriteService, FavouriteService>();
 			fusion.AddService<IProductService, ProductService>();
 			fusion.AddService<IUserService, UserService>();
+			fusion.AddService<IOrderServices, OrderService>();
             //fusion.AddService<ILocaleService, LocaleService>();
             return fusion;
 		}

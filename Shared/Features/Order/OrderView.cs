@@ -72,6 +72,7 @@ namespace Shared.Features
         public List<long> ProductIds { get; set; } = new List<long>();
         //Relations
 
-        [JsonIgnore] public virtual UserView? User { get; set; }
+        [JsonIgnore] public virtual UserView? UserView { get; set; }
+        [JsonIgnore] public virtual ICollection<CartView> CartView { get; set; } = new List<CartView>();
     }
 }

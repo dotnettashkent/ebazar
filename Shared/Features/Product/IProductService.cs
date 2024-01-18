@@ -9,9 +9,9 @@ namespace Shared.Features
 {
     public interface IProductService : IComputeService
     {
-        [ComputeMethod]
+        //[ComputeMethod]
         Task<TableResponse<ProductResultView>> GetAll(TableOptions options , CancellationToken cancellationToken = default);
-        [ComputeMethod]
+        //[ComputeMethod]
         Task<ProductView> Get(long Id, CancellationToken cancellationToken = default);
 
         [ComputeMethod]
