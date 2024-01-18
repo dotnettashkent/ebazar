@@ -45,8 +45,8 @@ namespace Shared.Features
 		public DateTime? UpdatedAt { get; set; }
 
 		//Relations
-		public virtual CartEntity Cart { get; set;} = new CartEntity();
-		public virtual ICollection<FavouriteEntity>? Favourites { get; set; } = new List<FavouriteEntity>(); 
+		public virtual CartEntity? Cart { get; set;}
+		public virtual FavouriteEntity? Favourite { get; set; }
 		public virtual ICollection<OrderEntity>? Orders { get; set; } = new List<OrderEntity>();
 		public virtual ICollection<AddressEntity> Addresses { get; set; } = new List<AddressEntity>();
 	}

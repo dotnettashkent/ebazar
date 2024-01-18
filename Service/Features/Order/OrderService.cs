@@ -3,31 +3,31 @@ using Stl.Fusion;
 using Service.Data;
 using Shared.Features;
 using System.Reactive;
-using Service.Features.Cart;
+using Service.Features.Order;
 using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
 
 namespace Service.Features
 {
-	public class CartService : ICartService
-	{
-		#region Initialize
-		private readonly DbHub<AppDbContext> dbHub;
-		private readonly IProductService productService;
-        public CartService(DbHub<AppDbContext> dbHub, IProductService productService)
+    public class OrderService : IOrderServices
+    {
+        #region Initialize
+        private readonly DbHub<AppDbContext> dbHub;
+        private readonly IProductService productService;
+        public OrderService(DbHub<AppDbContext> dbHub, IProductService productService)
         {
             this.dbHub = dbHub;
             this.productService = productService;
         }
         #endregion
-
         #region Queries
-        public async virtual Task<TableResponse<ProductResultView>> GetAll(long UserId, CancellationToken cancellationToken = default)
-		{
+        public async virtual Task<TableResponse<ProductResultView>> GetAll(long  UserId, CancellationToken cancellationToken = default)
+        {
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
-            var favourites = from s in dbContext.Carts select s;
+            var favourites = from s in dbContext.Orders select s;
             favourites = favourites.Where(x => x.UserId == UserId);
 
             var listProductId = new List<long>();
@@ -45,11 +45,11 @@ namespace Service.Features
             return new TableResponse<ProductResultView>() { Items = productList, TotalItems = count };
         }
 
-		#endregion
+        #endregion
 
-		#region Mutations
-		public async virtual Task Create(CreateCartCommand command, CancellationToken cancellationToken = default)
-		{
+        #region Mutations
+        public async virtual Task Create(CreateOrderCommand command, CancellationToken cancellationToken = default)
+        {
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -57,14 +57,31 @@ namespace Service.Features
             }
 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var exists = dbContext.Carts.FirstOrDefault(x => x.UserId == command.Entity.UserId);
+            var products = await dbContext.Products
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+            var exists = dbContext.Orders.FirstOrDefault(x => x.UserId == command.Entity.UserId);
             if (exists != null)
             {
                 exists.ProductIds.AddRange(command.Entity.ProductIds);
+                var ids = exists.ProductIds.ToList();
+                foreach (var item in ids)
+                {
+                    var prod = await productService.Get(item, cancellationToken);
+                    prod.Count--;
+                    prod.InfoCount++;
+                }
             }
             else
             {
-                CartEntity category = new CartEntity();
+                var category = new OrderEntity();
+                var productIds = command.Entity.ProductIds;
+                foreach (var item in productIds)
+                {
+                    var product = await productService.Get(item, cancellationToken); 
+                    product.Count--;
+                    product.InfoCount++;
+                }
                 Reattach(category, command.Entity, dbContext);
                 dbContext.Update(category);
             }
@@ -72,9 +89,9 @@ namespace Service.Features
             await dbContext.SaveChangesAsync();
         }
 
+        public async virtual Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default)
+        {
 
-		public async virtual Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default)
-		{
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -83,7 +100,7 @@ namespace Service.Features
             var products = new List<long>();
             products.AddRange(command.Entity.ProductIds);
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var exists = dbContext.Carts.FirstOrDefault(x => x.UserId == command.Entity.UserId);
+            var exists = dbContext.Orders.FirstOrDefault(x => x.UserId == command.Entity.UserId);
             if (exists != null)
             {
                 foreach (var item in products)
@@ -94,14 +111,16 @@ namespace Service.Features
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+        #endregion
 
-		#endregion
-		#region Helpers
-		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
-		private void Reattach(CartEntity entity, CartView view, AppDbContext dbContext)
-		{
-			CartMapper.From(view, entity);
-		}
-		#endregion
-	}
+        #region Helpers
+
+        public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
+        private void Reattach(OrderEntity entity, OrderView view, AppDbContext dbContext)
+        {
+            OrderMapper.From(view, entity);
+        }
+        #endregion
+
+    }
 }

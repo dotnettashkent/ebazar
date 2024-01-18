@@ -1,6 +1,4 @@
-﻿using EF.Audit;
-using MemoryPack;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
@@ -8,28 +6,51 @@ namespace Shared.Features
 	[Table("orders")]
 	public class OrderEntity
 	{
-		[Column("id")]
-		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public long Id { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id")]
+        public long Id { get; set; }
 
-		[Column("cart_id")]
-		public long CartId { get; set; }
+        [Column("user_id")]
+        public long UserId { get; set; }
 
-		[Column("user_id")]
-		public long UserId { get; set; }
+        [Column("cart_id")]
+        public long CartId { get; set; }
 
-		[Column("courier_id")]
-		public long CourierId { get; set; }
+        [Column("city")]
+        public string City { get; set; } = null!;
 
-		[Column("is_success")]
-		public bool IsSuccess { get; set; } = false;
+        [Column("region")]
+        public string Region { get; set; } = null!;
 
-		[Column("user_comment")]
-		public string UserComment { get; set; } = string.Empty;
+        [Column("street")]
+        public string Street { get; set; } = null!;
 
-		//Relations
-		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
-		public virtual UserEntity? User {  get; set; }
-		public virtual CourierEntity? Courier { get; set; }
-	}
+        [Column("home_number")]
+        public string HomeNumber { get; set; } = null!;
+
+        [Column("comment_for_courier")]
+        public string CommentForCourier { get; set; } = null!;
+
+        [Column("delivery_time")]
+        public string? DeliveryTime { get; set; } = null!;
+
+        [Column("payment_type")]
+        public string PaymentType { get; set; } = null!;
+
+        [Column("first_name")]
+        public string FirstName { get; set; } = null!;
+
+        [Column("last_name")]
+        public string LastName { get; set; } = null!;
+
+        [Column("extra_phone_number")]
+        public string ExtraPhoneNumber { get; set; } = null!;
+
+
+        //Relations
+
+        public virtual CartEntity? Cart { get; set; }
+        public virtual UserEntity? User { get; set; }
+
+    }
 }

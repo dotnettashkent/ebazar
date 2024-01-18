@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Shared.Features
 {
@@ -8,11 +9,11 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class BrandView
 	{
-		[property : DataMember] public long Id { get; set; }
-		[property : DataMember] public string? Name { get; set; }
-		[property : DataMember] public bool IsPopular { get; set; } = false;
-		[property : DataMember] public string? Link { get; set; }
-		[property : DataMember] public string? PhotoView { get; set; }
+		[property : DataMember] [JsonPropertyName("id")] public long Id { get; set; }
+		[property : DataMember] [JsonPropertyName("name")] public string? Name { get; set; }
+		[property : DataMember] [JsonPropertyName("is_popular")] public bool IsPopular { get; set; } = false;
+		[property : DataMember] [JsonPropertyName("link")] public string? Link { get; set; }
+		[property : DataMember] [JsonPropertyName("photo")] public string? PhotoView { get; set; }
 
 	}
 }

@@ -11,6 +11,6 @@ namespace Shared.Features
 	public partial record UpdateOrderCommand([property: DataMember] Session Session, [property: DataMember] OrderView Entity) : ISessionCommand<OrderView>;
 
 	[DataContract, MemoryPackable]
-	public partial record DeleteOrderCommand([property: DataMember] Session Session, [property: DataMember] int Id) : ISessionCommand<OrderView>;
+	public partial record DeleteOrderCommand([property: DataMember] Session Session, [property: DataMember] OrderView Entity) : ISessionCommand<OrderView>;
 
 }
