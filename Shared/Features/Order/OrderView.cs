@@ -18,12 +18,7 @@ namespace Shared.Features
         [JsonPropertyName("user_id")]
         public long UserId { get; set; }
 
-
-        [property : DataMember]
-        [JsonPropertyName("cart_id")]
-        public long CartId { get; set; }
-
-
+        
         [property: DataMember] 
         [JsonPropertyName("city")]
         public string? City { get; set; }
@@ -74,9 +69,10 @@ namespace Shared.Features
         [JsonPropertyName("extra_phone_number")]
         public string? ExtraPhoneNumber { get; set; }
 
+        public List<long> ProductIds { get; set; } = new List<long>();
         //Relations
 
-        public virtual CartView? Cart { get; set; }
-        public virtual UserResultView? User { get; set; }
+        [JsonIgnore] public virtual UserView? UserView { get; set; }
+        [JsonIgnore] public virtual ICollection<CartView> CartView { get; set; } = new List<CartView>();
     }
 }

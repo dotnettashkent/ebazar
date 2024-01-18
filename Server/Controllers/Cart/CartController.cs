@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Service.Features;
-using Shared.Features;
+	using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
 

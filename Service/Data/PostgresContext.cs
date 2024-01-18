@@ -21,13 +21,13 @@ namespace Service.Data
 		/*public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
 		public virtual DbSet<ProductSubCategoryEntity> ProductSubCategories { get; set; }*/
 		public virtual DbSet<UserEntity> UsersEntities { get; set; }
-		public virtual DbSet<LocaleEntity> Locales { get; set; }
+		//public virtual DbSet<LocaleEntity> Locales { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 
-			modelBuilder.Entity<AddressEntity>(entity =>
+            /*modelBuilder.Entity<AddressEntity>(entity =>
 			{
 				entity.HasKey(x => x.Id).HasName("address_pkey");
 				entity.HasOne(x => x.User).WithMany(x => x.Addresses)
@@ -64,9 +64,9 @@ namespace Service.Data
                 .HasForeignKey(x => x.FavouriteId)
                 .HasConstraintName("favourite_id_fkey");
 
-            });
+            });*/
 
-			/*modelBuilder.Entity<UserEntity>(entity =>
+            /*modelBuilder.Entity<UserEntity>(entity =>
 			{
 				entity.HasKey(x => x.Id).HasName("user_pkey");
 
@@ -84,8 +84,11 @@ namespace Service.Data
 					.HasForeignKey(a => a.UserId)
 					.OnDelete(DeleteBehavior.Cascade);
 			});*/
-
-			base.OnModelCreating(modelBuilder);
+            /*modelBuilder.Entity<CartEntity>()
+             .HasOne(c => c.Order)
+             .WithOne(o => o.CartEntity)
+             .HasForeignKey<OrderEntity>(o => o.CartEntity);
+            base.OnModelCreating(modelBuilder);*/
         }
 	}
 }

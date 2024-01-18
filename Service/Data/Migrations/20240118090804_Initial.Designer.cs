@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240115094059_Initial")]
+    [Migration("20240118090804_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -34,10 +34,6 @@ namespace Service.Data.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("DeliveryComment")
-                        .HasColumnType("text")
-                        .HasColumnName("delivery_comment");
 
                     b.Property<string>("District")
                         .IsRequired()
@@ -71,8 +67,7 @@ namespace Service.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("user_id");
 
-                    b.HasKey("Id")
-                        .HasName("address_pkey");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -167,6 +162,9 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
                     b.Property<List<long>>("ProductIds")
                         .IsRequired()
                         .HasColumnType("bigint[]")
@@ -177,6 +175,8 @@ namespace Service.Data.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -245,8 +245,7 @@ namespace Service.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id")
-                        .HasName("courier_pkey");
+                    b.HasKey("Id");
 
                     b.ToTable("couriers");
                 });
@@ -271,7 +270,8 @@ namespace Service.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("favourites");
                 });
@@ -332,36 +332,70 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CartId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("cart_id");
-
-                    b.Property<long>("CourierId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("courier_id");
-
-                    b.Property<bool>("IsSuccess")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_success");
-
-                    b.Property<string>("UserComment")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("user_comment");
+                        .HasColumnName("city");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
+                    b.Property<string>("CommentForCourier")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("comment_for_courier");
 
-                    b.HasKey("Id")
-                        .HasName("order_pkey");
+                    b.Property<long?>("CourierEntityId")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("CartId")
-                        .IsUnique();
+                    b.Property<string>("DeliveryTime")
+                        .HasColumnType("text")
+                        .HasColumnName("delivery_time");
 
-                    b.HasIndex("CourierId");
+                    b.Property<string>("ExtraPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("extra_phone_number");
 
-                    b.HasIndex("UserId");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("HomeNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("home_number");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("payment_type");
+
+                    b.Property<List<long>>("ProductIds")
+                        .IsRequired()
+                        .HasColumnType("bigint[]");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("region");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("street");
+
+                    b.Property<long?>("UserEntityId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourierEntityId");
+
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("orders");
                 });
@@ -380,9 +414,8 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("brand_name");
 
-                    b.Property<long>("CartId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("cart_id");
+                    b.Property<long?>("CartId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -415,9 +448,12 @@ namespace Service.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("discount_price");
 
-                    b.Property<long>("FavouriteId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("favourite_id");
+                    b.Property<long?>("FavouriteId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("InfoCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("info_count");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
@@ -438,9 +474,6 @@ namespace Service.Data.Migrations
                     b.Property<bool>("IsPopular")
                         .HasColumnType("boolean")
                         .HasColumnName("is_popular");
-
-                    b.Property<string>("LocaleEntityCode")
-                        .HasColumnType("text");
 
                     b.Property<int>("MaxCount")
                         .HasColumnType("integer")
@@ -491,14 +524,11 @@ namespace Service.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("weight");
 
-                    b.HasKey("Id")
-                        .HasName("product_pkey");
+                    b.HasKey("Id");
 
                     b.HasIndex("CartId");
 
                     b.HasIndex("FavouriteId");
-
-                    b.HasIndex("LocaleEntityCode");
 
                     b.ToTable("products");
                 });
@@ -556,20 +586,9 @@ namespace Service.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("Id")
-                        .HasName("user_pkey");
+                    b.HasKey("Id");
 
                     b.ToTable("project_users");
-                });
-
-            modelBuilder.Entity("Shared.LocaleEntity", b =>
-                {
-                    b.Property<string>("Code")
-                        .HasColumnType("text");
-
-                    b.HasKey("Code");
-
-                    b.ToTable("Locales");
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbSessionInfo<string>", b =>
@@ -727,19 +746,24 @@ namespace Service.Data.Migrations
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("address_id_fkey");
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
                 {
+                    b.HasOne("Shared.Features.OrderEntity", "Order")
+                        .WithMany("CartEntity")
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("Shared.Features.UserEntity", "User")
                         .WithOne("Cart")
                         .HasForeignKey("Shared.Features.CartEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
 
                     b.Navigation("User");
                 });
@@ -747,8 +771,8 @@ namespace Service.Data.Migrations
             modelBuilder.Entity("Shared.Features.FavouriteEntity", b =>
                 {
                     b.HasOne("Shared.Features.UserEntity", "User")
-                        .WithMany("Favourites")
-                        .HasForeignKey("UserId")
+                        .WithOne("Favourite")
+                        .HasForeignKey("Shared.Features.FavouriteEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -757,50 +781,26 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.OrderEntity", b =>
                 {
-                    b.HasOne("Shared.Features.CartEntity", "Cart")
-                        .WithOne("Order")
-                        .HasForeignKey("Shared.Features.OrderEntity", "CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Shared.Features.CourierEntity", "Courier")
+                    b.HasOne("Shared.Features.CourierEntity", null)
                         .WithMany("Orders")
-                        .HasForeignKey("CourierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourierEntityId");
 
-                    b.HasOne("Shared.Features.UserEntity", "User")
+                    b.HasOne("Shared.Features.UserEntity", "UserEntity")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserEntityId");
 
-                    b.Navigation("Cart");
-
-                    b.Navigation("Courier");
-
-                    b.Navigation("User");
+                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("Shared.Features.ProductEntity", b =>
                 {
                     b.HasOne("Shared.Features.CartEntity", "Cart")
                         .WithMany("Products")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("cart_id_fkey");
+                        .HasForeignKey("CartId");
 
                     b.HasOne("Shared.Features.FavouriteEntity", "Favourite")
                         .WithMany("ProductEntity")
-                        .HasForeignKey("FavouriteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("favourite_id_fkey");
-
-                    b.HasOne("Shared.LocaleEntity", null)
-                        .WithMany("ProductEntity")
-                        .HasForeignKey("LocaleEntityCode");
+                        .HasForeignKey("FavouriteId");
 
                     b.Navigation("Cart");
 
@@ -818,8 +818,6 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
                 {
-                    b.Navigation("Order");
-
                     b.Navigation("Products");
                 });
 
@@ -833,21 +831,20 @@ namespace Service.Data.Migrations
                     b.Navigation("ProductEntity");
                 });
 
+            modelBuilder.Entity("Shared.Features.OrderEntity", b =>
+                {
+                    b.Navigation("CartEntity");
+                });
+
             modelBuilder.Entity("Shared.Features.UserEntity", b =>
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Cart");
 
-                    b.Navigation("Favourites");
+                    b.Navigation("Favourite");
 
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("Shared.LocaleEntity", b =>
-                {
-                    b.Navigation("ProductEntity");
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbUser<string>", b =>

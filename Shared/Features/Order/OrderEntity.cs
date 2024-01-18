@@ -10,11 +10,7 @@ namespace Shared.Features
         [Column("id")]
         public long Id { get; set; }
 
-        [Column("user_id")]
-        public long UserId { get; set; }
-
-        [Column("cart_id")]
-        public long CartId { get; set; }
+        
 
         [Column("city")]
         public string City { get; set; } = null!;
@@ -46,11 +42,12 @@ namespace Shared.Features
         [Column("extra_phone_number")]
         public string ExtraPhoneNumber { get; set; } = null!;
 
+        public List<long> ProductIds { get; set; } = new List<long>();
 
         //Relations
 
-        public virtual CartEntity? Cart { get; set; }
-        public virtual UserEntity? User { get; set; }
+        public virtual ICollection<CartEntity> CartEntity { get; set; } = new List<CartEntity>();
+        public virtual UserEntity? UserEntity { get; set; }
 
     }
 }

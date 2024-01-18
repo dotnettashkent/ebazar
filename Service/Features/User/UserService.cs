@@ -60,7 +60,7 @@ namespace Service.Features.User
 				.Include(x => x.Cart)
 				.Include(x => x.Orders)
 				.Include(x => x.Addresses)
-				.Include(x => x.Favourites)
+				.Include(x => x.Favourite)
 				.FirstOrDefaultAsync(x => x.Id == id);
 
 			return user == null ? throw new ValidationException("User was not found") : user.MapToView();
@@ -160,7 +160,7 @@ namespace Service.Features.User
             await using var _ = dbContext.ConfigureAwait(false);
             var user = await dbContext.UsersEntities
 				.Where(x => x.Email == email && x.Password == password)
-				.Include(x => x.Favourites)
+				.Include(x => x.Favourite)
 				.Include(x => x.Cart)
 				.Include(x => x.Orders)
 				.Include(x => x.Addresses)

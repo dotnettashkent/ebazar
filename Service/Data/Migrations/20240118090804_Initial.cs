@@ -14,17 +14,6 @@ namespace Service.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Locales",
-                columns: table => new
-                {
-                    Code = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Locales", x => x.Code);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -142,7 +131,7 @@ namespace Service.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("courier_pkey", x => x.id);
+                    table.PrimaryKey("PK_couriers", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,7 +173,7 @@ namespace Service.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("user_pkey", x => x.id);
+                    table.PrimaryKey("PK_project_users", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,34 +207,13 @@ namespace Service.Data.Migrations
                     street = table.Column<string>(type: "text", nullable: false),
                     home_number = table.Column<string>(type: "text", nullable: false),
                     home_or_office = table.Column<int>(type: "integer", nullable: false),
-                    domophone_code = table.Column<string>(type: "text", nullable: true),
-                    delivery_comment = table.Column<string>(type: "text", nullable: true)
+                    domophone_code = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("address_pkey", x => x.id);
+                    table.PrimaryKey("PK_addresses", x => x.id);
                     table.ForeignKey(
-                        name: "address_id_fkey",
-                        column: x => x.user_id,
-                        principalTable: "project_users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "carts",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    product_ids = table.Column<List<long>>(type: "bigint[]", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_carts", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_carts_project_users_user_id",
+                        name: "FK_addresses_project_users_user_id",
                         column: x => x.user_id,
                         principalTable: "project_users",
                         principalColumn: "id",
@@ -278,29 +246,55 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    cart_id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
-                    courier_id = table.Column<long>(type: "bigint", nullable: false),
-                    is_success = table.Column<bool>(type: "boolean", nullable: false),
-                    user_comment = table.Column<string>(type: "text", nullable: false)
+                    city = table.Column<string>(type: "text", nullable: false),
+                    region = table.Column<string>(type: "text", nullable: false),
+                    street = table.Column<string>(type: "text", nullable: false),
+                    home_number = table.Column<string>(type: "text", nullable: false),
+                    comment_for_courier = table.Column<string>(type: "text", nullable: false),
+                    delivery_time = table.Column<string>(type: "text", nullable: true),
+                    payment_type = table.Column<string>(type: "text", nullable: false),
+                    first_name = table.Column<string>(type: "text", nullable: false),
+                    last_name = table.Column<string>(type: "text", nullable: false),
+                    extra_phone_number = table.Column<string>(type: "text", nullable: false),
+                    ProductIds = table.Column<List<long>>(type: "bigint[]", nullable: false),
+                    UserEntityId = table.Column<long>(type: "bigint", nullable: true),
+                    CourierEntityId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("order_pkey", x => x.id);
+                    table.PrimaryKey("PK_orders", x => x.id);
                     table.ForeignKey(
-                        name: "FK_orders_carts_cart_id",
-                        column: x => x.cart_id,
-                        principalTable: "carts",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_orders_couriers_courier_id",
-                        column: x => x.courier_id,
+                        name: "FK_orders_couriers_CourierEntityId",
+                        column: x => x.CourierEntityId,
                         principalTable: "couriers",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_orders_project_users_user_id",
+                        name: "FK_orders_project_users_UserEntityId",
+                        column: x => x.UserEntityId,
+                        principalTable: "project_users",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "carts",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    product_ids = table.Column<List<long>>(type: "bigint[]", nullable: false),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    OrderId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_carts", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_carts_orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "orders",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_carts_project_users_user_id",
                         column: x => x.user_id,
                         principalTable: "project_users",
                         principalColumn: "id",
@@ -313,8 +307,6 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    cart_id = table.Column<long>(type: "bigint", nullable: false),
-                    favourite_id = table.Column<long>(type: "bigint", nullable: false),
                     name_uz = table.Column<string>(type: "text", nullable: false),
                     name_ru = table.Column<string>(type: "text", nullable: false),
                     description_uz = table.Column<string>(type: "text", nullable: false),
@@ -322,6 +314,7 @@ namespace Service.Data.Migrations
                     brand_name = table.Column<string>(type: "text", nullable: false),
                     count = table.Column<int>(type: "integer", nullable: false),
                     max_count = table.Column<int>(type: "integer", nullable: false),
+                    info_count = table.Column<int>(type: "integer", nullable: false),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     discount_price = table.Column<decimal>(type: "numeric", nullable: false),
                     discount_percent = table.Column<decimal>(type: "numeric", nullable: false),
@@ -339,28 +332,22 @@ namespace Service.Data.Migrations
                     sub_category = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LocaleEntityCode = table.Column<string>(type: "text", nullable: true)
+                    CartId = table.Column<long>(type: "bigint", nullable: true),
+                    FavouriteId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("product_pkey", x => x.id);
+                    table.PrimaryKey("PK_products", x => x.id);
                     table.ForeignKey(
-                        name: "FK_products_Locales_LocaleEntityCode",
-                        column: x => x.LocaleEntityCode,
-                        principalTable: "Locales",
-                        principalColumn: "Code");
-                    table.ForeignKey(
-                        name: "cart_id_fkey",
-                        column: x => x.cart_id,
+                        name: "FK_products_carts_CartId",
+                        column: x => x.CartId,
                         principalTable: "carts",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                     table.ForeignKey(
-                        name: "favourite_id_fkey",
-                        column: x => x.favourite_id,
+                        name: "FK_products_favourites_FavouriteId",
+                        column: x => x.FavouriteId,
                         principalTable: "favourites",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -419,6 +406,11 @@ namespace Service.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_carts_OrderId",
+                table: "carts",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_carts_user_id",
                 table: "carts",
                 column: "user_id",
@@ -427,38 +419,28 @@ namespace Service.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_favourites_user_id",
                 table: "favourites",
-                column: "user_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_orders_cart_id",
-                table: "orders",
-                column: "cart_id",
+                column: "user_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_orders_courier_id",
+                name: "IX_orders_CourierEntityId",
                 table: "orders",
-                column: "courier_id");
+                column: "CourierEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_orders_user_id",
+                name: "IX_orders_UserEntityId",
                 table: "orders",
-                column: "user_id");
+                column: "UserEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_products_LocaleEntityCode",
+                name: "IX_products_CartId",
                 table: "products",
-                column: "LocaleEntityCode");
+                column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_products_cart_id",
+                name: "IX_products_FavouriteId",
                 table: "products",
-                column: "cart_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_products_favourite_id",
-                table: "products",
-                column: "favourite_id");
+                column: "FavouriteId");
         }
 
         /// <inheritdoc />
@@ -489,25 +471,22 @@ namespace Service.Data.Migrations
                 name: "files");
 
             migrationBuilder.DropTable(
-                name: "orders");
-
-            migrationBuilder.DropTable(
                 name: "products");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "couriers");
-
-            migrationBuilder.DropTable(
-                name: "Locales");
-
-            migrationBuilder.DropTable(
                 name: "carts");
 
             migrationBuilder.DropTable(
                 name: "favourites");
+
+            migrationBuilder.DropTable(
+                name: "orders");
+
+            migrationBuilder.DropTable(
+                name: "couriers");
 
             migrationBuilder.DropTable(
                 name: "project_users");

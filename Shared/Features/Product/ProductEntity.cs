@@ -9,8 +9,6 @@ namespace Shared.Features
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public long Id { get; set; }
-        [Column("cart_id")] public long CartId { get; set; }
-        [Column("favourite_id")] public long FavouriteId { get; set; }
 
         [Column("name_uz")]
         public string NameUz { get; set; } = null!;
@@ -42,7 +40,7 @@ namespace Shared.Features
         public int MaxCount { get; set; }
 
         [Column("info_count")]
-        public long InfoCount { get; set; }
+        public int InfoCount { get; set; }
 
         [Column("price")]
         public decimal Price { get; set; }
@@ -95,9 +93,10 @@ namespace Shared.Features
 
         [Column("updated_at")]
         public DateTime? UpdatedAt { get; set; }
-        
+
         //Relations
         public virtual CartEntity? Cart { get; set; }
+
         public virtual FavouriteEntity? Favourite { get; set; }
     }
 }
