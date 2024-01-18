@@ -33,6 +33,5 @@ namespace Shared.Features
 
         //Relations
         public virtual UserEntity? User { get; set; }
-		public virtual AddressEntity? Address { get; set; }
 	}
 }

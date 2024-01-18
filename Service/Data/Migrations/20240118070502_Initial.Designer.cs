@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240116141014_Initial")]
+    [Migration("20240118070502_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -34,9 +34,6 @@ namespace Service.Data.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("AddressId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("District")
                         .IsRequired()
@@ -71,8 +68,6 @@ namespace Service.Data.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("UserId");
 
@@ -422,9 +417,8 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("brand_name");
 
-                    b.Property<long>("CartId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("cart_id");
+                    b.Property<long?>("CartId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -457,9 +451,8 @@ namespace Service.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("discount_price");
 
-                    b.Property<long>("FavouriteId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("favourite_id");
+                    b.Property<long?>("FavouriteId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("InfoCount")
                         .HasColumnType("integer")
@@ -484,9 +477,6 @@ namespace Service.Data.Migrations
                     b.Property<bool>("IsPopular")
                         .HasColumnType("boolean")
                         .HasColumnName("is_popular");
-
-                    b.Property<string>("LocaleEntityCode")
-                        .HasColumnType("text");
 
                     b.Property<int>("MaxCount")
                         .HasColumnType("integer")
@@ -542,8 +532,6 @@ namespace Service.Data.Migrations
                     b.HasIndex("CartId");
 
                     b.HasIndex("FavouriteId");
-
-                    b.HasIndex("LocaleEntityCode");
 
                     b.ToTable("products");
                 });
@@ -604,16 +592,6 @@ namespace Service.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("project_users");
-                });
-
-            modelBuilder.Entity("Shared.LocaleEntity", b =>
-                {
-                    b.Property<string>("Code")
-                        .HasColumnType("text");
-
-                    b.HasKey("Code");
-
-                    b.ToTable("Locales");
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbSessionInfo<string>", b =>
@@ -767,17 +745,11 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.AddressEntity", b =>
                 {
-                    b.HasOne("Shared.Features.AddressEntity", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
-
                     b.HasOne("Shared.Features.UserEntity", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
 
                     b.Navigation("User");
                 });
@@ -831,19 +803,11 @@ namespace Service.Data.Migrations
                 {
                     b.HasOne("Shared.Features.CartEntity", "Cart")
                         .WithMany("Products")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CartId");
 
                     b.HasOne("Shared.Features.FavouriteEntity", "Favourite")
                         .WithMany("ProductEntity")
-                        .HasForeignKey("FavouriteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Shared.LocaleEntity", null)
-                        .WithMany("ProductEntity")
-                        .HasForeignKey("LocaleEntityCode");
+                        .HasForeignKey("FavouriteId");
 
                     b.Navigation("Cart");
 
@@ -885,11 +849,6 @@ namespace Service.Data.Migrations
                     b.Navigation("Favourite");
 
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("Shared.LocaleEntity", b =>
-                {
-                    b.Navigation("ProductEntity");
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbUser<string>", b =>

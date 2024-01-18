@@ -20,7 +20,5 @@ namespace Shared.Features
 		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
 		public virtual UserEntity? User { get; set; }
 		public virtual OrderEntity? Order { get; set; }
-
-
 	}
 }

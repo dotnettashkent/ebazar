@@ -14,17 +14,6 @@ namespace Service.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Locales",
-                columns: table => new
-                {
-                    Code = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Locales", x => x.Code);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -218,17 +207,11 @@ namespace Service.Data.Migrations
                     street = table.Column<string>(type: "text", nullable: false),
                     home_number = table.Column<string>(type: "text", nullable: false),
                     home_or_office = table.Column<int>(type: "integer", nullable: false),
-                    domophone_code = table.Column<string>(type: "text", nullable: true),
-                    AddressId = table.Column<long>(type: "bigint", nullable: true)
+                    domophone_code = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_addresses", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_addresses_addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "addresses",
-                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_addresses_project_users_user_id",
                         column: x => x.user_id,
@@ -326,8 +309,6 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    cart_id = table.Column<long>(type: "bigint", nullable: false),
-                    favourite_id = table.Column<long>(type: "bigint", nullable: false),
                     name_uz = table.Column<string>(type: "text", nullable: false),
                     name_ru = table.Column<string>(type: "text", nullable: false),
                     description_uz = table.Column<string>(type: "text", nullable: false),
@@ -353,28 +334,22 @@ namespace Service.Data.Migrations
                     sub_category = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LocaleEntityCode = table.Column<string>(type: "text", nullable: true)
+                    CartId = table.Column<long>(type: "bigint", nullable: true),
+                    FavouriteId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_products", x => x.id);
                     table.ForeignKey(
-                        name: "FK_products_Locales_LocaleEntityCode",
-                        column: x => x.LocaleEntityCode,
-                        principalTable: "Locales",
-                        principalColumn: "Code");
-                    table.ForeignKey(
-                        name: "FK_products_carts_cart_id",
-                        column: x => x.cart_id,
+                        name: "FK_products_carts_CartId",
+                        column: x => x.CartId,
                         principalTable: "carts",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_products_favourites_favourite_id",
-                        column: x => x.favourite_id,
+                        name: "FK_products_favourites_FavouriteId",
+                        column: x => x.FavouriteId,
                         principalTable: "favourites",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -428,11 +403,6 @@ namespace Service.Data.Migrations
                 columns: new[] { "UserId", "IsSignOutForced" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_addresses_AddressId",
-                table: "addresses",
-                column: "AddressId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_addresses_user_id",
                 table: "addresses",
                 column: "user_id");
@@ -466,19 +436,14 @@ namespace Service.Data.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_products_LocaleEntityCode",
+                name: "IX_products_CartId",
                 table: "products",
-                column: "LocaleEntityCode");
+                column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_products_cart_id",
+                name: "IX_products_FavouriteId",
                 table: "products",
-                column: "cart_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_products_favourite_id",
-                table: "products",
-                column: "favourite_id");
+                column: "FavouriteId");
         }
 
         /// <inheritdoc />
@@ -519,9 +484,6 @@ namespace Service.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "couriers");
-
-            migrationBuilder.DropTable(
-                name: "Locales");
 
             migrationBuilder.DropTable(
                 name: "carts");

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+/*using Microsoft.EntityFrameworkCore;
 using Stl.Fusion;
 using Stl.Fusion.EntityFramework;
 using System.ComponentModel.DataAnnotations;
@@ -139,3 +139,4 @@ public class LocaleService : ILocaleService
     };
     #endregion
 }
+*/

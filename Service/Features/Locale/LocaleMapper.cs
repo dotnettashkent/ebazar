@@ -5,11 +5,11 @@ using System.Text.Json;
 namespace UtcNew.Services;
 
 [Mapper]
-public static partial class LocaleMapper 
+public static partial class LocaleMapper
 {
     #region Usable
     public static LocaleView MapToView(this LocaleEntity src) => src.To();
-    public static List<LocaleView> MapToViewList(this List<LocaleEntity> src)=> src.ToList();
+    public static List<LocaleView> MapToViewList(this List<LocaleEntity> src) => src.ToList();
     public static LocaleEntity MapFromView(this LocaleView src) => src.From();
     #endregion
 
@@ -23,6 +23,6 @@ public static partial class LocaleMapper
     private static partial LocaleEntity From(this LocaleView LocaleView);
     [MapProperty("ProductView", "ProductEntity")]
     public static partial void From(LocaleView personView, LocaleEntity personEntity);
-    
+
     #endregion
 }
