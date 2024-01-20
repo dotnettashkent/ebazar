@@ -73,6 +73,6 @@ namespace Shared.Features
         //Relations
 
         [JsonIgnore] public virtual UserView? UserView { get; set; }
-        [JsonIgnore] public virtual ICollection<CartView> CartView { get; set; } = new List<CartView>();
+        [JsonIgnore] public virtual CartView? CartView { get; set; } 
     }
 }

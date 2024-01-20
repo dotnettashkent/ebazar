@@ -84,11 +84,18 @@ namespace Service.Data
 					.HasForeignKey(a => a.UserId)
 					.OnDelete(DeleteBehavior.Cascade);
 			});*/
-            /*modelBuilder.Entity<CartEntity>()
-             .HasOne(c => c.Order)
-             .WithOne(o => o.CartEntity)
-             .HasForeignKey<OrderEntity>(o => o.CartEntity);
-            base.OnModelCreating(modelBuilder);*/
+            
+			modelBuilder.Entity<CartEntity>(entity =>
+			{
+				entity.Property(e => e.Product)
+				.HasColumnType("jsonb")
+				.HasColumnName("products");
+
+				entity.HasOne(cart => cart.Order)
+				.WithOne(order => order.CartEntity)
+				.HasForeignKey<OrderEntity>(order => order.CartEntityId);
+			});
+            base.OnModelCreating(modelBuilder);
         }
 	}
 }

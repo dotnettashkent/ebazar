@@ -46,7 +46,10 @@ namespace Shared.Features
 
         //Relations
 
-        public virtual ICollection<CartEntity> CartEntity { get; set; } = new List<CartEntity>();
+        public long CartEntityId { get; set; }
+        public virtual CartEntity? CartEntity { get; set; }
+
+        public long UserEntityId { get; set; }
         public virtual UserEntity? UserEntity { get; set; }
 
     }

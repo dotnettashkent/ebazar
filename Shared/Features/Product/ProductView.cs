@@ -233,6 +233,12 @@ namespace Shared.Features
         [property: DataMember]
         [JsonPropertyName("updated_at")]
         public DateTime? UpdatedAt { get; set; }
+
+
+        [property: DataMember]
+        [JsonPropertyName("quantity")]
+        public int? Quantity { get; set; }
+
     }
 
 }
