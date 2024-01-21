@@ -36,6 +36,9 @@ namespace Shared.Features
 		[Column("gender")]
 		public Gender Gender { get; set; }
 
+		[Column("role")]
+		public Role Role { get; set; } = Role.User;
+
 		[Column("date_of_birth")]
 		public DateTime? DateOfBirth { get; set; }
 
