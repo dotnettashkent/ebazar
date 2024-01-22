@@ -14,20 +14,16 @@ namespace Service.Features.Order
 
         #region Internal
 
-        [MapProperty("CartEntity","CartView")]
-        [MapProperty("UserEntity","UserView")]
+       
         private static partial OrderView To(this OrderEntity src);
 
-        [MapProperty("CartEntity", "CartView")]
-        [MapProperty("UserEntity", "UserView")]
+        
         private static partial List<OrderView> ToList(this List<OrderEntity> src);
 
-        [MapProperty("CartView", "CartEntity")]
-        [MapProperty("UserView", "UserEntity")]
+        
         private static partial OrderEntity From(this OrderView view);
         
-        [MapProperty("CartView", "CartEntity")]
-        [MapProperty("UserView", "UserEntity")]
+        
         public static partial void From(OrderView view, OrderEntity entity);
         #endregion
     }

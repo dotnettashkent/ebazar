@@ -19,7 +19,7 @@ namespace Shared.Features
 		
 		[CommandHandler]
 		Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default);
-		
-		Task<Unit> Invalidate() { return TaskExt.UnitTask; }
+
+        Task<Unit> Invalidate() { return TaskExt.UnitTask; }
 	}
 }

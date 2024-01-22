@@ -1,4 +1,5 @@
 ﻿using MemoryPack;
+using Shared.Infrastructures;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
@@ -69,10 +70,15 @@ namespace Shared.Features
         [JsonPropertyName("extra_phone_number")]
         public string? ExtraPhoneNumber { get; set; }
 
-        public List<long> ProductIds { get; set; } = new List<long>();
+        [JsonIgnore]
+        [property: DataMember]
+        public string Status { get; set; } = OrderStatus.Pending.ToString();
+
+        [JsonIgnore]
+        [property: DataMember]
+        [JsonPropertyName("products")]
+        public List<ProductResultView> Product { get; set; } = new();
         //Relations
 
-        [JsonIgnore] public virtual UserView? UserView { get; set; }
-        [JsonIgnore] public virtual CartView? CartView { get; set; } 
     }
 }

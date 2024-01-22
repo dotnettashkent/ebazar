@@ -139,10 +139,8 @@ namespace Service.Features
 
                 if (existingProduct != null)
                 {
-                    // Remove the specified quantity or the whole product from the cart
                     existingProduct.Quantity = Math.Max(0, existingProduct.Quantity - productToRemove.Quantity);
 
-                    // If the quantity becomes zero, remove the product from the cart
                     if (existingProduct.Quantity == 0)
                     {
                         cartProducts.Remove(existingProduct);
@@ -151,7 +149,23 @@ namespace Service.Features
             }
         }
 
+        public async virtual Task DeleteAll(DeleteAllCartCommand command, CancellationToken cancellationToken = default)
+        {
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
 
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+            var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == command.UserId);
+
+            if (cart != null)
+            {
+                cart.Product = null; // Clear the product list
+                await dbContext.SaveChangesAsync();
+            }
+        }
 
 
         #endregion

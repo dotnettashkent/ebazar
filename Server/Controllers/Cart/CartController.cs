@@ -5,7 +5,7 @@ using Stl.CommandR;
 
 namespace Server.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/cart")]
 	[ApiController]
 	public class CartController : ControllerBase
 	{
@@ -23,16 +23,22 @@ namespace Server.Controllers
 			return commander.Call(command, cancellationToken);
 		}
 
-		[HttpDelete()]
+		[HttpDelete("delete")]
 		public Task Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken)
 		{
             return commander.Call(command, cancellationToken);
         }
-
-        [HttpGet("get/favourites")]
-        public Task<TableResponse<ProductResultView>> GetAll(long userId)
+        
+		[HttpDelete("delete/all")]
+        public async Task DeleteAll(DeleteAllCartCommand command, CancellationToken cancellationToken)
         {
-            return cartService.GetAll(userId);
+			 await commander.Call(command, cancellationToken);
+        }
+
+        [HttpGet("get/carts")]
+        public Task<TableResponse<ProductResultView>> GetAll(long userId, CancellationToken cancellationToken)
+        {
+            return cartService.GetAll(userId,cancellationToken);
         }
     }
 }

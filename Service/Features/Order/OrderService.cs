@@ -8,6 +8,7 @@ using Stl.Fusion.EntityFramework;
 using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
 using System.Net;
+using System.Text.Json;
 
 namespace Service.Features
 {
@@ -62,31 +63,31 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
-            
-            var userProducts = await cartService.GetAll(command.Entity.UserId,cancellationToken);
-            foreach (var item in userProducts.Items)
-            {
-                command.Entity.ProductIds.Add(item.Id);
-            }
+
+            var userId = command.Entity.UserId;
+            var products = await cartService.GetAll(userId, cancellationToken);
+            var productResults = products.Items;
+
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var order = new OrderEntity();
-            Reattach(order,command.Entity, dbContext);
-            var sameProduct = dbContext.Products.AsQueryable();
-            foreach (var item in sameProduct)
+            var orderEntity = new OrderEntity
             {
-                foreach (var item2 in command.Entity.ProductIds)
+                Products = JsonSerializer.Serialize(productResults),
+            };
+            Reattach(orderEntity, command.Entity, dbContext);
+            dbContext.Orders.Add(orderEntity);
+            foreach (var item2 in productResults)
+            {
+                var product = dbContext.Products.SingleOrDefault(p => p.Id == item2.Id);
+                if (product != null)
                 {
-                    if (item.Id == item2)
-                    {
-                        item.InfoCount++;
-                        item.Count--;
-                    }
+                    product.Count -= item2.Quantity;
+                    product.InfoCount += item2.Quantity;
                 }
-                await dbContext.SaveChangesAsync();
             }
-            dbContext.Update(order);
+
             await dbContext.SaveChangesAsync();
         }
+
 
         public async virtual Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default)
         {

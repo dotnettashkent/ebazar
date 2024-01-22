@@ -33,9 +33,14 @@ namespace Service.Data
 				.HasColumnType("jsonb")
 				.HasColumnName("products");
 
-				entity.HasOne(cart => cart.Order)
-				.WithOne(order => order.CartEntity)
-				.HasForeignKey<OrderEntity>(order => order.CartEntityId);
+			});
+
+
+			modelBuilder.Entity<OrderEntity>(entity =>
+			{
+				entity.Property(e => e.Products)
+				.HasColumnType("jsonb")
+				.HasColumnName("products");
 			});
             base.OnModelCreating(modelBuilder);
         }
