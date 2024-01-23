@@ -14,7 +14,7 @@ namespace Shared.Features
         //[ComputeMethod]
         Task<ProductView> Get(long Id, CancellationToken cancellationToken = default);
 
-        [ComputeMethod]
+        //[ComputeMethod]
         Task<ProductResultView> GetById(long Id, CancellationToken cancellationToken = default);
         [CommandHandler]
         Task Create(CreateProductCommand command, CancellationToken cancellationToken = default);
