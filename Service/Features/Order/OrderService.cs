@@ -35,15 +35,7 @@ namespace Service.Features
             await using var _ = dbContext.ConfigureAwait(false);
             var orders = from s in dbContext.Orders select s;
             var ordersResponse = new List<OrderView>();
-            /*foreach (var order in orders)
-            {
-                var userId = order.UserId;
-                var cart =  await cartService.GetAll(userId,cancellationToken);
-                foreach (var item in cart.Items)
-                {
-                    order.ProductIds.Add(item.Id);
-                }
-            }*/
+            
 
             return null;
 
@@ -84,10 +76,14 @@ namespace Service.Features
                     product.InfoCount += item2.Quantity;
                 }
             }
-
+            await cartService.RemoveAll(userId, cancellationToken);
             await dbContext.SaveChangesAsync();
         }
 
+        public async virtual Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
 
         public async virtual Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default)
         {
@@ -102,6 +98,7 @@ namespace Service.Features
         {
             OrderMapper.From(view, entity);
         }
+
         #endregion
 
     }

@@ -391,6 +391,10 @@ namespace Service.Data.Migrations
                     b.Property<long?>("UserEntityId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourierEntityId");

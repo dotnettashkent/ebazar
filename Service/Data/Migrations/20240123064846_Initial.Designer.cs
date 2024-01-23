@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240122092407_Initial")]
+    [Migration("20240123064846_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -393,6 +393,10 @@ namespace Service.Data.Migrations
 
                     b.Property<long?>("UserEntityId")
                         .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 

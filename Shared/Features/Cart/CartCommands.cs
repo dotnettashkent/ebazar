@@ -15,8 +15,4 @@ namespace Shared.Features
 		[property : DataMember] Session Session, 
 		[property : DataMember] CartView Entity) : ISessionCommand<CartView>;
 
-    [DataContract, MemoryPackable]
-    public partial record DeleteAllCartCommand(
-        [property: DataMember] Session Session,
-        [property: DataMember] long UserId) : ISessionCommand<long>;
 }

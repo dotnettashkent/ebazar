@@ -10,7 +10,8 @@ namespace Shared.Features
         [Column("id")]
         public long Id { get; set; }
 
-        
+        [Column("user_id")]
+        public long UserId { get; set; }
 
         [Column("city")]
         public string City { get; set; } = null!;
@@ -48,6 +49,5 @@ namespace Shared.Features
 
         [Column("products")]
         public string? Products {  get; set; }
-
     }
 }

@@ -29,11 +29,11 @@ namespace Server.Controllers
             return commander.Call(command, cancellationToken);
         }
         
-		[HttpDelete("delete/all")]
-        public async Task DeleteAll(DeleteAllCartCommand command, CancellationToken cancellationToken)
+		/*[HttpPut("delete/all")]
+        public async Task DeleteAll(long UserId, CancellationToken cancellationToken)
         {
-			 await commander.Call(command, cancellationToken);
-        }
+			await cartService.RemoveAll(UserId,cancellationToken);
+        }*/
 
         [HttpGet("get/carts")]
         public Task<TableResponse<ProductResultView>> GetAll(long userId, CancellationToken cancellationToken)

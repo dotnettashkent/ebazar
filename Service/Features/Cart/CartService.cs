@@ -149,7 +149,7 @@ namespace Service.Features
             }
         }
 
-        public async virtual Task DeleteAll(DeleteAllCartCommand command, CancellationToken cancellationToken = default)
+        public async virtual Task RemoveAll(long userId, CancellationToken cancellationToken = default)
         {
             if (Computed.IsInvalidating())
             {
@@ -158,14 +158,19 @@ namespace Service.Features
             }
 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == command.UserId);
 
-            if (cart != null)
+            // Find all carts with the specified userId
+            var cartsToDelete = dbContext.Carts.Where(x => x.UserId == userId).ToList();
+
+            foreach (var cart in cartsToDelete)
             {
-                cart.Product = null; // Clear the product list
-                await dbContext.SaveChangesAsync();
+                dbContext.Remove(cart);
             }
+
+            await dbContext.SaveChangesAsync();
         }
+
+
 
 
         #endregion
