@@ -8,6 +8,7 @@ namespace Service.Features.Order
     {
         #region Usable
         public static OrderView MapToView(this OrderEntity src) => src.To();
+        public static OrderResponse MapToView2(this OrderEntity src) => src.To2();
         public static List<OrderView> MapToViewList(this List<OrderEntity> src) => src.ToList();
         public static OrderEntity MapFromView(this OrderView src) => src.From();
         #endregion
@@ -16,8 +17,10 @@ namespace Service.Features.Order
 
        
         private static partial OrderView To(this OrderEntity src);
-
         
+        private static partial OrderResponse To2(this OrderEntity src);
+
+
         private static partial List<OrderView> ToList(this List<OrderEntity> src);
 
         

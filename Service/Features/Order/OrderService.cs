@@ -9,6 +9,8 @@ using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
 using System.Net;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
@@ -34,17 +36,50 @@ namespace Service.Features
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var orders = from s in dbContext.Orders select s;
-            var ordersResponse = new List<OrderView>();
-            
+            if (!String.IsNullOrEmpty(options.Search))
+            {
+                orders = orders.Where(s =>
+                         s.Region.Contains(options.Search)
+                         || s.FirstName.Contains(options.Search)
+                         || s.LastName.Contains(options.Search)
+                );
+            }
 
-            return null;
+            Sorting(ref orders, options);
+
+            var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
+            var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count };
 
         }
 
-        public Task<OrderView> Get(long Id, CancellationToken cancellationToken = default)
+        public async virtual Task<OrderResponse> Get(long Id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+
+            // Query the order without including related products
+            var order = await dbContext.Orders
+                .FirstOrDefaultAsync(x => x.Id == Id);
+
+            var orderResponse = new OrderResponse();
+
+            if (order != null)
+            {
+                // Deserialize the JSON string to get the related products
+                orderResponse = order.MapToView2();
+                var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
+                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx); 
+                orderResponse.Product = lists;
+            }
+            else
+            {
+                throw new ValidationException("OrderEntity Not Found");
+            }
+
+            return orderResponse;
         }
+
         #endregion
 
         #region Mutations
@@ -92,7 +127,17 @@ namespace Service.Features
         #endregion
 
         #region Helpers
-
+        private void Sorting(ref IQueryable<OrderEntity> unit, TableOptions options) => unit = options.SortLabel switch
+        {
+            "City" => unit.Ordering(options, o => o.City),
+            "Region" => unit.Ordering(options, o => o.Region),
+            "Status" => unit.Ordering(options, o => o.Status),
+            "PaymentType" => unit.Ordering(options, o => o.PaymentType),
+            "Street" => unit.Ordering(options, o => o.Street),
+            "FirstName" => unit.Ordering(options, o => o.FirstName),
+            "LastName" => unit.Ordering(options, o => o.LastName),
+            _ => unit.OrderBy(o => o.Id),
+        };
         public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
         private void Reattach(OrderEntity entity, OrderView view, AppDbContext dbContext)
         {

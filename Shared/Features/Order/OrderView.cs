@@ -145,6 +145,6 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("products")]
-        public string? Product { get; set; } 
+        public List<ProductResultView> Product { get; set; } = new(); 
     }
 }
