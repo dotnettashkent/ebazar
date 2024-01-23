@@ -34,13 +34,13 @@ namespace Shared.Features
         public string BrandName { get; set; } = null!;
 
         [Column("count")]
-        public int Count { get; set; }
+        public int? Count { get; set; }
 
         [Column("max_count")]
         public int MaxCount { get; set; }
 
         [Column("info_count")]
-        public int InfoCount { get; set; }
+        public int? InfoCount { get; set; }
 
         [Column("price")]
         public decimal Price { get; set; }

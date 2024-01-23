@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240120111047_Initial")]
+    [Migration("20240123064846_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -162,6 +162,9 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Product")
                         .HasColumnType("jsonb")
                         .HasColumnName("products");
@@ -171,6 +174,8 @@ namespace Service.Data.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -326,9 +331,6 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CartEntityId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text")
@@ -371,27 +373,32 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("payment_type");
 
-                    b.Property<List<long>>("ProductIds")
-                        .IsRequired()
-                        .HasColumnType("bigint[]");
+                    b.Property<string>("Products")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("products");
 
                     b.Property<string>("Region")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("region");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("street");
 
-                    b.Property<long>("UserEntityId")
+                    b.Property<long?>("UserEntityId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("Id");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
-                    b.HasIndex("CartEntityId")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.HasIndex("CourierEntityId");
 
@@ -422,7 +429,7 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("category");
 
-                    b.Property<int>("Count")
+                    b.Property<int?>("Count")
                         .HasColumnType("integer")
                         .HasColumnName("count");
 
@@ -451,7 +458,7 @@ namespace Service.Data.Migrations
                     b.Property<long?>("FavouriteId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("InfoCount")
+                    b.Property<int?>("InfoCount")
                         .HasColumnType("integer")
                         .HasColumnName("info_count");
 
@@ -753,11 +760,17 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
                 {
+                    b.HasOne("Shared.Features.OrderEntity", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("Shared.Features.UserEntity", "User")
                         .WithOne("Cart")
                         .HasForeignKey("Shared.Features.CartEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
 
                     b.Navigation("User");
                 });
@@ -775,25 +788,13 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.OrderEntity", b =>
                 {
-                    b.HasOne("Shared.Features.CartEntity", "CartEntity")
-                        .WithOne("Order")
-                        .HasForeignKey("Shared.Features.OrderEntity", "CartEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Shared.Features.CourierEntity", null)
                         .WithMany("Orders")
                         .HasForeignKey("CourierEntityId");
 
-                    b.HasOne("Shared.Features.UserEntity", "UserEntity")
+                    b.HasOne("Shared.Features.UserEntity", null)
                         .WithMany("Orders")
-                        .HasForeignKey("UserEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartEntity");
-
-                    b.Navigation("UserEntity");
+                        .HasForeignKey("UserEntityId");
                 });
 
             modelBuilder.Entity("Shared.Features.ProductEntity", b =>
@@ -822,8 +823,6 @@ namespace Service.Data.Migrations
 
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
                 {
-                    b.Navigation("Order");
-
                     b.Navigation("Products");
                 });
 

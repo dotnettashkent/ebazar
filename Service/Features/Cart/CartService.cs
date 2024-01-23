@@ -139,16 +139,35 @@ namespace Service.Features
 
                 if (existingProduct != null)
                 {
-                    // Remove the specified quantity or the whole product from the cart
                     existingProduct.Quantity = Math.Max(0, existingProduct.Quantity - productToRemove.Quantity);
 
-                    // If the quantity becomes zero, remove the product from the cart
                     if (existingProduct.Quantity == 0)
                     {
                         cartProducts.Remove(existingProduct);
                     }
                 }
             }
+        }
+
+        public async virtual Task RemoveAll(long userId, CancellationToken cancellationToken = default)
+        {
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
+
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+
+            // Find all carts with the specified userId
+            var cartsToDelete = dbContext.Carts.Where(x => x.UserId == userId).ToList();
+
+            foreach (var cart in cartsToDelete)
+            {
+                dbContext.Remove(cart);
+            }
+
+            await dbContext.SaveChangesAsync();
         }
 
 
