@@ -586,6 +586,10 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("phone_number");
 
+                    b.Property<string>("Role")
+                        .HasColumnType("text")
+                        .HasColumnName("role");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");

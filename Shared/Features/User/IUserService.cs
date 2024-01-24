@@ -16,7 +16,7 @@ namespace Shared.Features
 
 		Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default);
 
-		Task<UserView> Login(string email, string password);
+		Task<string> Login(string phoneNumber, string password);
 
 		Task<UserView> GetByToken(string token);
 

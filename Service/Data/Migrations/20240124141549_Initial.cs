@@ -167,6 +167,7 @@ namespace Service.Data.Migrations
                     phone_number = table.Column<string>(type: "text", nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
                     gender = table.Column<int>(type: "integer", nullable: false),
+                    role = table.Column<string>(type: "text", nullable: true),
                     date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)

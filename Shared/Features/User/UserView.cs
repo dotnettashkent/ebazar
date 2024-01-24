@@ -44,7 +44,7 @@ namespace Shared.Features
 
 		[property : DataMember]
 		[JsonPropertyName("role")]
-		public Role? Role { get; set; }
+		public string Role { get; set; } = UserRole.User.ToString();
 
 		[property : DataMember] 
 		[JsonPropertyName("date_of_birth")] 

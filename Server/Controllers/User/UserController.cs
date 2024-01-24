@@ -39,7 +39,7 @@ namespace Server.Controllers.User
         }
 
         [HttpGet("login")]
-        public Task<UserView> Login( string email, string password)
+        public Task<string> Login( string email, string password)
         {
             return userService.Login(email, password);
         }

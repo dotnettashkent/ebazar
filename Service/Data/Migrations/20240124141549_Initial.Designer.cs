@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240123125640_Initial")]
+    [Migration("20240124141549_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -588,6 +588,10 @@ namespace Service.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("phone_number");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("text")
+                        .HasColumnName("role");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
