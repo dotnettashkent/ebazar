@@ -44,9 +44,15 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    app.UseDeveloperExceptionPage();
+    app.UseOpenApi();
+    app.UseSwaggerUi3();
+}
+/*else
+{
     app.UseExceptionHandler("/Error");
     app.UseHsts();
-}
+}*/
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
