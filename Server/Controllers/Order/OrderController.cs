@@ -24,6 +24,7 @@ namespace Server.Controllers
             return commander.Call(command, cancellationToken);
         }
 
+
         [HttpGet("get/all")]
         public async Task<TableResponse<OrderView>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
         {
