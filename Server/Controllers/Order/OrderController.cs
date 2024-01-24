@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Service.Features;
+﻿using Stl.CommandR;
 using Shared.Features;
-using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
-using Stl.CommandR;
+using Microsoft.AspNetCore.Mvc;
+using Shared.Infrastructures.Extensions;
 
 namespace Server.Controllers
 {
