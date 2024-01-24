@@ -6,7 +6,7 @@ namespace Service.Data
 {
 	public partial class AppDbContext
 	{
-		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
 		{
 		}
 		public virtual DbSet<AddressEntity> Addresses { get; set; }
