@@ -42,11 +42,6 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi3();
 }
-if(app.Environment.IsProduction())
-{
-    app.UseOpenApi();
-    app.UseSwaggerUi3();
-}
 else
 {
     app.UseExceptionHandler("/Error");
