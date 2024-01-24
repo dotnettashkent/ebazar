@@ -18,7 +18,7 @@ namespace Server.Controllers
             this.commander = commander;
         }
 
-        [HttpPost("")]
+        [HttpPost("create")]
         public Task Create(CreateOrderCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
