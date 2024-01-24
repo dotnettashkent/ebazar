@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Stl.CommandR;
 using Shared.Features;
-using Stl.CommandR;
+using Shared.Infrastructures;
+using Microsoft.AspNetCore.Mvc;
+using Shared.Infrastructures.Extensions;
 
 namespace Server.Controllers
 {
@@ -17,10 +18,23 @@ namespace Server.Controllers
             this.commander = commander;
         }
 
-        [HttpPost("")]
+        [HttpPost("create")]
         public Task Create(CreateOrderCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
-        }   
+        }
+
+
+        [HttpGet("get/all")]
+        public async Task<TableResponse<OrderView>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
+        {
+            return await orderServices.GetAll(options, cancellationToken);
+        }
+
+        [HttpGet("get")]
+        public async Task<OrderResponse> Get([FromQuery] long UserId, CancellationToken cancellationToken = default)
+        {
+            return await orderServices.Get(UserId, cancellationToken);
+        }
     }
 }

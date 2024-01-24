@@ -8,6 +8,9 @@ using Stl.Fusion.EntityFramework;
 using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
 using System.Net;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
@@ -33,25 +36,50 @@ namespace Service.Features
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var orders = from s in dbContext.Orders select s;
-            var ordersResponse = new List<OrderView>();
-            /*foreach (var order in orders)
+            if (!String.IsNullOrEmpty(options.Search))
             {
-                var userId = order.UserId;
-                var cart =  await cartService.GetAll(userId,cancellationToken);
-                foreach (var item in cart.Items)
-                {
-                    order.ProductIds.Add(item.Id);
-                }
-            }*/
+                orders = orders.Where(s =>
+                         s.Region.Contains(options.Search)
+                         || s.FirstName.Contains(options.Search)
+                         || s.LastName.Contains(options.Search)
+                );
+            }
 
-            return null;
+            Sorting(ref orders, options);
+
+            var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
+            var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count };
 
         }
 
-        public Task<OrderView> Get(long Id, CancellationToken cancellationToken = default)
+        public async virtual Task<OrderResponse> Get(long Id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+
+            // Query the order without including related products
+            var order = await dbContext.Orders
+                .FirstOrDefaultAsync(x => x.Id == Id);
+
+            var orderResponse = new OrderResponse();
+
+            if (order != null)
+            {
+                // Deserialize the JSON string to get the related products
+                orderResponse = order.MapToView2();
+                var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
+                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx); 
+                orderResponse.Product = lists;
+            }
+            else
+            {
+                throw new ValidationException("OrderEntity Not Found");
+            }
+
+            return orderResponse;
         }
+
         #endregion
 
         #region Mutations
@@ -62,30 +90,34 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
-            
-            var userProducts = await cartService.GetAll(command.Entity.UserId,cancellationToken);
-            foreach (var item in userProducts.Items)
-            {
-                command.Entity.ProductIds.Add(item.Id);
-            }
+
+            var userId = command.Entity.UserId;
+            var products = await cartService.GetAll(userId, cancellationToken);
+            var productResults = products.Items;
+
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var order = new OrderEntity();
-            Reattach(order,command.Entity, dbContext);
-            var sameProduct = dbContext.Products.AsQueryable();
-            foreach (var item in sameProduct)
+            var orderEntity = new OrderEntity
             {
-                foreach (var item2 in command.Entity.ProductIds)
+                Products = JsonSerializer.Serialize(productResults),
+            };
+            Reattach(orderEntity, command.Entity, dbContext);
+            dbContext.Orders.Add(orderEntity);
+            foreach (var item2 in productResults)
+            {
+                var product = dbContext.Products.SingleOrDefault(p => p.Id == item2.Id);
+                if (product != null)
                 {
-                    if (item.Id == item2)
-                    {
-                        item.InfoCount++;
-                        item.Count--;
-                    }
+                    product.Count -= item2.Quantity;
+                    product.InfoCount += item2.Quantity;
                 }
-                await dbContext.SaveChangesAsync();
             }
-            dbContext.Update(order);
+            await cartService.RemoveAll(userId, cancellationToken);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async virtual Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
 
         public async virtual Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default)
@@ -95,12 +127,23 @@ namespace Service.Features
         #endregion
 
         #region Helpers
-
+        private void Sorting(ref IQueryable<OrderEntity> unit, TableOptions options) => unit = options.SortLabel switch
+        {
+            "City" => unit.Ordering(options, o => o.City),
+            "Region" => unit.Ordering(options, o => o.Region),
+            "Status" => unit.Ordering(options, o => o.Status),
+            "PaymentType" => unit.Ordering(options, o => o.PaymentType),
+            "Street" => unit.Ordering(options, o => o.Street),
+            "FirstName" => unit.Ordering(options, o => o.FirstName),
+            "LastName" => unit.Ordering(options, o => o.LastName),
+            _ => unit.OrderBy(o => o.Id),
+        };
         public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
         private void Reattach(OrderEntity entity, OrderView view, AppDbContext dbContext)
         {
             OrderMapper.From(view, entity);
         }
+
         #endregion
 
     }

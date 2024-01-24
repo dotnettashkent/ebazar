@@ -42,6 +42,10 @@ namespace Shared.Features
 		[JsonPropertyName("gender")] 
 		public Gender? Gender { get; set; }
 
+		[property : DataMember]
+		[JsonPropertyName("role")]
+		public Role? Role { get; set; }
+
 		[property : DataMember] 
 		[JsonPropertyName("date_of_birth")] 
 		public DateTime? DateOfBirth { get; set; }

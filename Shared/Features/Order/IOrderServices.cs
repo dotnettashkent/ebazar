@@ -13,7 +13,7 @@ namespace Shared.Features
         Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 
         //[ComputeMethod]
-        Task<OrderView> Get(long Id, CancellationToken cancellationToken = default);
+        Task<OrderResponse> Get(long Id, CancellationToken cancellationToken = default);
 
         [CommandHandler]
         Task Create(CreateOrderCommand command, CancellationToken cancellationToken = default);
@@ -21,8 +21,8 @@ namespace Shared.Features
         [CommandHandler]
         Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default);
 
-        //[CommandHandler]
-        //Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default);
+        [CommandHandler]
+        Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default);
 
         Task<Unit> Invalidate() { return TaskExt.UnitTask; }
     }

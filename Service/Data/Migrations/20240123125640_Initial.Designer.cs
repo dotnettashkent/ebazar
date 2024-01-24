@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240118090804_Initial")]
+    [Migration("20240123125640_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -165,10 +165,9 @@ namespace Service.Data.Migrations
                     b.Property<long?>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<List<long>>("ProductIds")
-                        .IsRequired()
-                        .HasColumnType("bigint[]")
-                        .HasColumnName("product_ids");
+                    b.Property<string>("Product")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("products");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint")
@@ -374,14 +373,18 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("payment_type");
 
-                    b.Property<List<long>>("ProductIds")
-                        .IsRequired()
-                        .HasColumnType("bigint[]");
+                    b.Property<string>("Products")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("products");
 
                     b.Property<string>("Region")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("region");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.Property<string>("Street")
                         .IsRequired()
@@ -390,6 +393,10 @@ namespace Service.Data.Migrations
 
                     b.Property<long?>("UserEntityId")
                         .HasColumnType("bigint");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
@@ -422,7 +429,7 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("category");
 
-                    b.Property<int>("Count")
+                    b.Property<int?>("Count")
                         .HasColumnType("integer")
                         .HasColumnName("count");
 
@@ -451,7 +458,7 @@ namespace Service.Data.Migrations
                     b.Property<long?>("FavouriteId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("InfoCount")
+                    b.Property<int?>("InfoCount")
                         .HasColumnType("integer")
                         .HasColumnName("info_count");
 
@@ -754,7 +761,7 @@ namespace Service.Data.Migrations
             modelBuilder.Entity("Shared.Features.CartEntity", b =>
                 {
                     b.HasOne("Shared.Features.OrderEntity", "Order")
-                        .WithMany("CartEntity")
+                        .WithMany()
                         .HasForeignKey("OrderId");
 
                     b.HasOne("Shared.Features.UserEntity", "User")
@@ -785,11 +792,9 @@ namespace Service.Data.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("CourierEntityId");
 
-                    b.HasOne("Shared.Features.UserEntity", "UserEntity")
+                    b.HasOne("Shared.Features.UserEntity", null)
                         .WithMany("Orders")
                         .HasForeignKey("UserEntityId");
-
-                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("Shared.Features.ProductEntity", b =>
@@ -829,11 +834,6 @@ namespace Service.Data.Migrations
             modelBuilder.Entity("Shared.Features.FavouriteEntity", b =>
                 {
                     b.Navigation("ProductEntity");
-                });
-
-            modelBuilder.Entity("Shared.Features.OrderEntity", b =>
-                {
-                    b.Navigation("CartEntity");
                 });
 
             modelBuilder.Entity("Shared.Features.UserEntity", b =>

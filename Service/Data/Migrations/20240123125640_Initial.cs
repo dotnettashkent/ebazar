@@ -246,6 +246,7 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
                     city = table.Column<string>(type: "text", nullable: false),
                     region = table.Column<string>(type: "text", nullable: false),
                     street = table.Column<string>(type: "text", nullable: false),
@@ -256,9 +257,10 @@ namespace Service.Data.Migrations
                     first_name = table.Column<string>(type: "text", nullable: false),
                     last_name = table.Column<string>(type: "text", nullable: false),
                     extra_phone_number = table.Column<string>(type: "text", nullable: false),
-                    ProductIds = table.Column<List<long>>(type: "bigint[]", nullable: false),
-                    UserEntityId = table.Column<long>(type: "bigint", nullable: true),
-                    CourierEntityId = table.Column<long>(type: "bigint", nullable: true)
+                    status = table.Column<string>(type: "text", nullable: true),
+                    products = table.Column<string>(type: "jsonb", nullable: true),
+                    CourierEntityId = table.Column<long>(type: "bigint", nullable: true),
+                    UserEntityId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -281,7 +283,7 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    product_ids = table.Column<List<long>>(type: "bigint[]", nullable: false),
+                    products = table.Column<string>(type: "jsonb", nullable: true),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
                     OrderId = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -312,9 +314,9 @@ namespace Service.Data.Migrations
                     description_uz = table.Column<string>(type: "text", nullable: false),
                     description_ru = table.Column<string>(type: "text", nullable: false),
                     brand_name = table.Column<string>(type: "text", nullable: false),
-                    count = table.Column<int>(type: "integer", nullable: false),
+                    count = table.Column<int>(type: "integer", nullable: true),
                     max_count = table.Column<int>(type: "integer", nullable: false),
-                    info_count = table.Column<int>(type: "integer", nullable: false),
+                    info_count = table.Column<int>(type: "integer", nullable: true),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
                     discount_price = table.Column<decimal>(type: "numeric", nullable: false),
                     discount_percent = table.Column<decimal>(type: "numeric", nullable: false),

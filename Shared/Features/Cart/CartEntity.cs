@@ -10,14 +10,16 @@ namespace Shared.Features
 		[Column("id")]
 		public long Id { get; set; }
 
-		[Column("product_ids")]
-		public List<long> ProductIds { get; set; } = new List<long>();
+		[Column("products")]
+		public string? Product { get; set; }
 
 		[Column("user_id")]
 		public long UserId { get; set; }
 
 
 		public virtual ICollection<ProductEntity> Products { get; set; } = new List<ProductEntity>();
+		
+		
 		public virtual UserEntity? User { get; set; }
 		public virtual OrderEntity? Order { get; set; }
 	}
