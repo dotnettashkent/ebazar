@@ -1,4 +1,5 @@
 ﻿using MemoryPack;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using Shared.Infrastructures;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
@@ -77,6 +78,7 @@ namespace Shared.Features
         [JsonIgnore]
         [property: DataMember]
         [JsonPropertyName("products")]
+
         public List<ProductResultView> Product { get; set; } = new();
 
     }

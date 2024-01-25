@@ -60,11 +60,11 @@ namespace Service.Features
 
             // Query the order without including related products
             var order = await dbContext.Orders
-                .FirstOrDefaultAsync(x => x.Id == Id);
+                .FirstOrDefaultAsync(x => x.UserId == Id);
 
             var orderResponse = new OrderResponse();
 
-            if (order != null)
+            if (order != null) 
             {
                 // Deserialize the JSON string to get the related products
                 orderResponse = order.MapToView2();
@@ -117,7 +117,14 @@ namespace Service.Features
 
         public async virtual Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
+
+            var userId = command.Entity.UserId;
+            var order = await Get(userId, cancellationToken);
         }
 
         public async virtual Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default)

@@ -44,13 +44,13 @@ namespace Shared.Features
 
 		[property : DataMember]
 		[JsonPropertyName("role")]
-		public string Role { get; set; } = UserRole.User.ToString();
+		public string? Role { get; set; }
 
 		[property : DataMember] 
 		[JsonPropertyName("date_of_birth")] 
 		public DateTime? DateOfBirth { get; set; }
 
-		public virtual CartView CartView { get; set; } = new CartView();
+		public virtual CartView? CartView { get; set; }
 		public virtual FavouriteView? FavouritesView { get; set; }
 		public virtual ICollection<OrderView>? OrdersView { get; set; } = new List<OrderView>();
 		public virtual ICollection<AddressView> Addresses {  get; set; } = new List<AddressView>();  
@@ -60,6 +60,7 @@ namespace Shared.Features
     [ParameterComparer(typeof(ByValueParameterComparer))]
     public partial class UserResultView
 	{
+		[JsonIgnore]
         [property: DataMember] public long Id { get; set; }
         [property: DataMember] public string FirstName { get; set; } = null!;
         [property: DataMember] public string LastName { get; set; } = null!;
