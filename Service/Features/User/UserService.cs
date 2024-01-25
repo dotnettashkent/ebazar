@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Service.Features.User
 {
@@ -192,7 +193,8 @@ namespace Service.Features.User
 		{
 			List<Claim> claims = new List<Claim>()
 			{
-				new Claim(ClaimTypes.Name, phoneNumber)
+				new Claim(ClaimTypes.Name, phoneNumber),
+
 			};
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JwtSettings:SecretKey").Value!));
@@ -212,21 +214,39 @@ namespace Service.Features.User
 				);
 
 			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-			return jwt;
+			return "Bearer "+jwt;
 		}
 
         public async virtual Task<UserView> GetByToken(string token)
         {
-            throw new NotImplementedException();
+			var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value;
+
+			var phoneNumber = GetPhoneNumber(token);
+
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+
+            var user = await dbContext.UsersEntities
+                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+
+            return user == null ? throw new ValidationException("User was not found") : user.MapToView();
         }
 
+		private string GetPhoneNumber(string token)
+		{
+            var jwtEncodedString = token.Substring(7);
+            
+			var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+
+			if (json == null)
+				throw new Exception("Payload is null");
+			else
+			{
+				return json?.ToString() ?? string.Empty;
+            }
+        }
         #endregion
-
-
-
-
-
-
 
     }
 }

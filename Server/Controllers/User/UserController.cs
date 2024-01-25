@@ -44,6 +44,12 @@ namespace Server.Controllers.User
             return userService.Login(email, password);
         }
 
+        [HttpGet("return/user")]
+        public async Task<UserView> Return(string token)
+        {
+            return await userService.GetByToken(token);
+        }
+
         [HttpGet("get/all")]
         public async Task<TableResponse<UserView>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
         {
