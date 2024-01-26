@@ -23,7 +23,7 @@ namespace Service.Data
 		{
 			_serviceScopeFactory = serviceScopeFactory;
 			_context = context.CreateDbContext();
-		}
+		}	
 		
 		// Stl.Fusion.EntityFramework tables
 		public DbSet<DbUser<string>> StlFusionUsers { get; protected set; } = null!;

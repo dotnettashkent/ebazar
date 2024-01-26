@@ -36,5 +36,12 @@ namespace Server.Controllers
         {
             return await orderServices.Get(UserId, cancellationToken);
         }
+
+        [HttpPut("update")]
+        public Task Update(UpdateOrderCommand command, CancellationToken cancellationToken)
+        {
+            return commander.Call(command, cancellationToken);
+        }
+
     }
 }

@@ -17,16 +17,9 @@ namespace Service.Features.Order
 
        
         private static partial OrderView To(this OrderEntity src);
-        
         private static partial OrderResponse To2(this OrderEntity src);
-
-
         private static partial List<OrderView> ToList(this List<OrderEntity> src);
-
-        
         private static partial OrderEntity From(this OrderView view);
-        
-        
         public static partial void From(OrderView view, OrderEntity entity);
         #endregion
     }

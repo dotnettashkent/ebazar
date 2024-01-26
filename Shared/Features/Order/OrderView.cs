@@ -71,9 +71,8 @@ namespace Shared.Features
         [JsonPropertyName("extra_phone_number")]
         public string? ExtraPhoneNumber { get; set; }
 
-        [JsonIgnore]
         [property: DataMember]
-        public string Status { get; set; } = OrderStatus.Pending.ToString();
+        public string? Status { get; set; }
 
         [JsonIgnore]
         [property: DataMember]
