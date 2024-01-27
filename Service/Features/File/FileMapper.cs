@@ -13,7 +13,6 @@ namespace Service.Features
 		#endregion
 
 		#region Internal
-
 		private static partial FileView To(this FileEntity src);
 		private static partial List<FileView> ToList(this List<FileEntity> src);
 		private static partial FileEntity From(this FileView FileView);
