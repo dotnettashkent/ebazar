@@ -15,15 +15,17 @@ namespace Service.Features
 	{
 		#region Initialize
 		private readonly DbHub<AppDbContext> dbHub;
+		private readonly IFileService fileService;
 
-		public ProductService(DbHub<AppDbContext> dbHub)
-		{
-			this.dbHub = dbHub;
-		}
-		#endregion
+        public ProductService(DbHub<AppDbContext> dbHub, IFileService fileService)
+        {
+            this.dbHub = dbHub;
+            this.fileService = fileService;
+        }
+        #endregion
 
-		#region Queries
-		public async virtual Task<TableResponse<ProductResultView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+        #region Queries
+        public async virtual Task<TableResponse<ProductResultView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
@@ -74,6 +76,58 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
+
+            if (command.Entity.ImageOne != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageOne);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoOne = fileResult.Item2;
+                }
+            }
+            if (command.Entity.ImageTwo != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageTwo);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoTwo = fileResult.Item2;
+                }
+            }
+            if (command.Entity.ImageThree != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageThree);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoThree = fileResult.Item2;
+                }
+            }
+
+            if (command.Entity.ImageFour != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageFour);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoFour = fileResult.Item2;
+                }
+            }
+
+            if (command.Entity.ImageFive != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageFive);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoFive = fileResult.Item2;
+                }
+            }
+            if (command.Entity.ImageSix != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageSix);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoSix = fileResult.Item2;
+                }
+            }
+           
 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             ProductEntity entity = new ProductEntity();
@@ -146,9 +200,6 @@ namespace Service.Features
 			"CreatedAt" => offering.Ordering(options, o => o.CreatedAt),
 			"IsActive" => offering.Ordering(options, o => o.IsActive),
 
-			"IsPopular" => offering.Ordering(options, o => o.IsPopular),
-			"IsHoliday" => offering.Ordering(options, o => o.IsHoliday),
-			"IsBigSale" => offering.Ordering(options, o => o.IsBigSale),
 			_ => offering.OrderByDescending(o => o.Id)
 		};
 		#endregion

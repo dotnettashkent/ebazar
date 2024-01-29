@@ -1,5 +1,7 @@
 ﻿using MemoryPack;
+using Microsoft.AspNetCore.Http;
 using Stl.Fusion.Blazor;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -62,9 +64,67 @@ namespace Shared.Features
         [JsonPropertyName("is_delivery_free")]
         public bool IsFreeDelivery { get; set; } = false;
 
-        [property : DataMember] 
-        [JsonPropertyName("photo")]
-        public string? Photo { get; set; }
+        [property: DataMember]
+        [JsonPropertyName("photo_1")]
+        public string? PhotoOne { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_2")]
+        public string? PhotoTwo { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_3")]
+        public string? PhotoThree { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_4")]
+        public string? PhotoFour { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_5")]
+        public string? PhotoFive { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_6")]
+        public string? PhotoSix { get; set; }
+
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageOne { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageTwo { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageThree { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageFour { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageFive { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageSix { get; set; }
+
 
         [property : DataMember] 
         [JsonPropertyName("tag")]
@@ -82,19 +142,7 @@ namespace Shared.Features
         [JsonPropertyName("is_active")]
         public bool IsActive { get; set; } = false;
 
-        [property : DataMember] 
-        [JsonPropertyName("is_popular")]
-        public bool IsPopular { get; set; } = false;
-
-        [property : DataMember] 
-        [JsonPropertyName("is_holiday")]
-        public bool IsHoliday { get; set; } = false;
-
-        [property : DataMember] 
-        [JsonPropertyName("is_big_sale")]
-        public bool IsBigSale { get; set; } = false;
-
-
+        
 		[property : DataMember] 
         [JsonPropertyName("category")]
         public string? Category { get; set; }
@@ -185,8 +233,65 @@ namespace Shared.Features
         public bool IsFreeDelivery { get; set; } = false;
 
         [property: DataMember]
-        [JsonPropertyName("photo")]
-        public string? Photo { get; set; }
+        [JsonPropertyName("photo_1")]
+        public string? PhotoOne { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_2")]
+        public string? PhotoTwo { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_3")]
+        public string? PhotoThree { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_4")]
+        public string? PhotoFour { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_5")]
+        public string? PhotoFive { get; set; }
+
+        [property: DataMember]
+        [JsonPropertyName("photo_6")]
+        public string? PhotoSix { get; set; }
+
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageOne { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageTwo { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageThree { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageFour { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageFive { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [property: DataMember]
+        [MemoryPackAllowSerialize]
+        public IFormFile? ImageSix { get; set; }
 
         [property: DataMember]
         [JsonPropertyName("tag")]
@@ -204,17 +309,7 @@ namespace Shared.Features
         [JsonPropertyName("is_active")]
         public bool IsActive { get; set; } = false;
 
-        [property: DataMember]
-        [JsonPropertyName("is_popular")]
-        public bool IsPopular { get; set; } = false;
-
-        [property: DataMember]
-        [JsonPropertyName("is_holiday")]
-        public bool IsHoliday { get; set; } = false;
-
-        [property: DataMember]
-        [JsonPropertyName("is_big_sale")]
-        public bool IsBigSale { get; set; } = false;
+        
 
 
         [property: DataMember]
