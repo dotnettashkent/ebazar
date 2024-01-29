@@ -20,6 +20,7 @@ namespace Shared.Features
 		[property : DataMember] 
 		[JsonPropertyName("photo")]
 		[MemoryPackAllowSerialize]
+		[JsonIgnore]
 		public IFormFile? Photo { get; set; }
 
         [property: DataMember] [JsonPropertyName("brand_image")] public string? ImageOne { get; set; }
