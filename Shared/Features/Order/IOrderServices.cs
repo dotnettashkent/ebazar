@@ -23,6 +23,9 @@ namespace Shared.Features
 
         [CommandHandler]
         Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default);
+        
+        //[CommandHandler]
+        //Task UpdateItem(UpdateItemOrderCommand command, CancellationToken cancellationToken = default);
 
         Task<Unit> Invalidate() { return TaskExt.UnitTask; }
     }

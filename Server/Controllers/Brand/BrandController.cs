@@ -21,7 +21,7 @@ namespace Server.Controllers.Brand
 		}
 
 		[HttpPost("create")]
-		public Task Create([FromBody] CreateBrandCommand command, CancellationToken cancellationToken)
+		public Task Create([FromForm] CreateBrandCommand command, CancellationToken cancellationToken)
 		{
 			return commander.Call(command, cancellationToken);
 		}

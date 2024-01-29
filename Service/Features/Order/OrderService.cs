@@ -3,13 +3,12 @@ using Stl.Fusion;
 using Service.Data;
 using Shared.Features;
 using System.Reactive;
+using System.Text.Json;
+using Shared.Infrastructures;
 using Service.Features.Order;
 using Stl.Fusion.EntityFramework;
-using Shared.Infrastructures.Extensions;
-using Shared.Infrastructures;
-using System.Net;
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructures.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
@@ -60,13 +59,12 @@ namespace Service.Features
 
             // Query the order without including related products
             var order = await dbContext.Orders
-                .FirstOrDefaultAsync(x => x.Id == Id);
+                .FirstOrDefaultAsync(x => x.UserId == Id);
 
             var orderResponse = new OrderResponse();
 
-            if (order != null)
+            if (order != null) 
             {
-                // Deserialize the JSON string to get the related products
                 orderResponse = order.MapToView2();
                 var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
                 var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx); 
@@ -94,11 +92,12 @@ namespace Service.Features
             var userId = command.Entity.UserId;
             var products = await cartService.GetAll(userId, cancellationToken);
             var productResults = products.Items;
-
+            string status = command.Entity.Status = OrderStatus.Pending.ToString().ToLower();
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var orderEntity = new OrderEntity
             {
                 Products = JsonSerializer.Serialize(productResults),
+                Status = status
             };
             Reattach(orderEntity, command.Entity, dbContext);
             dbContext.Orders.Add(orderEntity);
@@ -117,9 +116,37 @@ namespace Service.Features
 
         public async virtual Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
 
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+
+            var existingOrder = await dbContext.Orders
+                .FirstOrDefaultAsync(x => x.UserId == command.Entity.UserId);
+
+            if (existingOrder == null)
+            {
+                throw new ValidationException("OrderEntity Not Found");
+            }
+
+            // Update properties other than the key
+            existingOrder.City = command.Entity.City;
+            existingOrder.Region = command.Entity.Region;
+            existingOrder.Street = command.Entity.Street;
+            existingOrder.HomeNumber = command.Entity.HomeNumber;
+            existingOrder.CommentForCourier = command.Entity.CommentForCourier;
+            existingOrder.DeliveryTime = command.Entity.DeliveryTime;
+            existingOrder.PaymentType = command.Entity.PaymentType;
+            existingOrder.FirstName = command.Entity.FirstName;
+            existingOrder.LastName = command.Entity.LastName;
+            existingOrder.ExtraPhoneNumber = command.Entity.ExtraPhoneNumber;
+            existingOrder.Status = command.Entity.Status;
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
         public async virtual Task Delete(DeleteOrderCommand command, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
@@ -143,7 +170,6 @@ namespace Service.Features
         {
             OrderMapper.From(view, entity);
         }
-
         #endregion
 
     }

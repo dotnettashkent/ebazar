@@ -9,6 +9,13 @@ using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
 using System.ComponentModel.DataAnnotations;
+using BCrypt.Net;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Service.Features.User
 {
@@ -18,10 +25,12 @@ namespace Service.Features.User
 
 		private readonly DbHub<AppDbContext> dbHub;
 		private readonly IProductService productService;
-        public UserService(DbHub<AppDbContext> dbHub, IProductService productService)
+		private readonly IConfiguration configuration;
+        public UserService(DbHub<AppDbContext> dbHub, IProductService productService, IConfiguration configuration)
         {
             this.dbHub = dbHub;
             this.productService = productService;
+            this.configuration = configuration;
         }
         #endregion
 
@@ -86,18 +95,20 @@ namespace Service.Features.User
 				return;
 			}
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			var exists = dbContext.UsersEntities.FirstOrDefaultAsync(x => x.Email == command.Entity.Email).Result;
+			var exists = await dbContext.UsersEntities.FirstOrDefaultAsync(x => x.PhoneNumber == command.Entity.PhoneNumber);
 			if (exists == null)
 			{
-				UserEntity goldnumber = new UserEntity();
-				Reattach(goldnumber, command.Entity, dbContext);
+				string passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Entity.Password);
+				command.Entity.Password = passwordHash;
+				UserEntity user = new UserEntity();
+				Reattach(user, command.Entity, dbContext);
 
-				dbContext.Update(goldnumber);
+				dbContext.Update(user);
 				await dbContext.SaveChangesAsync(cancellationToken);
 			}
 			else
 			{
-				throw new Exception("This email already exists");
+				throw new Exception("This phone number already exists");
 			}
 		}
 		public async virtual Task Delete(DeleteUserCommand command, CancellationToken cancellationToken = default)
@@ -154,33 +165,88 @@ namespace Service.Features.User
 			_ => unit.OrderBy(o => o.CreatedAt),
 		};
 
-        public async virtual Task<UserView> Login(string email, string password)
+        public async virtual Task<string> Login(string phoneNumber, string password)
         {
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var user = await dbContext.UsersEntities
-				.Where(x => x.Email == email && x.Password == password)
-				.Include(x => x.Favourite)
-				.Include(x => x.Cart)
-				.Include(x => x.Orders)
-				.Include(x => x.Addresses)
-				.FirstOrDefaultAsync();
+                .Where(x => x.PhoneNumber == phoneNumber)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new ValidationException("User was not found");
+            }
+
+            if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                string token = GenerateToken(phoneNumber);
+				return token;
+            }
+            else
+            {
+                throw new ValidationException("Password is incorrect");
+            }
+        }
+
+		private string GenerateToken(string phoneNumber)
+		{
+			List<Claim> claims = new List<Claim>()
+			{
+				new Claim(ClaimTypes.Name, phoneNumber),
+
+			};
+
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JwtSettings:SecretKey").Value!));
+
+            var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value!;
+            Console.WriteLine($"Secret Key: {secretKey}");
+            Console.WriteLine($"Key Size: {Encoding.UTF8.GetBytes(secretKey).Length * 8} bits");
+
+
+
+            var credentials = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
+
+			var token = new JwtSecurityToken(
+					claims: claims,
+					expires: DateTime.UtcNow.AddDays(10),
+					signingCredentials: credentials
+				);
+
+			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+			return "Bearer "+jwt;
+		}
+
+        public async virtual Task<UserView> GetByToken(string token)
+        {
+			var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value;
+
+			var phoneNumber = GetPhoneNumber(token);
+
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+
+            var user = await dbContext.UsersEntities
+                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
 
             return user == null ? throw new ValidationException("User was not found") : user.MapToView();
         }
 
-        public async virtual Task<UserView> GetByToken(string token)
-        {
-            throw new NotImplementedException();
+		private string GetPhoneNumber(string token)
+		{
+            var jwtEncodedString = token.Substring(7);
+            
+			var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+
+			if (json == null)
+				throw new Exception("Payload is null");
+			else
+			{
+				return json?.ToString() ?? string.Empty;
+            }
         }
-
         #endregion
-
-
-
-
-
-
 
     }
 }

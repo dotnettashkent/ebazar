@@ -1,6 +1,6 @@
 ﻿namespace Shared.Infrastructures
 {
-    public enum Role
+    public enum UserRole
     {
         User,
         Admin
