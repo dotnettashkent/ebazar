@@ -15,15 +15,17 @@ namespace Service.Features
 	{
 		#region Initialize
 		private readonly DbHub<AppDbContext> dbHub;
+		private readonly IFileService fileService;
 
-		public BrandService(DbHub<AppDbContext> dbHub)
-		{
-			this.dbHub = dbHub;
-		}
-		#endregion
-		#region Queries
+        public BrandService(DbHub<AppDbContext> dbHub, IFileService fileService)
+        {
+            this.dbHub = dbHub;
+            this.fileService = fileService;
+        }
+        #endregion
+        #region Queries
 
-		public async virtual Task<TableResponse<BrandView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+        public async virtual Task<TableResponse<BrandView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
 			await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
@@ -63,7 +65,14 @@ namespace Service.Features
 				_ = await Invalidate();
 				return;
 			}
-
+			if(command.Entity.Photo != null)
+			{
+				var fileResult = await fileService.SaveImage(command.Entity.Photo);
+				if (fileResult.Item1 == 1)
+				{
+					command.Entity.ImageOne = fileResult.Item2;
+				}
+			}
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 			BrandEntity category = new BrandEntity();
 			Reattach(category, command.Entity, dbContext);
@@ -83,6 +92,7 @@ namespace Service.Features
 			var brand = await dbContext.Brands
 			.FirstOrDefaultAsync(x => x.Id == command.Id);
 			if (brand == null) throw new ValidationException("BrandEntity Not Found");
+			await fileService.DeleteImage(brand.ImageOne);
 			dbContext.Remove(brand);
 			await dbContext.SaveChangesAsync();
 		}

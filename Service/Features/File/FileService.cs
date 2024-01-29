@@ -1,139 +1,70 @@
-﻿using Stl.Async;
-using Stl.Fusion;
-using Service.Data;
-using Shared.Features;
-using System.Reactive;
-using Shared.Infrastructures;
-using Stl.Fusion.EntityFramework;
+﻿using Shared.Features;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructures.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
-	public class FileService : IFileService
-	{
-		#region Initialize
-		private readonly DbHub<AppDbContext> _dbHub;
+    public class FileService : IFileService
+    {
+        private IWebHostEnvironment environment;
+        public FileService(IWebHostEnvironment env)
+        {
+            this.environment = env;
+        }
 
-		public FileService(DbHub<AppDbContext> dbHub)
-		{
-			_dbHub = dbHub;
-		}
-		#endregion
-		#region Queries
-		[ComputeMethod]
-		public async virtual Task<TableResponse<FileView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
-		{
-			await Invalidate();
-			var dbContext = _dbHub.CreateDbContext();
-			await using var _ = dbContext.ConfigureAwait(false);
-			var file = from s in dbContext.Files select s;
+        public async virtual Task<Tuple<int, string>> SaveImage(IFormFile imageFile)
+        {
+            try
+            {
+                var contentPath = this.environment.ContentRootPath;
+                // path = "c://projects/productminiapi/uploads" ,not exactly something like that
+                var path = Path.Combine(contentPath, "Uploads");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
 
-			if (!String.IsNullOrEmpty(options.Search))
-			{
-				file = file.Where(s =>
-						 s.Name.Contains(options.Search)
-						|| s.Extension != null && s.Extension.Contains(options.Search)
-						|| s.Path != null && s.Path.Contains(options.Search)
-				);
-			}
+                // Check the allowed extenstions
+                var ext = Path.GetExtension(imageFile.FileName);
+                var allowedExtensions = new string[] { ".jpg", ".png", ".jpeg" };
+                if (!allowedExtensions.Contains(ext))
+                {
+                    string msg = string.Format("Only {0} extensions are allowed", string.Join(",", allowedExtensions));
+                    return new Tuple<int, string>(0, msg);
+                }
+                string uniqueString = Guid.NewGuid().ToString();
+                // we are trying to create a unique filename here
+                var newFileName = uniqueString + ext;
+                var fileWithPath = Path.Combine(path, newFileName);
+                var stream = new FileStream(fileWithPath, FileMode.Create);
+                imageFile.CopyTo(stream);
+                stream.Close();
+                return new Tuple<int, string>(1, newFileName);
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<int, string>(0, "Error has occured");
+            }
+        }
 
-			Sorting(ref file, options);
-
-			var count = await file.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
-			var items = await file.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
-			return new TableResponse<FileView>() { Items = items.MapToViewList(), TotalItems = count };
-		}
-
-		[ComputeMethod]
-		public async virtual Task<FileView> Get(long Id, CancellationToken cancellationToken = default)
-		{
-			var dbContext = _dbHub.CreateDbContext();
-			await using var _ = dbContext.ConfigureAwait(false);
-			var file = await dbContext.Files
-			.FirstOrDefaultAsync(x => x.Id == Id);
-
-			return file == null ? throw new ValidationException("FileEntity Not Found") : file.MapToView();
-		}
-
-		#endregion
-		#region Mutations
-		public async virtual Task Create(CreateFileCommand command, CancellationToken cancellationToken = default)
-		{
-			if (Computed.IsInvalidating())
-			{
-				_ = await Invalidate();
-				return;
-			}
-
-			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
-			FileEntity file = new FileEntity();
-			Reattach(file, command.Entity, dbContext);
-
-			dbContext.Update(file);
-			await dbContext.SaveChangesAsync(cancellationToken);
-
-		}
-
-
-		public async virtual Task Delete(DeleteFileCommand command, CancellationToken cancellationToken = default)
-		{
-			if (Computed.IsInvalidating())
-			{
-				_ = await Invalidate();
-				return;
-			}
-			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
-			var file = await dbContext.Files
-			.FirstOrDefaultAsync(x => x.Id == command.Id);
-			if (file == null) throw new ValidationException("FileEntity Not Found");
-			dbContext.Remove(file);
-			await dbContext.SaveChangesAsync(cancellationToken);
-		}
-
-
-		public async virtual Task Update(UpdateFileCommand command, CancellationToken cancellationToken = default)
-		{
-			if (Computed.IsInvalidating())
-			{
-				_ = await Invalidate();
-				return;
-			}
-			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
-			var file = await dbContext.Files
-			.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
-
-			if (file == null) throw new ValidationException("FileEntity Not Found");
-
-			Reattach(file, command.Entity, dbContext);
-
-			await dbContext.SaveChangesAsync(cancellationToken);
-		}
-		#endregion
-
-		[ComputeMethod]
-		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
-
-		private void Reattach(FileEntity file, FileView fileView, AppDbContext dbContext)
-		{
-			FileMapper.From(fileView, file);
-
-
-
-		}
-
-		private void Sorting(ref IQueryable<FileEntity> file, TableOptions options) => file = options.SortLabel switch
-		{
-			"Name" => file.Ordering(options, o => o.Name),
-			"FileId" => file.Ordering(options, o => o.FileId),
-			"Extension" => file.Ordering(options, o => o.Extension),
-			"Path" => file.Ordering(options, o => o.Path),
-			"Size" => file.Ordering(options, o => o.Size),
-			"Type" => file.Ordering(options, o => o.Type),
-			"Id" => file.Ordering(options, o => o.Id),
-			_ => file.OrderBy(o => o.Id),
-
-		};
-	}
+        public async virtual Task<bool> DeleteImage(string imageFileName)
+        {
+            try
+            {
+                var wwwPath = this.environment.WebRootPath;
+                var path = Path.Combine(wwwPath, "Uploads\\", imageFileName);
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+    }
 }

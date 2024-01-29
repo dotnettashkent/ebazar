@@ -20,6 +20,6 @@ namespace Shared.Features
 		public string Link { get; set; } = null!;
 
 		[Column("photo")]
-		public FileEntity? Photo { get; set; }
+		public string? ImageOne { get; set; }
 	}
 }

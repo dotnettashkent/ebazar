@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240125044251_Initial")]
+    [Migration("20240129061735_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -130,6 +130,10 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("ImageOne")
+                        .HasColumnType("text")
+                        .HasColumnName("photo");
+
                     b.Property<string>("IsPopular")
                         .IsRequired()
                         .HasColumnType("text")
@@ -143,10 +147,6 @@ namespace Service.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<string>("Photo")
-                        .HasColumnType("text")
-                        .HasColumnName("photo");
 
                     b.HasKey("Id");
 
