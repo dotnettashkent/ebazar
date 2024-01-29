@@ -17,15 +17,15 @@ namespace Service.Features
         {
             try
             {
-                var contentPath = this.environment.ContentRootPath;
-                // path = "c://projects/productminiapi/uploads" ,not exactly something like that
-                var path = Path.Combine(contentPath, "Uploads");
-                if (!Directory.Exists(path))
+                var uploadsFolder = Path.Combine(this.environment.WebRootPath, "Uploads");
+
+                // Ensure "Uploads" folder exists
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(uploadsFolder);
                 }
 
-                // Check the allowed extenstions
+                // Check the allowed extensions
                 var ext = Path.GetExtension(imageFile.FileName);
                 var allowedExtensions = new string[] { ".jpg", ".png", ".jpeg" };
                 if (!allowedExtensions.Contains(ext))
@@ -33,20 +33,26 @@ namespace Service.Features
                     string msg = string.Format("Only {0} extensions are allowed", string.Join(",", allowedExtensions));
                     return new Tuple<int, string>(0, msg);
                 }
+
                 string uniqueString = Guid.NewGuid().ToString();
-                // we are trying to create a unique filename here
+                // Create a unique filename here
                 var newFileName = uniqueString + ext;
-                var fileWithPath = Path.Combine(path, newFileName);
-                var stream = new FileStream(fileWithPath, FileMode.Create);
-                imageFile.CopyTo(stream);
-                stream.Close();
+
+                var filePath = Path.Combine(uploadsFolder, newFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
                 return new Tuple<int, string>(1, newFileName);
             }
             catch (Exception ex)
             {
-                return new Tuple<int, string>(0, "Error has occured");
+                return new Tuple<int, string>(0, "Error has occurred");
             }
         }
+
 
         public async virtual Task<bool> DeleteImage(string imageFileName)
         {
