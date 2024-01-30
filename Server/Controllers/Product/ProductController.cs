@@ -20,7 +20,7 @@ namespace Server.Controllers.Product
         }
 
         [HttpPost("create")]
-        public Task Create([FromBody] CreateProductCommand command, CancellationToken cancellationToken)
+        public Task Create([FromForm] CreateProductCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }

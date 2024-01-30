@@ -57,8 +57,23 @@ namespace Shared.Features
         [Column("is_delivery_free")]
         public bool IsDeliveryFree { get; set; }
 
-        [Column("photo")]
-        public string Photo { get; set; } = null!;
+        [Column("photo_1")]
+        public string? PhotoOne { get; set; }
+
+        [Column("photo_2")]
+        public string? PhotoTwo { get; set; }
+
+        [Column("photo_3")]
+        public string? PhotoThree { get; set; }
+
+        [Column("photo_4")]
+        public string? PhotoFour { get; set; }
+
+        [Column("photo_5")]
+        public string? PhotoFive { get; set; }
+
+        [Column("photo_6")]
+        public string? PhotoSix { get; set; }
 
         [Column("tag")]
         public string? Tag {  get; set; }
@@ -71,15 +86,6 @@ namespace Shared.Features
 
         [Column("is_active")]
         public bool IsActive { get; set; }
-
-        [Column("is_popular")]
-        public bool IsPopular { get; set; }
-
-        [Column("is_holiday")]
-        public bool IsHoliday { get; set; }
-
-        [Column("is_big_sale")]
-        public bool IsBigSale { get; set; }
 
         [Column("category")]
         public string Category { get; set; } = null!;

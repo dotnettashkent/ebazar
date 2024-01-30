@@ -463,21 +463,9 @@ namespace Service.Data.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
 
-                    b.Property<bool>("IsBigSale")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_big_sale");
-
                     b.Property<bool>("IsDeliveryFree")
                         .HasColumnType("boolean")
                         .HasColumnName("is_delivery_free");
-
-                    b.Property<bool>("IsHoliday")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_holiday");
-
-                    b.Property<bool>("IsPopular")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_popular");
 
                     b.Property<int>("MaxCount")
                         .HasColumnType("integer")
@@ -493,10 +481,29 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name_uz");
 
-                    b.Property<string>("Photo")
-                        .IsRequired()
+                    b.Property<string>("PhotoFive")
                         .HasColumnType("text")
-                        .HasColumnName("photo");
+                        .HasColumnName("photo_5");
+
+                    b.Property<string>("PhotoFour")
+                        .HasColumnType("text")
+                        .HasColumnName("photo_4");
+
+                    b.Property<string>("PhotoOne")
+                        .HasColumnType("text")
+                        .HasColumnName("photo_1");
+
+                    b.Property<string>("PhotoSix")
+                        .HasColumnType("text")
+                        .HasColumnName("photo_6");
+
+                    b.Property<string>("PhotoThree")
+                        .HasColumnType("text")
+                        .HasColumnName("photo_3");
+
+                    b.Property<string>("PhotoTwo")
+                        .HasColumnType("text")
+                        .HasColumnName("photo_2");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric")

@@ -22,7 +22,7 @@ namespace Server.Controllers.Banner
         }
 
         [HttpPost("create")]
-        public Task Create([FromBody] CreateBannerCommand command, CancellationToken cancellationToken)
+        public Task Create([FromForm] CreateBannerCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }

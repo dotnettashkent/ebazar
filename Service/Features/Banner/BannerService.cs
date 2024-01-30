@@ -15,15 +15,17 @@ public class BannerService : IBannerService
 {
 	#region Initialize
 	private readonly DbHub<AppDbContext> _dbHub;
+	private readonly IFileService fileService;
 
-	public BannerService(DbHub<AppDbContext> dbHub)
-	{
-		_dbHub = dbHub;
-	}
-	#endregion
-	#region Queries
-	//[ComputeMethod]
-	public virtual async Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+    public BannerService(DbHub<AppDbContext> dbHub, IFileService fileService)
+    {
+        _dbHub = dbHub;
+        this.fileService = fileService;
+    }
+    #endregion
+    #region Queries
+    //[ComputeMethod]
+    public virtual async Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 	{
 		await Invalidate();
 		var dbContext = _dbHub.CreateDbContext();
@@ -66,6 +68,14 @@ public class BannerService : IBannerService
             _ = await Invalidate();
             return;
         }
+		if(command.Entity.PhotoView != null)
+		{
+            var fileResult = await fileService.SaveImage(command.Entity.PhotoView);
+            if (fileResult.Item1 == 1)
+            {
+                command.Entity.Photo = fileResult.Item2;
+            }
+        }
 
         await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
         BannerEntity category = new BannerEntity();
@@ -87,7 +97,7 @@ public class BannerService : IBannerService
 		await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
 		var Banner = await dbContext.Banners
 		.FirstOrDefaultAsync(x => x.Id == command.Id) ?? throw new ValidationException("BannerEntity Not Found");
-
+		await fileService.DeleteImage(Banner.Photo);
 		dbContext.RemoveRange(Banner);
 		await dbContext.SaveChangesAsync(cancellationToken);
 	}
