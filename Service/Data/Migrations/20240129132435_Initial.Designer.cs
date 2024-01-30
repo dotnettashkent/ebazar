@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240129115506_Initial")]
+    [Migration("20240129132435_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
