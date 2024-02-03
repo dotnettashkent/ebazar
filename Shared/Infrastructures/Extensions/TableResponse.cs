@@ -1,14 +1,17 @@
 ﻿using MemoryPack;
-using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Shared.Infrastructures.Extensions
 {
     [DataContract, MemoryPackable]
     public partial class TableResponse<T> where T : class
     {
-        [property: DataMember][JsonProperty("items")] public List<T> Items { get; set; } = new List<T>();
+        [property: DataMember] [JsonPropertyName("items")] public List<T> Items { get; set; } = new List<T>();
 
-        [property: DataMember][JsonProperty("total_items")] public int TotalItems { get; set; }
+        [property: DataMember] [JsonPropertyName("total_items")] public int TotalItems { get; set; }
+
+        [property : DataMember] [JsonPropertyName("all_page")] public int AllPage {  get; set; }
+        [property : DataMember] [JsonPropertyName("current_page")] public int CurrentPage { get; set; }
     }
 }

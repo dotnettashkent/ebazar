@@ -42,11 +42,12 @@ public class BannerService : IBannerService
 
 		Sorting(ref Banner, options);
 
-		Banner = Banner.Where(x => x.Locale.Equals(options.Lang));
-		Banner = Banner.Include(x => x.Photo);
 		var count = await Banner.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
 		var items = await Banner.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
-		return new TableResponse<BannerView>() { Items = items.MapToViewList(), TotalItems = count };
+
+		decimal totalPage = (decimal)count / (decimal)options.PageSize;
+
+		return new TableResponse<BannerView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
 	}
 
 	//[ComputeMethod]

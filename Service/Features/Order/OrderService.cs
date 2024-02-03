@@ -48,7 +48,8 @@ namespace Service.Features
 
             var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
             var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
-            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count };
+            decimal totalPage = (decimal)count / (decimal)options.PageSize;
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count , AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
 
         }
 

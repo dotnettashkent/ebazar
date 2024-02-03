@@ -44,7 +44,8 @@ namespace Service.Features
 
 			var count = await brand.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
 			var items = await brand.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
-			return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count };
+            decimal totalPage = (decimal)count / (decimal)options.PageSize;
+            return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
 		}
 		public async virtual Task<BrandView> Get(long Id, CancellationToken cancellationToken = default)
 		{

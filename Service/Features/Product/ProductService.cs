@@ -44,8 +44,8 @@ namespace Service.Features
 
 			var count = await product.AsNoTracking().CountAsync();
 			var items = await product.AsNoTracking().Paginate(options).ToListAsync();
-
-			return new TableResponse<ProductResultView>() { Items = items.MapToViewListResult(), TotalItems = count };
+            decimal totalPage = (decimal)count / (decimal)options.PageSize;
+            return new TableResponse<ProductResultView>() { Items = items.MapToViewListResult(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
 		}
 		public async virtual Task<ProductResultView> GetById(long Id, CancellationToken cancellationToken = default)
 		{

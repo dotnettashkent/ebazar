@@ -58,7 +58,8 @@ namespace Service.Features.User
 
 			var count = await users.AsNoTracking().CountAsync();
 			var items = await users.AsNoTracking().Paginate(options).ToListAsync();
-			return new TableResponse<UserView>() { Items = items.MapToViewList(), TotalItems = count };
+            decimal totalPage = (decimal)count / (decimal)options.PageSize;
+            return new TableResponse<UserView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
 		}
 
 		public async virtual Task<UserView> GetById(long id, CancellationToken cancellationToken = default)
