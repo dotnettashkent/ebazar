@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.0" />
+		<PackageReference Include="EF.Audit.Core" Version="1.0.0" />
 		<PackageReference Include="IdentityModel" Version="6.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
@@ -23,7 +24,6 @@
 		<PackageReference Include="Stl.Fusion.EntityFramework" Version="6.5.1" />
 		<PackageReference Include="Stl.Fusion.Ext.Services" Version="6.5.1" />
 		<PackageReference Include="Stl.Generators" Version="6.5.1" />
-		<PackageReference Include="EF.Audit.Core" Version="1.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />

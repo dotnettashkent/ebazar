@@ -16,7 +16,7 @@ var dbType = cfg.GetValue<string>("DatabaseProviderConfiguration:ProviderType");
 services.AddDataBase<AppDbContext>(env, cfg, (DataBaseType)Enum.Parse(typeof(DataBaseType), dbType, true));
 
 // Register IDbContextFactory<AuditDbContext> before AddDataBase<AppDbContext>
-services.AddDbContextFactory<AuditDbContext>(options =>
+services.AddDbContextFactory<AuditContext>(options =>
 {
     // Configure options for AuditDbContext
     options.UseNpgsql(cfg.GetConnectionString("Default"));

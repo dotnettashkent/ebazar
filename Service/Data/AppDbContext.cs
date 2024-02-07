@@ -1,4 +1,5 @@
-﻿using EF.Audit.Core;
+﻿
+using EF.Audit.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Features;
@@ -11,11 +12,11 @@ namespace Service.Data
 {
     public partial class AppDbContext : DbContextBase
     {
-        private readonly AuditDbContext _context;
+        private readonly AuditContext _context;
         public IServiceScopeFactory _serviceScopeFactory;
 
         [ActivatorUtilitiesConstructor]
-        public AppDbContext(DbContextOptions<AppDbContext> options, IDbContextFactory<AuditDbContext> context,
+        public AppDbContext(DbContextOptions<AppDbContext> options, IDbContextFactory<AuditContext> context,
             IServiceScopeFactory serviceScopeFactory) : base(options)
         {
             _serviceScopeFactory = serviceScopeFactory;
