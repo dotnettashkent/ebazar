@@ -174,7 +174,7 @@ namespace Service.Features.User
 
             if (user == null)
             {
-                throw new ValidationException("User was not found");
+                throw new CustomException("User was not found");
             }
 
             if (BCrypt.Net.BCrypt.Verify(password, user.Password))
@@ -184,7 +184,7 @@ namespace Service.Features.User
             }
             else
             {
-                throw new ValidationException("Password is incorrect");
+                throw new Exception ("User was not found");
             }
         }
 
