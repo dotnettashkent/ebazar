@@ -133,7 +133,7 @@ namespace Service.Features.User
             }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var user = await dbContext.UsersEntities
-            .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
+            .FirstOrDefaultAsync(x => x.Id == command.UserId);
 
             if (user == null) throw new ValidationException("UserEntity Not Found");
 

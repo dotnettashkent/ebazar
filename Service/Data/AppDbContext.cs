@@ -12,15 +12,13 @@ namespace Service.Data
 {
     public partial class AppDbContext : DbContextBase
     {
-        private readonly AuditContext _context;
         public IServiceScopeFactory _serviceScopeFactory;
 
         [ActivatorUtilitiesConstructor]
-        public AppDbContext(DbContextOptions<AppDbContext> options, IDbContextFactory<AuditContext> context,
+        public AppDbContext(DbContextOptions<AppDbContext> options,
             IServiceScopeFactory serviceScopeFactory) : base(options)
         {
             _serviceScopeFactory = serviceScopeFactory;
-            _context = context.CreateDbContext();
         }
 
         // Stl.Fusion.EntityFramework tables

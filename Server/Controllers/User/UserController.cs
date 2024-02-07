@@ -26,13 +26,13 @@ namespace Server.Controllers.User
         }
 
         [HttpDelete("delete")]
-        public Task Delete(DeleteProductCommand command, CancellationToken cancellationToken)
+        public Task Delete(DeleteUserCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
 
         [HttpPut("update")]
-        public Task Update(UpdateProductCommand command, CancellationToken cancellationToken)
+        public Task Update(UpdateUserCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
