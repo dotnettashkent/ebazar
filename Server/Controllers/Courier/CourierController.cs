@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Service.Features;
 using Shared.Features;
-using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
 
 namespace Server.Controllers.Courier
@@ -45,7 +44,7 @@ namespace Server.Controllers.Courier
         [HttpGet("get")]
         public async Task<CourierView> Get(long Id, CancellationToken cancellationToken)
         {
-            return await courierService.GetById(Id,cancellationToken);
+            return await courierService.GetById(Id, cancellationToken);
         }
     }
 }

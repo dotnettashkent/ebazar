@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Service.Features;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
-using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
 
 namespace Server.Controllers.User
@@ -27,7 +25,7 @@ namespace Server.Controllers.User
         }
 
         [HttpDelete("delete")]
-        public Task Delete(DeleteProductCommand command, CancellationToken cancellationToken) 
+        public Task Delete(DeleteProductCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
@@ -35,11 +33,11 @@ namespace Server.Controllers.User
         [HttpPut("update")]
         public Task Update(UpdateProductCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command,cancellationToken); 
+            return commander.Call(command, cancellationToken);
         }
 
         [HttpGet("login")]
-        public Task<string> Login( string email, string password)
+        public Task<string> Login(string email, string password)
         {
             return userService.Login(email, password);
         }

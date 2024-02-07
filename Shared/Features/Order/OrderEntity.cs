@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
-	[Table("orders")]
-	public class OrderEntity
-	{
+    [Table("orders")]
+    public class OrderEntity
+    {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public long Id { get; set; }
@@ -48,6 +48,6 @@ namespace Shared.Features
 
 
         [Column("products")]
-        public string? Products {  get; set; }
+        public string? Products { get; set; }
     }
 }

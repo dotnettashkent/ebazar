@@ -1,5 +1,5 @@
-﻿using Shared.Features;
-using Riok.Mapperly.Abstractions;
+﻿using Riok.Mapperly.Abstractions;
+using Shared.Features;
 
 namespace Service.Features.Order
 {
@@ -15,7 +15,7 @@ namespace Service.Features.Order
 
         #region Internal
 
-       
+
         private static partial OrderView To(this OrderEntity src);
         private static partial OrderResponse To2(this OrderEntity src);
         private static partial List<OrderView> ToList(this List<OrderEntity> src);

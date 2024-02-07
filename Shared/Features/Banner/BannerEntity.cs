@@ -14,8 +14,8 @@ namespace Shared.Features
         public string Locale { get; set; } = null!;
 
         [Column("photo")]
-        public string Photo { get; set; } = null!;  
-        
+        public string Photo { get; set; } = null!;
+
         [Column("title")]
         public string Title { get; set; } = null!;
 
@@ -29,6 +29,6 @@ namespace Shared.Features
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Column("updated_at")]
-        public DateTime? UpdatedAt { get;set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

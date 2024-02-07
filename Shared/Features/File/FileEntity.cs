@@ -6,11 +6,11 @@ namespace Shared.Features
 {
     [MemoryPackable]
     [Table("files")]
-	public partial class FileEntity : BaseEntity
+    public partial class FileEntity : BaseEntity
     {
         [Column("name")]
         public string Name { get; set; } = null!;
-        
+
         [Column("file_id")]
         public Guid? FileId { get; set; }
 

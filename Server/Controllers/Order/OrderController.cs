@@ -1,8 +1,8 @@
-﻿using Stl.CommandR;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
 using Shared.Infrastructures;
-using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures.Extensions;
+using Stl.CommandR;
 
 namespace Server.Controllers
 {

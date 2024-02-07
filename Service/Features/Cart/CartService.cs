@@ -1,11 +1,11 @@
-﻿using Stl.Async;
-using Stl.Fusion;
-using Service.Data;
-using Shared.Features;
-using System.Reactive;
+﻿using Service.Data;
 using Service.Features.Cart;
-using Stl.Fusion.EntityFramework;
+using Shared.Features;
 using Shared.Infrastructures.Extensions;
+using Stl.Async;
+using Stl.Fusion;
+using Stl.Fusion.EntityFramework;
+using System.Reactive;
 using System.Text.Json;
 
 namespace Service.Features
@@ -36,7 +36,7 @@ namespace Service.Features
             {
                 var productRes = new List<ProductResultView>();
                 var cartView = JsonSerializer.Deserialize<List<ProductList>>(cart.Product);
-                
+
                 foreach (var item in cartView)
                 {
                     var productResult = await productService.GetById(item.ProductId);

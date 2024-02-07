@@ -1,30 +1,28 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Service.Features;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
-using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
 
 namespace Server.Controllers.Brand
 {
-	[Route("api/brands")]
-	[ApiController]
-	public class BrandController : ControllerBase
-	{
-		private readonly IBrandService brandService;
-		private readonly ICommander commander;
-		public BrandController(IBrandService brandService, ICommander commander)
-		{
-			this.brandService = brandService;
-			this.commander = commander;
-		}
+    [Route("api/brands")]
+    [ApiController]
+    public class BrandController : ControllerBase
+    {
+        private readonly IBrandService brandService;
+        private readonly ICommander commander;
+        public BrandController(IBrandService brandService, ICommander commander)
+        {
+            this.brandService = brandService;
+            this.commander = commander;
+        }
 
-		[HttpPost("create")]
-		public Task Create([FromForm] CreateBrandCommand command, CancellationToken cancellationToken)
-		{
-			return commander.Call(command, cancellationToken);
-		}
+        [HttpPost("create")]
+        public Task Create([FromForm] CreateBrandCommand command, CancellationToken cancellationToken)
+        {
+            return commander.Call(command, cancellationToken);
+        }
         [HttpPut("udpate")]
         public Task Update([FromBody] UpdateBrandCommand command, CancellationToken cancellationToken)
         {

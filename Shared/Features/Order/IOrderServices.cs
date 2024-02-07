@@ -1,14 +1,14 @@
-﻿using Stl.Async;
+﻿using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
+using Stl.Async;
+using Stl.CommandR.Configuration;
 using Stl.Fusion;
 using System.Reactive;
-using Stl.CommandR.Configuration;
-using Shared.Infrastructures.Extensions;
-using Shared.Infrastructures;
 
 namespace Shared.Features
 {
-	public interface IOrderServices : IComputeService
-	{
+    public interface IOrderServices : IComputeService
+    {
         //[ComputeMethod]
         Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 
@@ -23,7 +23,7 @@ namespace Shared.Features
 
         [CommandHandler]
         Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default);
-        
+
         //[CommandHandler]
         //Task UpdateItem(UpdateItemOrderCommand command, CancellationToken cancellationToken = default);
 

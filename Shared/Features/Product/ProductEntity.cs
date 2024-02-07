@@ -6,7 +6,7 @@ namespace Shared.Features
     [Table("products")]
     public class ProductEntity
     {
-        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
         public long Id { get; set; }
 
@@ -20,7 +20,7 @@ namespace Shared.Features
         /// split ('|') each description
 		/// </summary>
         [Column("description_uz")]
-		public string DescriptionUz { get; set; } = null!;
+        public string DescriptionUz { get; set; } = null!;
 
         /// <summary>
         /// split ('|') each description
@@ -44,14 +44,14 @@ namespace Shared.Features
 
         [Column("price")]
         public decimal Price { get; set; }
-        
+
         [Column("discount_price")]
         public decimal DiscountPrice { get; set; }
 
-		[Column("discount_percent")]
-		public decimal DiscountPercent { get; set; }
+        [Column("discount_percent")]
+        public decimal DiscountPercent { get; set; }
 
-		[Column("price_type")]
+        [Column("price_type")]
         public string PriceType { get; set; } = null!;
 
         [Column("is_delivery_free")]
@@ -76,7 +76,7 @@ namespace Shared.Features
         public string? PhotoSix { get; set; }
 
         [Column("tag")]
-        public string? Tag {  get; set; }
+        public string? Tag { get; set; }
 
         [Column("weight")]
         public decimal Weight { get; set; }
@@ -95,7 +95,7 @@ namespace Shared.Features
 
 
         [Column("created_at")]
-        public DateTime CreatedAt { get; set;} = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Column("updated_at")]
         public DateTime? UpdatedAt { get; set; }

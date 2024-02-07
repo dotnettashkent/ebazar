@@ -3,11 +3,11 @@ using Shared.Features;
 
 namespace Service.Features
 {
-	[Mapper]
-	public static partial class ProductMapper
-	{
-		#region Usable
-		public static ProductResultView MapToView(this ProductEntity src) => src.To2();
+    [Mapper]
+    public static partial class ProductMapper
+    {
+        #region Usable
+        public static ProductResultView MapToView(this ProductEntity src) => src.To2();
         public static ProductView MapToView2(this ProductEntity src) => src.To();
         public static List<ProductView> MapToViewList(this List<ProductEntity> src) => src.ToList();
         public static List<ProductResultView> MapToViewListResult(this List<ProductEntity> src) => src.ToListResult();
@@ -33,9 +33,9 @@ namespace Service.Features
         /*[MapProperty("PhotoView", "Photo")]
 		[MapProperty("PhotoMobileView", "PhotoMobile")]*/
         private static partial ProductEntity From(this ProductView ProductCategoryView);
-		/*[MapProperty("PhotoView", "Photo")]
+        /*[MapProperty("PhotoView", "Photo")]
 		[MapProperty("PhotoMobileView", "PhotoMobile")]*/
-		public static partial void From(ProductView personView, ProductEntity personEntity);
+        public static partial void From(ProductView personView, ProductEntity personEntity);
 
         private static partial ProductEntity From2(this ProductResultView ProductCategoryView);
         /*[MapProperty("PhotoView", "Photo")]
