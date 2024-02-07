@@ -9,9 +9,9 @@ namespace Shared;
 [ParameterComparer(typeof(ByValueParameterComparer))]
 public partial class LocaleView
 {
-   [property: DataMember] public string Code { get; set; } = null!;
-   [property: DataMember] public long Id { get; set; }
-   [property: DataMember] public ICollection<ProductView> ProductView { get; set; } = new List<ProductView>();
+    [property: DataMember] public string Code { get; set; } = null!;
+    [property: DataMember] public long Id { get; set; }
+    [property: DataMember] public ICollection<ProductView> ProductView { get; set; } = new List<ProductView>();
 
     public override bool Equals(object? o)
     {

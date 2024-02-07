@@ -1,9 +1,9 @@
-﻿using Stl.Async;
+﻿using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
+using Stl.Async;
+using Stl.CommandR.Configuration;
 using Stl.Fusion;
 using System.Reactive;
-using Shared.Infrastructures;
-using Stl.CommandR.Configuration;
-using Shared.Infrastructures.Extensions;
 
 namespace Shared.Features
 {
@@ -11,8 +11,8 @@ namespace Shared.Features
     {
         //[ComputeMethod]
         Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
-		//[ComputeMethod]
-		Task<BannerView> Get(long Id, CancellationToken cancellationToken = default);
+        //[ComputeMethod]
+        Task<BannerView> Get(long Id, CancellationToken cancellationToken = default);
         [CommandHandler]
         Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default);
         [CommandHandler]

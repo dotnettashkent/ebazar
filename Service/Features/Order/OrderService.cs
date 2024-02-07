@@ -1,15 +1,15 @@
-﻿using Stl.Async;
-using Stl.Fusion;
+﻿using Microsoft.EntityFrameworkCore;
 using Service.Data;
+using Service.Features.Order;
 using Shared.Features;
+using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
+using Stl.Async;
+using Stl.Fusion;
+using Stl.Fusion.EntityFramework;
+using System.ComponentModel.DataAnnotations;
 using System.Reactive;
 using System.Text.Json;
-using Shared.Infrastructures;
-using Service.Features.Order;
-using Stl.Fusion.EntityFramework;
-using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructures.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
@@ -48,7 +48,8 @@ namespace Service.Features
 
             var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
             var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
-            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count };
+            decimal totalPage = (decimal)count / (decimal)options.PageSize;
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
 
         }
 
@@ -63,11 +64,11 @@ namespace Service.Features
 
             var orderResponse = new OrderResponse();
 
-            if (order != null) 
+            if (order != null)
             {
                 orderResponse = order.MapToView2();
                 var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
-                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx); 
+                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx);
                 orderResponse.Product = lists;
             }
             else

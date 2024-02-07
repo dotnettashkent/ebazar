@@ -4,22 +4,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
 {
-	[Table("brands")]
-	public class BrandEntity
-	{
-		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		[Column("id")]
-		public long Id { get; set; }
+    [Table("brands")]
+    public class BrandEntity
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id")]
+        public long Id { get; set; }
 
-		[Column("name")]
-		public string Name { get; set; } = null!;
+        [Column("name")]
+        public string Name { get; set; } = null!;
 
-		[Column("is_popular")]
-		public string IsPopular { get; set; } = null!;
+        [Column("is_popular")]
+        public string IsPopular { get; set; } = null!;
 
-		public string Link { get; set; } = null!;
+        public string Link { get; set; } = null!;
 
-		[Column("photo")]
-		public string? ImageOne { get; set; }
-	}
+        [Column("photo")]
+        public string? ImageOne { get; set; }
+    }
 }

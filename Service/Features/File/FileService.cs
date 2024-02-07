@@ -1,7 +1,7 @@
-﻿using Shared.Features;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Shared.Features;
 
 namespace Service.Features
 {

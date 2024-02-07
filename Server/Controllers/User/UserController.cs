@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Service.Features;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
-using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.Controllers.User
 {
@@ -27,7 +26,7 @@ namespace Server.Controllers.User
         }
 
         [HttpDelete("delete")]
-        public Task Delete(DeleteProductCommand command, CancellationToken cancellationToken) 
+        public Task Delete(DeleteProductCommand command, CancellationToken cancellationToken)
         {
             return commander.Call(command, cancellationToken);
         }
@@ -35,19 +34,39 @@ namespace Server.Controllers.User
         [HttpPut("update")]
         public Task Update(UpdateProductCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command,cancellationToken); 
+            return commander.Call(command, cancellationToken);
         }
 
         [HttpGet("login")]
-        public Task<string> Login( string email, string password)
+        public async Task<ActionResult<string>> Login(string email, string password)
         {
-            return userService.Login(email, password);
+            try
+            {
+                string token = await userService.Login(email, password);
+                return Ok(token); // Return 200 OK with the token
+            }
+            catch (CustomException ex)
+            {
+                return NotFound(ex.Message); // Return 404 Not Found with the error message
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message); // Return 500 Internal Server Error with the error message
+            }
         }
 
+
         [HttpGet("return/user")]
-        public async Task<UserView> Return(string token)
+        public async Task<ActionResult<UserView>> Return(string token)
         {
-            return await userService.GetByToken(token);
+            try
+            {
+                return await userService.GetByToken(token);
+            }
+            catch (CustomException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpGet("get/all")]
@@ -57,9 +76,21 @@ namespace Server.Controllers.User
         }
 
         [HttpGet("get")]
-        public async Task<UserResultView> Get(long Id)
+        public async Task<ActionResult<UserResultView>> Get(long Id)
         {
-            return await userService.Get(Id);
+            try
+            {
+                var user = await userService.Get(Id);
+                if (user == null)
+                {
+                    return NotFound(); // Returns HTTP 404 Not Found
+                }
+                return user;
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message); // Returns HTTP 400 Bad Request with the validation exception message
+            }
         }
 
 

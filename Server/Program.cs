@@ -1,9 +1,8 @@
-using Stl.Fusion;
-using Service.Data;
 using EF.Audit.Core;
 using Microsoft.EntityFrameworkCore;
 using Server.Infrastructure.ServiceCollection;
-using Microsoft.AspNetCore.Localization;
+using Service.Data;
+using Stl.Fusion;
 
 #region Builder
 var builder = WebApplication.CreateBuilder(args);

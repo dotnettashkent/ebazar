@@ -6,7 +6,7 @@ using Stl.Fusion;
 using System.Reactive;
 
 namespace Shared;
-public interface ILocaleService:IComputeService
+public interface ILocaleService : IComputeService
 {
     //[ComputeMethod]
     Task<TableResponse<LocaleView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
@@ -18,6 +18,5 @@ public interface ILocaleService:IComputeService
     Task Update(UpdateLocaleCommand command, CancellationToken cancellationToken = default);
     [CommandHandler]
     Task Delete(DeleteLocaleCommand command, CancellationToken cancellationToken = default);
-    Task<Unit> Invalidate(){ return TaskExt.UnitTask; }
+    Task<Unit> Invalidate() { return TaskExt.UnitTask; }
 }
-    

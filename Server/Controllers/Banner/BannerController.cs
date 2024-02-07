@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Service.Features;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
-using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
+using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
 
 namespace Server.Controllers.Banner
@@ -47,7 +45,7 @@ namespace Server.Controllers.Banner
         [HttpGet("get")]
         public async Task<BannerView> Get(long Id, CancellationToken cancellationToken)
         {
-            return await bannerService.Get(Id,cancellationToken);
+            return await bannerService.Get(Id, cancellationToken);
         }
     }
 }
