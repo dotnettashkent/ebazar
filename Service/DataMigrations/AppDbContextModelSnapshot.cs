@@ -9,7 +9,7 @@ using Service.Data;
 
 #nullable disable
 
-namespace Service.Data.Migrations
+namespace Service.DataMigrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot

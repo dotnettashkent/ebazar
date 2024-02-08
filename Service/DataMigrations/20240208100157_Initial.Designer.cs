@@ -10,10 +10,10 @@ using Service.Data;
 
 #nullable disable
 
-namespace Service.Data.Migrations
+namespace Service.DataMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240207134609_Initial")]
+    [Migration("20240208100157_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
