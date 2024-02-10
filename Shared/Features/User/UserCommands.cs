@@ -5,7 +5,9 @@ using System.Runtime.Serialization;
 namespace Shared.Features
 {
     [DataContract, MemoryPackable]
-    public partial record CreateUserCommand([property: DataMember] Session Session, [property: DataMember] UserResultView Entity) : ISessionCommand<UserView>;
+    public partial record CreateUserCommand(
+        [property: DataMember] Session Session, 
+        [property: DataMember] UserResultView Entity) : ISessionCommand<bool>;
 
     [DataContract, MemoryPackable]
     public partial record UpdateUserCommand(

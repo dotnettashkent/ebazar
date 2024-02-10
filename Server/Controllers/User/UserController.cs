@@ -20,10 +20,39 @@ namespace Server.Controllers.User
             this.commander = commander;
         }
         [HttpPost("create")]
-        public Task Create([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult<bool>> Create([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            if (string.IsNullOrEmpty(command.Entity.PhoneNumber) || string.IsNullOrEmpty(command.Entity.Password))
+            {
+                var errorMessages = new List<dynamic>();
+
+                if (string.IsNullOrEmpty(command.Entity.PhoneNumber))
+                {
+                    errorMessages.Add(new { message = "phone number required", param = "phone_number" });
+                }
+
+                if (string.IsNullOrEmpty(command.Entity.Password))
+                {
+                    errorMessages.Add(new { message = "password required", param = "password" });
+                }
+
+                return StatusCode(400, new { success = false, messages = errorMessages });
+            }
+
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true }); // Return 200 OK with true
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(409, new { error = ex.Message, success = false }); // Return 500 Internal Server Error with the error message and false
+            }
         }
+
+
+
+
 
         [HttpDelete("delete")]
         public Task Delete(DeleteUserCommand command, CancellationToken cancellationToken)

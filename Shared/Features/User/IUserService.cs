@@ -21,7 +21,7 @@ namespace Shared.Features
         Task<UserView> GetByToken(string token);
 
         [CommandHandler]
-        Task Create(CreateUserCommand command, CancellationToken cancellationToken = default);
+        Task<bool> Create(CreateUserCommand command, CancellationToken cancellationToken = default);
         [CommandHandler]
         Task Delete(DeleteUserCommand command, CancellationToken cancellationToken = default);
         [CommandHandler]

@@ -88,15 +88,17 @@ namespace Service.Features.User
         #endregion
 
         #region Mutations
-        public async virtual Task Create(CreateUserCommand command, CancellationToken cancellationToken = default)
+        public async virtual Task<bool> Create(CreateUserCommand command, CancellationToken cancellationToken = default)
         {
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
-                return;
+                return false; // Return a default value indicating failure
             }
+
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var exists = await dbContext.UsersEntities.FirstOrDefaultAsync(x => x.PhoneNumber == command.Entity.PhoneNumber);
+
             if (exists == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Entity.Password);
@@ -106,12 +108,16 @@ namespace Service.Features.User
 
                 dbContext.Update(user);
                 await dbContext.SaveChangesAsync(cancellationToken);
+                return true; // Return true indicating success
             }
             else
             {
-                throw new Exception("This phone number already exists");
+                throw new Exception("User already exists");
             }
         }
+
+
+
         public async virtual Task Delete(DeleteUserCommand command, CancellationToken cancellationToken = default)
         {
             if (Computed.IsInvalidating())
