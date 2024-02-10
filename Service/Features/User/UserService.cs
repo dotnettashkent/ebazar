@@ -44,11 +44,7 @@ namespace Service.Features.User
             {
                 var search = options.Search.ToLower();
                 users = users.Where(s =>
-                         s.FirstName != null && s.FirstName.ToLower().Contains(search)
-                        || s.LastName != null && s.LastName.ToLower().Contains(search)
-                        || s.MiddleName != null && s.MiddleName.ToLower().Contains(search)
-                        || s.PhoneNumber != null && s.PhoneNumber.ToLower().Contains(search)
-                        || s.Email != null && s.Email.Contains(search)
+                         s.PhoneNumber != null && s.PhoneNumber.ToLower().Contains(search)
                 );
             }
 
@@ -57,7 +53,13 @@ namespace Service.Features.User
             var count = await users.AsNoTracking().CountAsync();
             var items = await users.AsNoTracking().Paginate(options).ToListAsync();
             decimal totalPage = (decimal)count / (decimal)options.PageSize;
-            return new TableResponse<UserView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
+            return new TableResponse<UserView>() 
+            { 
+                Items = items.MapToViewList(), 
+                TotalItems = count, 
+                AllPage = (int)Math.Ceiling(totalPage), 
+                CurrentPage = options.Page 
+            };
         }
 
         public async virtual Task<UserView> GetById(long id, CancellationToken cancellationToken = default)
@@ -132,15 +134,25 @@ namespace Service.Features.User
                 return;
             }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var user = await dbContext.UsersEntities
-            .FirstOrDefaultAsync(x => x.Id == command.UserId);
+            var user = await dbContext.UsersEntities.FirstOrDefaultAsync(x => x.Id == command.UserId, cancellationToken);
 
-            if (user == null) throw new ValidationException("UserEntity Not Found");
+            if (user == null)
+                throw new ValidationException("UserEntity Not Found");
 
-            Reattach(user, command.Entity, dbContext);
+            user.PhoneNumber = command.Entity.PhoneNumber;
+
+            // Generate a new salt
+            string salt = BCrypt.Net.BCrypt.GenerateSalt();
+
+            // Hash the password with the new salt
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Entity.Password, salt);
+
+            user.Password = passwordHash;
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+
+
 
         #endregion
 
@@ -155,10 +167,6 @@ namespace Service.Features.User
 
         private void Sorting(ref IQueryable<UserEntity> unit, TableOptions options) => unit = options.SortLabel switch
         {
-            "FirstName" => unit.Ordering(options, o => o.FirstName),
-            "LastName" => unit.Ordering(options, o => o.LastName),
-            "MiddleName" => unit.Ordering(options, o => o.MiddleName),
-            "Email" => unit.Ordering(options, o => o.Email),
             "PhoneNumber" => unit.Ordering(options, o => o.PhoneNumber),
             "CreatedAt" => unit.Ordering(options, o => o.CreatedAt),
             _ => unit.OrderBy(o => o.CreatedAt),
@@ -213,7 +221,7 @@ namespace Service.Features.User
                 );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return "Bearer " + jwt;
+            return jwt;
         }
 
         public async virtual Task<UserView> GetByToken(string token)
