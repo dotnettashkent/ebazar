@@ -133,7 +133,6 @@ namespace Service.Features
                 throw new ValidationException("OrderEntity Not Found");
             }
 
-            // Update properties other than the key
             existingOrder.City = command.Entity.City;
             existingOrder.Region = command.Entity.Region;
             existingOrder.Street = command.Entity.Street;

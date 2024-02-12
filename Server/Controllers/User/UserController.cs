@@ -96,16 +96,16 @@ namespace Server.Controllers.User
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(string email, string password)
+        public async Task<ActionResult<string>> Login(LoginIncome login)
         {
             try
             {
-                var result = await userService.Login(email, password);
-                return StatusCode(200, new { success = true });
+                var result = await userService.Login(login.PhoneNumber, login.Password);
+                return StatusCode(200, new { success = true, messages = result });
             }
             catch (CustomException ex) when (ex.Message == "User was not found")
             {
-                return StatusCode(404, new { success = false, messages = "User not found" });
+                return NotFound(new { success = false, messages = "User not found" });
             }
 
             catch (Exception ex)
@@ -122,7 +122,7 @@ namespace Server.Controllers.User
             try
             {
                 var result = await userService.GetByToken(token);
-                return StatusCode(200, new { success = true });
+                return StatusCode(200, new { success = true, message = result });
             }
             catch (CustomException ex) when (ex.Message == "User was not found")
             {
@@ -159,5 +159,11 @@ namespace Server.Controllers.User
                 return StatusCode(500, new { error = ex.Message, success = false });
             }
         }
+    }
+
+    public class LoginIncome
+    {
+        public string? PhoneNumber { get; set; }
+        public string? Password { get; set; }
     }
 }
