@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Stl.CommandR;
 using Shared.Features;
 using Shared.Infrastructures;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures.Extensions;
-using Stl.CommandR;
 
 namespace Server.Controllers.Product
 {
@@ -20,21 +20,60 @@ namespace Server.Controllers.Product
         }
 
         [HttpPost("create")]
-        public Task Create([FromForm] CreateProductCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromForm] CreateProductCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, messages = "Product Not Found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpPut("udpate")]
-        public Task Update([FromBody] UpdateProductCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update([FromBody] UpdateProductCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, messages = "Product not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpDelete("delete")]
-        public async Task Delete([FromBody] DeleteProductCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteProductCommand command, CancellationToken cancellationToken)
         {
-            await commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, messages = "Product not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpGet("get/all")]
@@ -44,9 +83,22 @@ namespace Server.Controllers.Product
         }
 
         [HttpGet("get")]
-        public async Task<ProductResultView> Get(long Id)
+        public async Task<ActionResult<ProductResultView>> Get(long Id, CancellationToken cancellation)
         {
-            return await productService.GetById(Id);
+            try
+            {
+                var user = await productService.GetById(Id,cancellation);
+                return user;
+            }
+            catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, messages = "Product not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
     }

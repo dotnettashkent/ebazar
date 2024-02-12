@@ -76,6 +76,7 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
+            #region Check image
 
             if (command.Entity.ImageOne != null)
             {
@@ -128,7 +129,7 @@ namespace Service.Features
                 }
             }
 
-
+            #endregion 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             ProductEntity entity = new ProductEntity();
             Reattach(entity, command.Entity, dbContext);
