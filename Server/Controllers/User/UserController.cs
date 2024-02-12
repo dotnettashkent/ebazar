@@ -3,7 +3,6 @@ using Shared.Features;
 using Shared.Infrastructures;
 using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
-using System.ComponentModel.DataAnnotations;
 
 namespace Server.Controllers.User
 {
@@ -36,17 +35,21 @@ namespace Server.Controllers.User
                     errorMessages.Add(new { message = "password required", param = "password" });
                 }
 
-                return StatusCode(400, new { success = false, messages = errorMessages });
+                return StatusCode(402, new { success = false, messages = errorMessages });
             }
 
             try
             {
                 var result = await commander.Call(command, cancellationToken);
-                return StatusCode(200, new { success = true }); // Return 200 OK with true
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "User already exists")
+            {
+                return StatusCode(404, new { success = false, messages = "User already exists" });
             }
             catch (Exception ex)
             {
-                return StatusCode(409, new { error = ex.Message, success = false }); // Return 500 Internal Server Error with the error message and false
+                return StatusCode(409, new { error = ex.Message, success = false }); 
             }
         }
 
@@ -55,15 +58,41 @@ namespace Server.Controllers.User
 
 
         [HttpDelete("delete")]
-        public Task Delete(DeleteUserCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete(DeleteUserCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true }); 
+            }
+            catch (CustomException ex) when (ex.Message == "UserEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, messages = "User not found" }); 
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false }); 
+            }
         }
 
         [HttpPut("update")]
-        public Task Update(UpdateUserCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update(UpdateUserCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "UserEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, messages = "User not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpPost("login")]
@@ -71,17 +100,19 @@ namespace Server.Controllers.User
         {
             try
             {
-                string token = await userService.Login(email, password);
-                return Ok(token); // Return 200 OK with the token
+                var result = await userService.Login(email, password);
+                return StatusCode(200, new { success = true });
             }
-            catch (CustomException ex)
+            catch (CustomException ex) when (ex.Message == "User was not found")
             {
-                return NotFound(ex.Message); // Return 404 Not Found with the error message
+                return StatusCode(404, new { success = false, messages = "User not found" });
             }
+
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); // Return 500 Internal Server Error with the error message
+                return StatusCode(500, new { error = ex.Message, success = false });
             }
+            
         }
 
 
@@ -90,11 +121,17 @@ namespace Server.Controllers.User
         {
             try
             {
-                return await userService.GetByToken(token);
+                var result = await userService.GetByToken(token);
+                return StatusCode(200, new { success = true });
             }
-            catch (CustomException ex)
+            catch (CustomException ex) when (ex.Message == "User was not found")
             {
-                return NotFound(ex.Message);
+                return StatusCode(404, new { success = false, messages = "User not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
             }
         }
 
@@ -110,18 +147,17 @@ namespace Server.Controllers.User
             try
             {
                 var user = await userService.Get(Id);
-                if (user == null)
-                {
-                    return NotFound(); // Returns HTTP 404 Not Found
-                }
                 return user;
             }
-            catch (ValidationException ex)
+            catch (CustomException ex) when (ex.Message == "User was not found")
             {
-                return BadRequest(ex.Message); // Returns HTTP 400 Bad Request with the validation exception message
+                return StatusCode(404, new { success = false, messages = "User not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
             }
         }
-
-
     }
 }

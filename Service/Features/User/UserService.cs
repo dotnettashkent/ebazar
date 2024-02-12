@@ -1,19 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Stl.Async;
+using Stl.Fusion;
+using System.Data;
+using System.Text;
 using Service.Data;
+using System.Reactive;
 using Shared.Features;
 using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Reactive;
 using System.Security.Claims;
-using System.Text;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Shared.Infrastructures.Extensions;
+using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features.User
 {
@@ -93,7 +93,7 @@ namespace Service.Features.User
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
-                return false; // Return a default value indicating failure
+                return false;
             }
 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
@@ -108,7 +108,7 @@ namespace Service.Features.User
 
                 dbContext.Update(user);
                 await dbContext.SaveChangesAsync(cancellationToken);
-                return true; // Return true indicating success
+                return true;
             }
             else
             {
@@ -128,7 +128,8 @@ namespace Service.Features.User
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var user = await dbContext.UsersEntities
             .FirstOrDefaultAsync(x => x.Id == command.Id);
-            if (user == null) throw new ValidationException("UserEntity Not Found");
+            if (user == null) 
+                throw new CustomException("UserEntity Not Found");
             dbContext.Remove(user);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
@@ -143,7 +144,7 @@ namespace Service.Features.User
             var user = await dbContext.UsersEntities.FirstOrDefaultAsync(x => x.Id == command.UserId, cancellationToken);
 
             if (user == null)
-                throw new ValidationException("UserEntity Not Found");
+                throw new CustomException("UserEntity Not Found");
 
             user.PhoneNumber = command.Entity.PhoneNumber;
 
@@ -213,10 +214,6 @@ namespace Service.Features.User
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JwtSettings:SecretKey").Value!));
 
             var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value!;
-            Console.WriteLine($"Secret Key: {secretKey}");
-            Console.WriteLine($"Key Size: {Encoding.UTF8.GetBytes(secretKey).Length * 8} bits");
-
-
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -242,7 +239,7 @@ namespace Service.Features.User
             var user = await dbContext.UsersEntities
                 .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
 
-            return user == null ? throw new ValidationException("User was not found") : user.MapToView();
+            return user == null ? throw new CustomException("User was not found") : user.MapToView();
         }
 
         private string GetPhoneNumber(string token)
@@ -253,7 +250,7 @@ namespace Service.Features.User
             var json = secondToken.Payload.Values.FirstOrDefault();
 
             if (json == null)
-                throw new Exception("Payload is null");
+                throw new CustomException("Payload is null");
             else
             {
                 return json?.ToString() ?? string.Empty;
