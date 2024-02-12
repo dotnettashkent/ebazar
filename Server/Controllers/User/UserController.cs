@@ -117,7 +117,7 @@ namespace Server.Controllers.User
 
 
         [HttpGet("return/user")]
-        public async Task<ActionResult<UserView>> Return(string token)
+        public async Task<ActionResult<UserView>> Return([FromHeader] string token)
         {
             try
             {
