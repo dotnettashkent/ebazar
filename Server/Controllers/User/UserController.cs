@@ -66,7 +66,7 @@ namespace Server.Controllers.User
             return commander.Call(command, cancellationToken);
         }
 
-        [HttpGet("login")]
+        [HttpPost("login")]
         public async Task<ActionResult<string>> Login(string email, string password)
         {
             try
