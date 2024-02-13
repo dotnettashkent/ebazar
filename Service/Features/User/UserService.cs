@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Shared.Infrastructures.Extensions;
 using Microsoft.Extensions.Configuration;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features.User
 {
@@ -73,7 +72,7 @@ namespace Service.Features.User
                 .Include(x => x.Favourite)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            return user == null ? throw new ValidationException("User was not found") : user.MapToView();
+            return user == null ? throw new CustomException("User was not found") : user.MapToView();
         }
 
         public async virtual Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default)
@@ -83,7 +82,7 @@ namespace Service.Features.User
             var user = await dbContext.UsersEntities
                 .FirstOrDefaultAsync(x => x.Id == Id);
 
-            return user == null ? throw new ValidationException("User was not found") : user.MapToResultView();
+            return user == null ? throw new CustomException("User was not found") : user.MapToResultView();
         }
         #endregion
 
@@ -112,7 +111,7 @@ namespace Service.Features.User
             }
             else
             {
-                throw new Exception("User already exists");
+                throw new CustomException("User already exists");
             }
         }
 
@@ -199,7 +198,7 @@ namespace Service.Features.User
             }
             else
             {
-                throw new Exception ("User was not found");
+                throw new CustomException ("User was not found");
             }
         }
 

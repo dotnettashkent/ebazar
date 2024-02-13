@@ -47,9 +47,7 @@ namespace Service.Features
                 var count = productRes.Count();
                 return new TableResponse<ProductResultView>() { Items = productRes, TotalItems = count };
             }
-
-            // If the cart is empty or doesn't exist
-            return new TableResponse<ProductResultView>() { Items = new List<ProductResultView>(), TotalItems = 0 };
+            throw new CustomException("CartEntity Not Found");
         }
 
 

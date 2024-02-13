@@ -52,9 +52,18 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/carts")]
-        public Task<TableResponse<ProductResultView>> GetAll(long userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(long userId, CancellationToken cancellationToken)
         {
-            return cartService.GetAll(userId, cancellationToken);
+
+            try
+            {
+                return await cartService.GetAll(userId, cancellationToken);
+            }
+            catch(CustomException ex) when (ex.Message == "CartEntity Not Found") 
+            {
+                return StatusCode(408, new { success = false, messages = "Cart not found" });
+            }
+
         }
     }
 }

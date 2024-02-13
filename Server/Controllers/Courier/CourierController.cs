@@ -84,7 +84,7 @@ namespace Server.Controllers.Courier
                 var user = await courierService.GetById(Id);
                 return StatusCode(408, new { success = true, messages = user });
             }
-            catch (CustomException ex) when (ex.Message == "CourierEntity Not Found")
+            catch (CustomException ex) when (ex.Message == "Courier was not found")
             {
                 return StatusCode(408, new { success = false, messages = "Courier not found" });
             }

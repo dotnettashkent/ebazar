@@ -2,6 +2,8 @@
 using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Threading;
 
 namespace Server.Controllers.Favourite
 {
@@ -53,9 +55,17 @@ namespace Server.Controllers.Favourite
         }
 
         [HttpGet("get/favourite")]
-        public Task<TableResponse<ProductResultView>> GetAll(long userId)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(long userId, CancellationToken cancellationToken)
         {
-            return favouriteService.GetAll(userId);
+            try
+            {
+                var result = await favouriteService.GetAll(userId, cancellationToken);
+                return StatusCode(200, new { success = result });
+            }
+            catch (CustomException ex) when (ex.Message == "Favourite Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Favourite Not Found" });
+            }
         }
     }
 }

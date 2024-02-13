@@ -56,7 +56,7 @@ namespace Service.Features.Courier
             var user = await dbContext.Couriers
             .FirstOrDefaultAsync(x => x.Id == id);
 
-            return user == null ? throw new ValidationException("Courier was not found") : user.MapToView();
+            return user == null ? throw new CustomException("Courier was not found") : user.MapToView();
         }
         #endregion
         #region Mutations

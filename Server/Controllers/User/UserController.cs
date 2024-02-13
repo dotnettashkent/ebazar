@@ -147,7 +147,7 @@ namespace Server.Controllers.User
             try
             {
                 var user = await userService.Get(Id);
-                return user;
+                return StatusCode(200, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "User was not found")
             {

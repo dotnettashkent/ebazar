@@ -54,7 +54,7 @@ namespace Service.Features
             var product = await dbContext.Products
                 .FirstOrDefaultAsync(x => x.Id == Id);
 
-            return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView();
+            return product == null ? throw new CustomException("ProductEntity Not Found") : product.MapToView();
         }
 
         public async virtual Task<ProductView> Get(long Id, CancellationToken cancellationToken = default)
@@ -152,7 +152,7 @@ namespace Service.Features
             .FirstOrDefaultAsync(x => x.Id == command.Id);
 
             if (entity == null)
-                throw new ValidationException("ProductEntity Not Found");
+                throw new CustomException("ProductEntity Not Found");
             dbContext.Remove(entity);
             await dbContext.SaveChangesAsync();
         }
@@ -168,7 +168,7 @@ namespace Service.Features
                 .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
             if (entity == null)
-                throw new ValidationException("ProductEntity Not Found");
+                throw new CustomException("ProductEntity Not Found");
 
             Reattach(entity, command.Entity, dbContext);
 

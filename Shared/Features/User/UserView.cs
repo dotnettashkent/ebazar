@@ -17,6 +17,7 @@ namespace Shared.Features
         [JsonPropertyName("phone_number")]
         public string PhoneNumber { get; set; } = null!;
 
+        [JsonIgnore]
         [property: DataMember]
         [JsonPropertyName("password")]
         public string Password { get; set; } = null!;
@@ -25,10 +26,10 @@ namespace Shared.Features
         [JsonPropertyName("role")]
         public string? Role { get; set; }
 
-        public virtual CartView? CartView { get; set; }
-        public virtual FavouriteView? FavouritesView { get; set; }
-        public virtual ICollection<OrderView>? OrdersView { get; set; } = new List<OrderView>();
-        public virtual ICollection<AddressView> Addresses { get; set; } = new List<AddressView>();
+        [JsonIgnore] public virtual CartView? CartView { get; set; }
+        [JsonIgnore] public virtual FavouriteView? FavouritesView { get; set; }
+        [JsonIgnore] public virtual ICollection<OrderView>? OrdersView { get; set; } = new List<OrderView>();
+        [JsonIgnore] public virtual ICollection<AddressView> Addresses { get; set; } = new List<AddressView>();
     }
 
     [DataContract, MemoryPackable]
