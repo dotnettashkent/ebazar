@@ -84,6 +84,36 @@ namespace Service.Features.User
 
             return user == null ? throw new CustomException("User was not found") : user.MapToResultView();
         }
+
+        public async virtual Task<UserView> GetByToken(string token)
+        {
+            var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value;
+
+            var phoneNumber = GetPhoneNumber(token);
+
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+
+            var user = await dbContext.UsersEntities
+                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+
+            return user == null ? throw new CustomException("User was not found") : user.MapToView();
+        }
+
+        private string GetPhoneNumber(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
         #endregion
 
         #region Mutations
@@ -224,36 +254,6 @@ namespace Service.Features.User
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
-        }
-
-        public async virtual Task<UserView> GetByToken(string token)
-        {
-            var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value;
-
-            var phoneNumber = GetPhoneNumber(token);
-
-            var dbContext = dbHub.CreateDbContext();
-            await using var _ = dbContext.ConfigureAwait(false);
-
-            var user = await dbContext.UsersEntities
-                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
-
-            return user == null ? throw new CustomException("User was not found") : user.MapToView();
-        }
-
-        private string GetPhoneNumber(string token)
-        {
-            var jwtEncodedString = token.Substring(7);
-
-            var secondToken = new JwtSecurityToken(jwtEncodedString);
-            var json = secondToken.Payload.Values.FirstOrDefault();
-
-            if (json == null)
-                throw new CustomException("Payload is null");
-            else
-            {
-                return json?.ToString() ?? string.Empty;
-            }
         }
         #endregion
 
