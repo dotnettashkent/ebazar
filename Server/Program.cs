@@ -16,7 +16,7 @@ var dbType = cfg.GetValue<string>("DatabaseProviderConfiguration:ProviderType");
 services.AddDataBase<AppDbContext>(env, cfg, (DataBaseType)Enum.Parse(typeof(DataBaseType), dbType, true));
 
 // Register IDbContextFactory<AuditDbContext> before AddDataBase<AppDbContext>
-services.AddDbContextFactory<AuditDbContext>(options =>
+services.AddDbContext<AppDbContext>(options =>
 {
     // Configure options for AuditDbContext
     options.UseNpgsql(cfg.GetConnectionString("Default"));
@@ -26,6 +26,15 @@ services.AddDbContextFactory<AuditDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocument();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 
 #region STL.Fusion
 IComputedState.DefaultOptions.MustFlowExecutionContext = true;
@@ -54,6 +63,7 @@ else
 }*/
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

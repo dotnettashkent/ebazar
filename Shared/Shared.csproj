@@ -13,7 +13,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.0" />
     <PackageReference Include="Stl.Fusion.EntityFramework" Version="6.5.1" />
-	<PackageReference Include="EF.Audit.Core" Version="1.0.2" />
+	<PackageReference Include="EF.Audit.Core" Version="1.0.0" />
 	<PackageReference Include="Stl.Generators" Version="6.5.1" />
   </ItemGroup>
 

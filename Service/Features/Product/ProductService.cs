@@ -54,7 +54,7 @@ namespace Service.Features
             var product = await dbContext.Products
                 .FirstOrDefaultAsync(x => x.Id == Id);
 
-            return product == null ? throw new ValidationException("ProductEntity Not Found") : product.MapToView();
+            return product == null ? throw new CustomException("ProductEntity Not Found") : product.MapToView();
         }
 
         public async virtual Task<ProductView> Get(long Id, CancellationToken cancellationToken = default)
@@ -76,6 +76,7 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
+            #region Check image
 
             if (command.Entity.ImageOne != null)
             {
@@ -128,7 +129,7 @@ namespace Service.Features
                 }
             }
 
-
+            #endregion 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             ProductEntity entity = new ProductEntity();
             Reattach(entity, command.Entity, dbContext);
@@ -151,7 +152,7 @@ namespace Service.Features
             .FirstOrDefaultAsync(x => x.Id == command.Id);
 
             if (entity == null)
-                throw new ValidationException("ProductEntity Not Found");
+                throw new CustomException("ProductEntity Not Found");
             dbContext.Remove(entity);
             await dbContext.SaveChangesAsync();
         }
@@ -167,7 +168,7 @@ namespace Service.Features
                 .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
             if (entity == null)
-                throw new ValidationException("ProductEntity Not Found");
+                throw new CustomException("ProductEntity Not Found");
 
             Reattach(entity, command.Entity, dbContext);
 

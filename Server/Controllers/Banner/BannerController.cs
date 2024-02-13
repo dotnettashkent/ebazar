@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Stl.CommandR;
 using Shared.Features;
 using Shared.Infrastructures;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures.Extensions;
-using Stl.CommandR;
 
 namespace Server.Controllers.Banner
 {
@@ -20,20 +20,55 @@ namespace Server.Controllers.Banner
         }
 
         [HttpPost("create")]
-        public Task Create([FromForm] CreateBannerCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromForm] CreateBannerCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
         [HttpPut("udpate")]
-        public Task Update([FromBody] UpdateBannerCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update([FromBody] UpdateBannerCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Banner not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpDelete("delete")]
-        public async Task Delete([FromBody] DeleteBannerCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteBannerCommand command, CancellationToken cancellationToken)
         {
-            await commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Banner not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpGet("get/all")]
@@ -43,9 +78,22 @@ namespace Server.Controllers.Banner
         }
 
         [HttpGet("get")]
-        public async Task<BannerView> Get(long Id, CancellationToken cancellationToken)
+        public async Task<ActionResult<BannerView>> Get(long Id, CancellationToken cancellationToken)
         {
-            return await bannerService.Get(Id, cancellationToken);
+            try
+            {
+                var user = await bannerService.Get(Id);
+                return StatusCode(408, new { success = true, messages = user });
+            }
+            catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Banner not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
     }
 }

@@ -2,6 +2,8 @@
 using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Threading;
 
 namespace Server.Controllers.Favourite
 {
@@ -18,22 +20,52 @@ namespace Server.Controllers.Favourite
             this.favouriteService = favouriteService;
         }
 
-        [HttpPost("")]
-        public Task Create([FromBody] CreateFavouriteCommand command, CancellationToken cancellationToken)
+        [HttpPost("create")]
+        public async Task<ActionResult> Create([FromBody] CreateFavouriteCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
-        [HttpDelete("")]
-        public Task Delete([FromBody] DeleteFavouriteCommand command, CancellationToken cancellationToken)
+        [HttpDelete("delete")]
+        public async Task<ActionResult> Delete([FromBody] DeleteFavouriteCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "Favourite Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Favourite Not Found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
-        [HttpGet("get/favourites")]
-        public Task<TableResponse<ProductResultView>> GetAll(long userId)
+        [HttpGet("get/favourite")]
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(long userId, CancellationToken cancellationToken)
         {
-            return favouriteService.GetAll(userId);
+            try
+            {
+                var result = await favouriteService.GetAll(userId, cancellationToken);
+                return StatusCode(200, new { success = result });
+            }
+            catch (CustomException ex) when (ex.Message == "Favourite Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Favourite Not Found" });
+            }
         }
     }
 }

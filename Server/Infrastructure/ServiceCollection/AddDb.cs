@@ -41,12 +41,6 @@ public static class AddDB
                 var fakeTenant = new Tenant(default, "single", "single");
                 switch (dataBaseType)
                 {
-                    case DataBaseType.SQLite:
-                        var dbPath = "/App_{0:StorageId}.db".Interpolate(fakeTenant);
-                        db.UseSqlite($"Data Source={Directory.GetCurrentDirectory() + dbPath}",
-                            x => x.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-
-                        break;
                     case DataBaseType.PostgreSQL:
                         db.UseNpgsql(cfg!.GetConnectionString("Default")!.Interpolate(fakeTenant), x =>
                         {

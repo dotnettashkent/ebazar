@@ -73,7 +73,7 @@ namespace Service.Features
             }
             else
             {
-                throw new ValidationException("OrderEntity Not Found");
+                throw new CustomException("OrderEntity Not Found");
             }
 
             return orderResponse;
@@ -130,10 +130,9 @@ namespace Service.Features
 
             if (existingOrder == null)
             {
-                throw new ValidationException("OrderEntity Not Found");
+                throw new CustomException("OrderEntity Not Found");
             }
 
-            // Update properties other than the key
             existingOrder.City = command.Entity.City;
             existingOrder.Region = command.Entity.Region;
             existingOrder.Street = command.Entity.Street;
