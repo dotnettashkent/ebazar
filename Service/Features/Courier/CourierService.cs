@@ -83,10 +83,12 @@ namespace Service.Features.Courier
                 return;
             }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var user = await dbContext.UsersEntities
+            var courier = await dbContext.UsersEntities
             .FirstOrDefaultAsync(x => x.Id == command.Id);
-            if (user == null) throw new ValidationException("UserEntity Not Found");
-            dbContext.Remove(user);
+            if (courier == null) 
+                throw new CustomException("CourierEntity Not Found");
+
+            dbContext.Remove(courier);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
         public async virtual Task Update(UpdateCourierCommand command, CancellationToken cancellationToken = default)
@@ -97,13 +99,13 @@ namespace Service.Features.Courier
                 return;
             }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var user = await dbContext.Couriers
+            var courier = await dbContext.Couriers
             .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-            if (user == null) throw new ValidationException("CourierEntity Not Found");
+            if (courier == null) 
+                throw new CustomException("CourierEntity Not Found");
 
-            Reattach(user, command.Entity, dbContext);
-
+            Reattach(courier, command.Entity, dbContext);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 

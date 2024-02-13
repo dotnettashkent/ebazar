@@ -58,7 +58,7 @@ public class BannerService : IBannerService
         var Banner = await dbContext.Banners
         .FirstOrDefaultAsync(x => x.Id == Id);
 
-        return Banner == null ? throw new ValidationException("BannerEntity Not Found") : Banner.MapToView();
+        return Banner == null ? throw new CustomException("BannerEntity Not Found") : Banner.MapToView();
     }
     #endregion
     #region Mutations
@@ -97,7 +97,7 @@ public class BannerService : IBannerService
         }
         await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
         var Banner = await dbContext.Banners
-        .FirstOrDefaultAsync(x => x.Id == command.Id) ?? throw new ValidationException("BannerEntity Not Found");
+        .FirstOrDefaultAsync(x => x.Id == command.Id) ?? throw new CustomException("BannerEntity Not Found");
         await fileService.DeleteImage(Banner.Photo);
         dbContext.RemoveRange(Banner);
         await dbContext.SaveChangesAsync(cancellationToken);
@@ -115,7 +115,7 @@ public class BannerService : IBannerService
         var brand = await dbContext.Banners
         .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-        if (brand == null) throw new ValidationException("BannerEntity Not Found");
+        if (brand == null) throw new CustomException("BannerEntity Not Found");
 
         Reattach(brand, command.Entity, dbContext);
         await dbContext.SaveChangesAsync(cancellationToken);

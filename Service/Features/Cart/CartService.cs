@@ -121,7 +121,10 @@ namespace Service.Features
 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == command.Entity.UserId);
-
+            if (cart == null)
+            {
+                throw new CustomException("CartEntity Not Found");
+            }
             if (cart != null && cart.Product != null)
             {
                 var cartProducts = JsonSerializer.Deserialize<List<ProductList>>(cart.Product);

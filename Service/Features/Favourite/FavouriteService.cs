@@ -89,6 +89,10 @@ namespace Service.Features
                     exists.Products.Remove(item);
                 }
             }
+            else if(exists == null)
+            {
+                throw new CustomException("Favourite Not Found");
+            }
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }

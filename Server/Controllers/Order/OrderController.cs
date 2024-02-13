@@ -51,7 +51,7 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
             {
-                return StatusCode(404, new { success = false, messages = "Order not found" });
+                return StatusCode(408, new { success = false, messages = "Order not found" });
             }
 
             catch (Exception ex)
@@ -70,7 +70,7 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
             {
-                return StatusCode(404, new { success = false, messages = "Order not found" });
+                return StatusCode(408, new { success = false, messages = "Order not found" });
             }
 
             catch (Exception ex)

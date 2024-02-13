@@ -29,7 +29,7 @@ namespace Server.Controllers.Product
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(404, new { success = false, messages = "Product Not Found" });
+                return StatusCode(408, new { success = false, messages = "Product Not Found" });
             }
 
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace Server.Controllers.Product
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(404, new { success = false, messages = "Product not found" });
+                return StatusCode(408, new { success = false, messages = "Product not found" });
             }
 
             catch (Exception ex)
@@ -67,7 +67,7 @@ namespace Server.Controllers.Product
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(404, new { success = false, messages = "Product not found" });
+                return StatusCode(408, new { success = false, messages = "Product not found" });
             }
 
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace Server.Controllers.Product
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(404, new { success = false, messages = "Product not found" });
+                return StatusCode(408, new { success = false, messages = "Product not found" });
             }
 
             catch (Exception ex)

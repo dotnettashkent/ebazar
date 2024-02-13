@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Stl.CommandR;
 using Shared.Features;
 using Shared.Infrastructures;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures.Extensions;
-using Stl.CommandR;
 
 namespace Server.Controllers.Courier
 {
@@ -14,25 +14,60 @@ namespace Server.Controllers.Courier
         private readonly ICommander commander;
         public CourierController(ICourierService courierService, ICommander commander)
         {
-            this.courierService = courierService;
             this.commander = commander;
+            this.courierService = courierService;
         }
 
         [HttpPost("create")]
-        public Task Create([FromBody] CreateCourierCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromBody] CreateCourierCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
         [HttpPut("udpate")]
-        public Task Update([FromBody] UpdateCourierCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update([FromBody] UpdateCourierCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "CourierEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Courier not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpDelete("delete")]
-        public async Task Delete([FromBody] DeleteCourierCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteCourierCommand command, CancellationToken cancellationToken)
         {
-            await commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "CourierEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Courier not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpGet("get/all")]
@@ -42,9 +77,22 @@ namespace Server.Controllers.Courier
         }
 
         [HttpGet("get")]
-        public async Task<CourierView> Get(long Id, CancellationToken cancellationToken)
+        public async Task<ActionResult<CourierView>> Get(long Id, CancellationToken cancellationToken)
         {
-            return await courierService.GetById(Id, cancellationToken);
+            try
+            {
+                var user = await courierService.GetById(Id);
+                return StatusCode(408, new { success = true, messages = user });
+            }
+            catch (CustomException ex) when (ex.Message == "CourierEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Courier not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
     }
 }
