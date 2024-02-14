@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Features;
+using Shared.Infrastructures;
 
 namespace Service.Data
 {
@@ -41,6 +42,17 @@ namespace Service.Data
                 .HasColumnType("jsonb")
                 .HasColumnName("products");
             });
+
+            modelBuilder.Entity<UserEntity>().HasData(
+                new UserEntity
+                {
+                    Id = 1,
+                    PhoneNumber = "Admin",
+                    Password = "admin",
+                    Role = UserRole.Admin.ToString(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = null
+                });
             base.OnModelCreating(modelBuilder);
         }
     }

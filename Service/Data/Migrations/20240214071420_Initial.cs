@@ -349,6 +349,11 @@ namespace Service.Data.Migrations
                         principalColumn: "id");
                 });
 
+            migrationBuilder.InsertData(
+                table: "project_users",
+                columns: new[] { "id", "created_at", "password", "phone_number", "role", "updated_at" },
+                values: new object[] { 1L, new DateTime(2024, 2, 14, 7, 14, 20, 494, DateTimeKind.Utc).AddTicks(81), "admin", "Admin", "Admin", null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_UserIdentities_Id",
                 table: "UserIdentities",

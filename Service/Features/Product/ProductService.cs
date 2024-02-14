@@ -31,11 +31,11 @@ namespace Service.Features
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var product = from s in dbContext.Products select s;
-            if (!String.IsNullOrEmpty(options.Search))
+            if (!String.IsNullOrEmpty(options.search))
             {
                 product = product.Where(s =>
-                         s.NameUz != null && s.NameUz.Contains(options.Search)
-                         || s.NameRu.Contains(options.Search)
+                         s.NameUz != null && s.NameUz.Contains(options.search)
+                         || s.NameRu.Contains(options.search)
                 );
             }
 
@@ -44,8 +44,8 @@ namespace Service.Features
 
             var count = await product.AsNoTracking().CountAsync();
             var items = await product.AsNoTracking().Paginate(options).ToListAsync();
-            decimal totalPage = (decimal)count / (decimal)options.PageSize;
-            return new TableResponse<ProductResultView>() { Items = items.MapToViewListResult(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
+            return new TableResponse<ProductResultView>() { Items = items.MapToViewListResult(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
         }
         public async virtual Task<ProductResultView> GetById(long Id, CancellationToken cancellationToken = default)
         {
@@ -188,19 +188,21 @@ namespace Service.Features
 
         }
 
-        private void Sorting(ref IQueryable<ProductEntity> offering, TableOptions options) => offering = options.SortLabel switch
+        private void Sorting(ref IQueryable<ProductEntity> offering, TableOptions options) => offering = options.sort_label switch
         {
-            "NameUz" => offering.Ordering(options, o => o.NameUz),
-            "NameRu" => offering.Ordering(options, o => o.NameRu),
-            "BrandName" => offering.Ordering(options, o => o.BrandName),
-            "DescriptionUz" => offering.Ordering(options, o => o.DescriptionUz),
-            "DescriptionRu" => offering.Ordering(options, o => o.DescriptionRu),
-            "Price" => offering.Ordering(options, o => o.Price),
-            "DiscountPrice" => offering.Ordering(options, o => o.DiscountPrice),
-            "Tag" => offering.Ordering(options, o => o.Tag),
-            "CreatedAt" => offering.Ordering(options, o => o.CreatedAt),
-            "IsActive" => offering.Ordering(options, o => o.IsActive),
-
+            "name_uz" => offering.Ordering(options, o => o.NameUz),
+            "name_ru" => offering.Ordering(options, o => o.NameRu),
+            "brand_name" => offering.Ordering(options, o => o.BrandName),
+            "count" => offering.Ordering(options, o => o.Count),
+            "info_count" => offering.Ordering(options, o => o.InfoCount),
+            "price" => offering.Ordering(options, o => o.Price),
+            "price_type" => offering.Ordering(options, o => o.PriceType),
+            "is_delivery_free" => offering.Ordering(options, o => o.IsDeliveryFree),
+            "tag" => offering.Ordering(options, o => o.Tag),
+            "unit" => offering.Ordering(options, o => o.Unit),
+            "is_active" => offering.Ordering(options, o => o.IsActive),
+            "category" => offering.Ordering(options, o => o.Category),
+            "created_at" => offering.Ordering(options, o => o.CreatedAt),
             _ => offering.OrderByDescending(o => o.Id)
         };
         #endregion

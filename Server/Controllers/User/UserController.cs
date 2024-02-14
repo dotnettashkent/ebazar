@@ -117,11 +117,11 @@ namespace Server.Controllers.User
 
 
         [HttpGet("return/user")]
-        public async Task<ActionResult<UserView>> Return([FromHeader] string token)
+        public async Task<ActionResult<UserView>> Return([FromHeader] string token, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await userService.GetByToken(token);
+                var result = await userService.GetByToken(token, cancellationToken);
                 return StatusCode(200, new { success = true, message = result });
             }
             catch (CustomException ex) when (ex.Message == "User was not found")

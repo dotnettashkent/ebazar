@@ -578,6 +578,16 @@ namespace Service.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("project_users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            CreatedAt = new DateTime(2024, 2, 14, 7, 14, 20, 494, DateTimeKind.Utc).AddTicks(81),
+                            Password = "admin",
+                            PhoneNumber = "Admin",
+                            Role = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbSessionInfo<string>", b =>

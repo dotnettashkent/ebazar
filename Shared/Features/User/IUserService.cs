@@ -18,7 +18,7 @@ namespace Shared.Features
 
         Task<string> Login(string phoneNumber, string password);
 
-        Task<UserView> GetByToken(string token);
+        Task<UserView> GetByToken(string token, CancellationToken cancellationToken);
 
         [CommandHandler]
         Task<bool> Create(CreateUserCommand command, CancellationToken cancellationToken = default);
