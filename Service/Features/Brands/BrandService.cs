@@ -54,7 +54,7 @@ namespace Service.Features
             var category = await dbContext.Brands
             .FirstOrDefaultAsync(x => x.Id == Id);
 
-            return category == null ? throw new ValidationException("BrandEntity Not Found") : category.MapToView();
+            return category == null ? throw new CustomException("BrandEntity Not Found") : category.MapToView();
         }
         #endregion
 
@@ -92,7 +92,8 @@ namespace Service.Features
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var brand = await dbContext.Brands
             .FirstOrDefaultAsync(x => x.Id == command.Id);
-            if (brand == null) throw new ValidationException("BrandEntity Not Found");
+            if (brand == null) 
+                throw new CustomException("BrandEntity Not Found");
             await fileService.DeleteImage(brand.ImageOne);
             dbContext.Remove(brand);
             await dbContext.SaveChangesAsync();
@@ -111,7 +112,7 @@ namespace Service.Features
             var brand = await dbContext.Brands
             .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-            if (brand == null) throw new ValidationException("BrandEntity Not Found");
+            if (brand == null) throw new CustomException("BrandEntity Not Found");
 
             Reattach(brand, command.Entity, dbContext);
 

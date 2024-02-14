@@ -18,27 +18,52 @@ namespace Server.Controllers
         }
 
         [HttpPost("")]
-        public Task Create([FromBody] CreateCartCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromBody] CreateCartCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpDelete("delete")]
-        public Task Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "CartEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Cart not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
-        /*[HttpPut("delete/all")]
-        public async Task DeleteAll(long UserId, CancellationToken cancellationToken)
-        {
-			await cartService.RemoveAll(UserId,cancellationToken);
-        }*/
-
         [HttpGet("get/carts")]
-        public Task<TableResponse<ProductResultView>> GetAll(long userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(long userId, CancellationToken cancellationToken)
         {
-            return cartService.GetAll(userId, cancellationToken);
+
+            try
+            {
+                return await cartService.GetAll(userId, cancellationToken);
+            }
+            catch(CustomException ex) when (ex.Message == "CartEntity Not Found") 
+            {
+                return StatusCode(408, new { success = false, messages = "Cart not found" });
+            }
+
         }
     }
 }

@@ -1,19 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Stl.Async;
+using Stl.Fusion;
+using System.Data;
+using System.Text;
 using Service.Data;
+using System.Reactive;
 using Shared.Features;
 using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Reactive;
 using System.Security.Claims;
-using System.Text;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Shared.Infrastructures.Extensions;
+using Microsoft.Extensions.Configuration;
 
 namespace Service.Features.User
 {
@@ -44,11 +43,7 @@ namespace Service.Features.User
             {
                 var search = options.Search.ToLower();
                 users = users.Where(s =>
-                         s.FirstName != null && s.FirstName.ToLower().Contains(search)
-                        || s.LastName != null && s.LastName.ToLower().Contains(search)
-                        || s.MiddleName != null && s.MiddleName.ToLower().Contains(search)
-                        || s.PhoneNumber != null && s.PhoneNumber.ToLower().Contains(search)
-                        || s.Email != null && s.Email.Contains(search)
+                         s.PhoneNumber != null && s.PhoneNumber.ToLower().Contains(search)
                 );
             }
 
@@ -57,7 +52,13 @@ namespace Service.Features.User
             var count = await users.AsNoTracking().CountAsync();
             var items = await users.AsNoTracking().Paginate(options).ToListAsync();
             decimal totalPage = (decimal)count / (decimal)options.PageSize;
-            return new TableResponse<UserView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
+            return new TableResponse<UserView>() 
+            { 
+                Items = items.MapToViewList(), 
+                TotalItems = count, 
+                AllPage = (int)Math.Ceiling(totalPage), 
+                CurrentPage = options.Page 
+            };
         }
 
         public async virtual Task<UserView> GetById(long id, CancellationToken cancellationToken = default)
@@ -71,7 +72,7 @@ namespace Service.Features.User
                 .Include(x => x.Favourite)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            return user == null ? throw new ValidationException("User was not found") : user.MapToView();
+            return user == null ? throw new CustomException("User was not found") : user.MapToView();
         }
 
         public async virtual Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default)
@@ -81,20 +82,52 @@ namespace Service.Features.User
             var user = await dbContext.UsersEntities
                 .FirstOrDefaultAsync(x => x.Id == Id);
 
-            return user == null ? throw new ValidationException("User was not found") : user.MapToResultView();
+            return user == null ? throw new CustomException("User was not found") : user.MapToResultView();
+        }
+
+        public async virtual Task<UserView> GetByToken(string token)
+        {
+            var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value;
+
+            var phoneNumber = GetPhoneNumber(token);
+
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+
+            var user = await dbContext.UsersEntities
+                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+
+            return user == null ? throw new CustomException("User was not found") : user.MapToView();
+        }
+
+        private string GetPhoneNumber(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
         }
         #endregion
 
         #region Mutations
-        public async virtual Task Create(CreateUserCommand command, CancellationToken cancellationToken = default)
+        public async virtual Task<bool> Create(CreateUserCommand command, CancellationToken cancellationToken = default)
         {
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
-                return;
+                return false;
             }
+
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var exists = await dbContext.UsersEntities.FirstOrDefaultAsync(x => x.PhoneNumber == command.Entity.PhoneNumber);
+
             if (exists == null)
             {
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Entity.Password);
@@ -104,12 +137,16 @@ namespace Service.Features.User
 
                 dbContext.Update(user);
                 await dbContext.SaveChangesAsync(cancellationToken);
+                return true;
             }
             else
             {
-                throw new Exception("This phone number already exists");
+                throw new CustomException("User already exists");
             }
         }
+
+
+
         public async virtual Task Delete(DeleteUserCommand command, CancellationToken cancellationToken = default)
         {
             if (Computed.IsInvalidating())
@@ -120,7 +157,8 @@ namespace Service.Features.User
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var user = await dbContext.UsersEntities
             .FirstOrDefaultAsync(x => x.Id == command.Id);
-            if (user == null) throw new ValidationException("UserEntity Not Found");
+            if (user == null) 
+                throw new CustomException("UserEntity Not Found");
             dbContext.Remove(user);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
@@ -132,15 +170,25 @@ namespace Service.Features.User
                 return;
             }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var user = await dbContext.UsersEntities
-            .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
+            var user = await dbContext.UsersEntities.FirstOrDefaultAsync(x => x.Id == command.UserId, cancellationToken);
 
-            if (user == null) throw new ValidationException("UserEntity Not Found");
+            if (user == null)
+                throw new CustomException("UserEntity Not Found");
 
-            Reattach(user, command.Entity, dbContext);
+            user.PhoneNumber = command.Entity.PhoneNumber;
+
+            // Generate a new salt
+            string salt = BCrypt.Net.BCrypt.GenerateSalt();
+
+            // Hash the password with the new salt
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Entity.Password, salt);
+
+            user.Password = passwordHash;
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+
+
 
         #endregion
 
@@ -155,10 +203,6 @@ namespace Service.Features.User
 
         private void Sorting(ref IQueryable<UserEntity> unit, TableOptions options) => unit = options.SortLabel switch
         {
-            "FirstName" => unit.Ordering(options, o => o.FirstName),
-            "LastName" => unit.Ordering(options, o => o.LastName),
-            "MiddleName" => unit.Ordering(options, o => o.MiddleName),
-            "Email" => unit.Ordering(options, o => o.Email),
             "PhoneNumber" => unit.Ordering(options, o => o.PhoneNumber),
             "CreatedAt" => unit.Ordering(options, o => o.CreatedAt),
             _ => unit.OrderBy(o => o.CreatedAt),
@@ -184,7 +228,7 @@ namespace Service.Features.User
             }
             else
             {
-                throw new Exception ("User was not found");
+                throw new CustomException ("User was not found");
             }
         }
 
@@ -199,10 +243,6 @@ namespace Service.Features.User
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JwtSettings:SecretKey").Value!));
 
             var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value!;
-            Console.WriteLine($"Secret Key: {secretKey}");
-            Console.WriteLine($"Key Size: {Encoding.UTF8.GetBytes(secretKey).Length * 8} bits");
-
-
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -213,37 +253,7 @@ namespace Service.Features.User
                 );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return "Bearer " + jwt;
-        }
-
-        public async virtual Task<UserView> GetByToken(string token)
-        {
-            var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value;
-
-            var phoneNumber = GetPhoneNumber(token);
-
-            var dbContext = dbHub.CreateDbContext();
-            await using var _ = dbContext.ConfigureAwait(false);
-
-            var user = await dbContext.UsersEntities
-                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
-
-            return user == null ? throw new ValidationException("User was not found") : user.MapToView();
-        }
-
-        private string GetPhoneNumber(string token)
-        {
-            var jwtEncodedString = token.Substring(7);
-
-            var secondToken = new JwtSecurityToken(jwtEncodedString);
-            var json = secondToken.Payload.Values.FirstOrDefault();
-
-            if (json == null)
-                throw new Exception("Payload is null");
-            else
-            {
-                return json?.ToString() ?? string.Empty;
-            }
+            return jwt;
         }
         #endregion
 

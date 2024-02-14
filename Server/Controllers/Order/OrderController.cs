@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Service.Features;
 using Shared.Features;
 using Shared.Infrastructures;
 using Shared.Infrastructures.Extensions;
@@ -19,9 +20,18 @@ namespace Server.Controllers
         }
 
         [HttpPost("create")]
-        public Task Create(CreateOrderCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(CreateOrderCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
 
@@ -32,15 +42,41 @@ namespace Server.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<OrderResponse> Get([FromQuery] long UserId, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<OrderResponse>> Get([FromQuery] long UserId, CancellationToken cancellationToken = default)
         {
-            return await orderServices.Get(UserId, cancellationToken);
+            try
+            {
+                var user = await orderServices.Get(UserId, cancellationToken);
+                return user;
+            }
+            catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Order not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
         [HttpPut("update")]
-        public Task Update(UpdateOrderCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update(UpdateOrderCommand command, CancellationToken cancellationToken)
         {
-            return commander.Call(command, cancellationToken);
+            try
+            {
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Order not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
         }
 
     }

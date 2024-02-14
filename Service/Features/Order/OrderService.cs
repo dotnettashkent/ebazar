@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Service.Data;
-using Service.Features.Order;
-using Shared.Features;
-using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
+﻿using Stl.Async;
 using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
+using Service.Data;
+using Shared.Features;
 using System.Reactive;
 using System.Text.Json;
+using Shared.Infrastructures;
+using Service.Features.Order;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructures.Extensions;
 
 namespace Service.Features
 {
@@ -73,7 +72,7 @@ namespace Service.Features
             }
             else
             {
-                throw new ValidationException("OrderEntity Not Found");
+                throw new CustomException("OrderEntity Not Found");
             }
 
             return orderResponse;
@@ -130,10 +129,9 @@ namespace Service.Features
 
             if (existingOrder == null)
             {
-                throw new ValidationException("OrderEntity Not Found");
+                throw new CustomException("OrderEntity Not Found");
             }
 
-            // Update properties other than the key
             existingOrder.City = command.Entity.City;
             existingOrder.Region = command.Entity.Region;
             existingOrder.Street = command.Entity.Street;
