@@ -28,7 +28,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocument();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddDefaultPolicy(builder =>
     {
         builder.AllowAnyOrigin()
                .AllowAnyHeader()
@@ -63,7 +63,8 @@ else
 }*/
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors();
+app.UseStaticFiles();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
