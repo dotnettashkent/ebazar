@@ -32,11 +32,11 @@ public class BannerService : IBannerService
         await using var _ = dbContext.ConfigureAwait(false);
         var Banner = from s in dbContext.Banners select s;
 
-        if (!String.IsNullOrEmpty(options.Search))
+        if (!String.IsNullOrEmpty(options.search))
         {
             Banner = Banner.Where(s =>
-                     s.Title.Contains(options.Search)
-                    || s.Description.Contains(options.Search)
+                     s.Title.Contains(options.search)
+                    || s.Description.Contains(options.search)
             );
         }
 
@@ -45,9 +45,9 @@ public class BannerService : IBannerService
         var count = await Banner.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
         var items = await Banner.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
 
-        decimal totalPage = (decimal)count / (decimal)options.PageSize;
+        decimal totalPage = (decimal)count / (decimal)options.page_size;
 
-        return new TableResponse<BannerView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
+        return new TableResponse<BannerView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
     }
 
     //[ComputeMethod]
@@ -133,7 +133,7 @@ public class BannerService : IBannerService
         BannerMapper.From(BannerView, Banner);
     }
 
-    private void Sorting(ref IQueryable<BannerEntity> Banner, TableOptions options) => Banner = options.SortLabel switch
+    private void Sorting(ref IQueryable<BannerEntity> Banner, TableOptions options) => Banner = options.sort_label switch
     {
         "Title" => Banner.Ordering(options, o => o.Title),
         "Locale" => Banner.Ordering(options, o => o.Locale),

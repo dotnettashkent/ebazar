@@ -30,12 +30,12 @@ namespace Service.Features
             await using var _ = dbContext.ConfigureAwait(false);
             var address = from s in dbContext.Addresses select s;
 
-            if (!String.IsNullOrEmpty(options.Search))
+            if (!String.IsNullOrEmpty(options.search))
             {
                 address = address.Where(s =>
-                         s.Region.Contains(options.Search)
-                         || s.District.Contains(options.Search)
-                         || s.Street.Contains(options.Search)
+                         s.Region.Contains(options.search)
+                         || s.District.Contains(options.search)
+                         || s.Street.Contains(options.search)
                 );
             }
 
@@ -118,7 +118,7 @@ namespace Service.Features
             AddressMapper.From(view, entity);
         }
 
-        private void Sorting(ref IQueryable<AddressEntity> unit, TableOptions options) => unit = options.SortLabel switch
+        private void Sorting(ref IQueryable<AddressEntity> unit, TableOptions options) => unit = options.sort_label switch
         {
             "Id" => unit.Ordering(options, o => o.Id),
             "Region" => unit.Ordering(options, o => o.Region),

@@ -34,12 +34,12 @@ namespace Service.Features
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var orders = from s in dbContext.Orders select s;
-            if (!String.IsNullOrEmpty(options.Search))
+            if (!String.IsNullOrEmpty(options.search))
             {
                 orders = orders.Where(s =>
-                         s.Region.Contains(options.Search)
-                         || s.FirstName.Contains(options.Search)
-                         || s.LastName.Contains(options.Search)
+                         s.Region.Contains(options.search)
+                         || s.FirstName.Contains(options.search)
+                         || s.LastName.Contains(options.search)
                 );
             }
 
@@ -47,8 +47,8 @@ namespace Service.Features
 
             var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
             var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
-            decimal totalPage = (decimal)count / (decimal)options.PageSize;
-            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
 
         }
 
@@ -153,7 +153,7 @@ namespace Service.Features
         #endregion
 
         #region Helpers
-        private void Sorting(ref IQueryable<OrderEntity> unit, TableOptions options) => unit = options.SortLabel switch
+        private void Sorting(ref IQueryable<OrderEntity> unit, TableOptions options) => unit = options.sort_label switch
         {
             "City" => unit.Ordering(options, o => o.City),
             "Region" => unit.Ordering(options, o => o.Region),
