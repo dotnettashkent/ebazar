@@ -8,6 +8,7 @@ using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Service.Features.ProductCategory;
 using Shared.Infrastructures.Extensions;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Service.Features
 {
@@ -27,7 +28,12 @@ namespace Service.Features
 		[ComputeMethod]
 		public virtual async Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
-			await Invalidate();
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            await Invalidate();
 			var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var category = from s in dbContext.ProductCategories select s;
@@ -47,9 +53,14 @@ namespace Service.Features
 		}
 
 		[ComputeMethod]
-		public async virtual Task<ProductCategoryView> Get(long Id, CancellationToken cancellationToken = default)
+		public async virtual Task<ProductCategoryView> Get(long Id, string token, CancellationToken cancellationToken = default)
 		{
-			var dbContext = dbHub.CreateDbContext();
+            var isValid = ValidateToken(token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            var dbContext = dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var category = await dbContext.ProductCategories
 				.FirstOrDefaultAsync(x => x.Id == Id);
@@ -60,7 +71,12 @@ namespace Service.Features
 		#region Mutations
 		public async virtual Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            if (Computed.IsInvalidating())
 			{
 				_ = await Invalidate();
 				return;
@@ -76,7 +92,12 @@ namespace Service.Features
 
 		public async virtual Task Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            if (Computed.IsInvalidating())
 			{
 				_ = await Invalidate();
 				return;
@@ -91,7 +112,12 @@ namespace Service.Features
 
 		public async virtual Task Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            if (Computed.IsInvalidating())
 			{
 				_ = await Invalidate();
 				return;
@@ -128,6 +154,27 @@ namespace Service.Features
 			_ => tag.OrderBy(o => o.Id),
 
 		};
-		#endregion
-	}
+        #endregion
+        #region Token
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
+        #endregion
+    }
 }

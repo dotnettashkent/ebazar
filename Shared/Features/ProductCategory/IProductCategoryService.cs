@@ -12,7 +12,7 @@ namespace Shared.Features
 		[ComputeMethod]
 		Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 		[ComputeMethod]
-		Task<ProductCategoryView> Get(long Id, CancellationToken cancellationToken = default);
+		Task<ProductCategoryView> Get(long Id, string token, CancellationToken cancellationToken = default);
 		[CommandHandler]
 		Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default);
 		[CommandHandler]
