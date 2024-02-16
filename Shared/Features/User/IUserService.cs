@@ -4,6 +4,7 @@ using Stl.Async;
 using Stl.CommandR.Configuration;
 using Stl.Fusion;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace Shared.Features
 {
@@ -17,8 +18,9 @@ namespace Shared.Features
         Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default);
 
         Task<string> Login(string phoneNumber, string password);
+        Task<string> AdminLogin(string phoneNumber, string password);
 
-        Task<UserView> GetByToken(string token);
+        Task<UserView> GetByToken(string token, CancellationToken cancellationToken);
 
         [CommandHandler]
         Task<bool> Create(CreateUserCommand command, CancellationToken cancellationToken = default);

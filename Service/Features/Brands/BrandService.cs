@@ -32,11 +32,11 @@ namespace Service.Features
             await using var _ = dbContext.ConfigureAwait(false);
             var brand = from s in dbContext.Brands select s;
 
-            if (!String.IsNullOrEmpty(options.Search))
+            if (!String.IsNullOrEmpty(options.search))
             {
                 brand = brand.Where(s =>
-                         s.Name.Contains(options.Search)
-                        || s.IsPopular.Contains(options.Search)
+                         s.Name.Contains(options.search)
+                        || s.IsPopular.Contains(options.search)
                 );
             }
 
@@ -44,8 +44,8 @@ namespace Service.Features
 
             var count = await brand.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
             var items = await brand.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
-            decimal totalPage = (decimal)count / (decimal)options.PageSize;
-            return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.Page };
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
+            return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
         }
         public async virtual Task<BrandView> Get(long Id, CancellationToken cancellationToken = default)
         {
@@ -126,7 +126,7 @@ namespace Service.Features
         {
             BrandMapper.From(brandView, brand);
         }
-        private void Sorting(ref IQueryable<BrandEntity> brand, TableOptions options) => brand = options.SortLabel switch
+        private void Sorting(ref IQueryable<BrandEntity> brand, TableOptions options) => brand = options.sort_label switch
         {
             "Id" => brand.Ordering(options, o => o.Id),
             "Name" => brand.Ordering(options, o => o.Name),

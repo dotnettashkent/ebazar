@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Features;
+using Shared.Infrastructures;
 
 namespace Service.Data
 {
@@ -17,8 +18,8 @@ namespace Service.Data
         public virtual DbSet<FileEntity> Files { get; set; }
         public virtual DbSet<OrderEntity> Orders { get; set; }
         public virtual DbSet<ProductEntity> Products { get; set; }
-        /*public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
-		public virtual DbSet<ProductSubCategoryEntity> ProductSubCategories { get; set; }*/
+        public virtual DbSet<ProductCategoryEntity> ProductCategories { get; set; }
+        public virtual DbSet<ProductSubCategoryEntity> ProductSubCategories { get; set; }
         public virtual DbSet<UserEntity> UsersEntities { get; set; }
         //public virtual DbSet<LocaleEntity> Locales { get; set; }
 
@@ -41,6 +42,17 @@ namespace Service.Data
                 .HasColumnType("jsonb")
                 .HasColumnName("products");
             });
+
+            modelBuilder.Entity<UserEntity>().HasData(
+                new UserEntity
+                {
+                    Id = 1,
+                    PhoneNumber = "Admin",
+                    Password = "admin",
+                    Role = UserRole.Admin.ToString(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = null
+                });
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -39,9 +39,9 @@ namespace Service.Features.User
             await using var _ = dbContext.ConfigureAwait(false);
             var users = from s in dbContext.UsersEntities select s;
 
-            if (!String.IsNullOrEmpty(options.Search))
+            if (!String.IsNullOrEmpty(options.search))
             {
-                var search = options.Search.ToLower();
+                var search = options.search.ToLower();
                 users = users.Where(s =>
                          s.PhoneNumber != null && s.PhoneNumber.ToLower().Contains(search)
                 );
@@ -51,13 +51,13 @@ namespace Service.Features.User
 
             var count = await users.AsNoTracking().CountAsync();
             var items = await users.AsNoTracking().Paginate(options).ToListAsync();
-            decimal totalPage = (decimal)count / (decimal)options.PageSize;
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
             return new TableResponse<UserView>() 
             { 
                 Items = items.MapToViewList(), 
                 TotalItems = count, 
                 AllPage = (int)Math.Ceiling(totalPage), 
-                CurrentPage = options.Page 
+                CurrentPage = options.page 
             };
         }
 
@@ -85,7 +85,7 @@ namespace Service.Features.User
             return user == null ? throw new CustomException("User was not found") : user.MapToResultView();
         }
 
-        public async virtual Task<UserView> GetByToken(string token)
+        public async virtual Task<UserView> GetByToken(string token, CancellationToken cancellationToken)
         {
             var secretKey = configuration.GetSection("JwtSettings:SecretKey").Value;
 
@@ -95,7 +95,7 @@ namespace Service.Features.User
             await using var _ = dbContext.ConfigureAwait(false);
 
             var user = await dbContext.UsersEntities
-                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
 
             return user == null ? throw new CustomException("User was not found") : user.MapToView();
         }
@@ -201,7 +201,7 @@ namespace Service.Features.User
             UserMapper.FromResult(userView, user);
         }
 
-        private void Sorting(ref IQueryable<UserEntity> unit, TableOptions options) => unit = options.SortLabel switch
+        private void Sorting(ref IQueryable<UserEntity> unit, TableOptions options) => unit = options.sort_label switch
         {
             "PhoneNumber" => unit.Ordering(options, o => o.PhoneNumber),
             "CreatedAt" => unit.Ordering(options, o => o.CreatedAt),
@@ -228,8 +228,28 @@ namespace Service.Features.User
             }
             else
             {
-                throw new CustomException ("User was not found");
+                throw new CustomException("User was not found");
             }
+        }
+
+        public async Task<string> AdminLogin(string phoneNumber, string password)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = await dbContext.UsersEntities
+                .Where(x => x.PhoneNumber == phoneNumber && x.Role == "Admin")
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new CustomException("Admin user not found");
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                throw new CustomException("Admin user not found");
+            }
+
+            return GenerateToken(phoneNumber);
         }
 
         private string GenerateToken(string phoneNumber)

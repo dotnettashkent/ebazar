@@ -1,4 +1,4 @@
-﻿/*using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Features
@@ -13,4 +13,3 @@ namespace Shared.Features
 		public string Name { get; set; } = null!;
 	}
 }
-*/

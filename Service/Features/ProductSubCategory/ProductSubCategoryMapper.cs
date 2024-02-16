@@ -1,4 +1,4 @@
-﻿/*using Riok.Mapperly.Abstractions;
+﻿using Riok.Mapperly.Abstractions;
 using Shared.Features;
 
 namespace Service.Features
@@ -25,4 +25,3 @@ namespace Service.Features
 		#endregion
 	}
 }
-*/

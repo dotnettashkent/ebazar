@@ -1,4 +1,4 @@
-﻿/*using MemoryPack;
+﻿using MemoryPack;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
 
@@ -19,4 +19,3 @@ namespace Shared.Features
 		public override int GetHashCode() => Id.GetHashCode();
 	}
 }
-*/

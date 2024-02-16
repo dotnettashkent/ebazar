@@ -1,4 +1,4 @@
-﻿/*using Stl.Async;
+﻿using Stl.Async;
 using Stl.Fusion;
 using Service.Data;
 using Shared.Features;
@@ -8,7 +8,6 @@ using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Service.Features.ProductCategory;
 using Shared.Infrastructures.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
@@ -23,7 +22,7 @@ namespace Service.Features
 		#endregion
 
 		#region Queries
-		
+
 
 		[ComputeMethod]
 		public virtual async Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
@@ -33,10 +32,10 @@ namespace Service.Features
 			await using var _ = dbContext.ConfigureAwait(false);
 			var category = from s in dbContext.ProductCategories select s;
 
-			if (!String.IsNullOrEmpty(options.Search))
+			if (!String.IsNullOrEmpty(options.search))
 			{
 				category = category.Where(s =>
-						 s.Name.Contains(options.Search)
+						 s.Name.Contains(options.search)
 				);
 			}
 
@@ -55,7 +54,7 @@ namespace Service.Features
 			var category = await dbContext.ProductCategories
 				.FirstOrDefaultAsync(x => x.Id == Id);
 
-			return category == null ? throw new ValidationException("ProductSubCategoryEntity Not Found") : category.MapToView();
+			return category == null ? throw new CustomException("ProductCategoryEntity Not Found") : category.MapToView();
 		}
 		#endregion
 		#region Mutations
@@ -85,7 +84,7 @@ namespace Service.Features
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 			var category = await dbContext.ProductCategories
 				.FirstOrDefaultAsync(x => x.Id == command.Id);
-			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+			if (category == null) throw new CustomException("ProductCategoryEntity Not Found");
 			dbContext.Remove(category);
 			await dbContext.SaveChangesAsync();
 		}
@@ -101,14 +100,14 @@ namespace Service.Features
 			var category = await dbContext.ProductCategories
 				.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+			if (category == null) throw new CustomException("ProductCategoryEntity Not Found");
 
 			Reattach(category, command.Entity, dbContext);
 
 			await dbContext.SaveChangesAsync();
 		}
 
-		
+
 		#endregion
 		#region Helpers
 
@@ -122,7 +121,7 @@ namespace Service.Features
 
 		}
 
-		private void Sorting(ref IQueryable<ProductCategoryEntity> tag, TableOptions options) => tag = options.SortLabel switch
+		private void Sorting(ref IQueryable<ProductCategoryEntity> tag, TableOptions options) => tag = options.sort_label switch
 		{
 			"Id" => tag.Ordering(options, o => o.Id),
 			"Name" => tag.Ordering(options, o => o.Name),
@@ -132,4 +131,3 @@ namespace Service.Features
 		#endregion
 	}
 }
-*/

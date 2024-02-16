@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240210094906_Initial")]
+    [Migration("20240216093231_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -407,6 +407,25 @@ namespace Service.Data.Migrations
                     b.ToTable("orders");
                 });
 
+            modelBuilder.Entity("Shared.Features.ProductCategoryEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("product_category");
+                });
+
             modelBuilder.Entity("Shared.Features.ProductEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -547,6 +566,25 @@ namespace Service.Data.Migrations
                     b.ToTable("products");
                 });
 
+            modelBuilder.Entity("Shared.Features.ProductSubCategoryEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("product_sub_category");
+                });
+
             modelBuilder.Entity("Shared.Features.UserEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -581,6 +619,16 @@ namespace Service.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("project_users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            CreatedAt = new DateTime(2024, 2, 16, 9, 32, 31, 88, DateTimeKind.Utc).AddTicks(9407),
+                            Password = "admin",
+                            PhoneNumber = "Admin",
+                            Role = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Stl.Fusion.Authentication.Services.DbSessionInfo<string>", b =>

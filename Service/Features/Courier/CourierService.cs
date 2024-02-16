@@ -30,9 +30,9 @@ namespace Service.Features.Courier
             await using var _ = dbContext.ConfigureAwait(false);
             var couriers = from s in dbContext.Couriers select s;
 
-            if (!String.IsNullOrEmpty(options.Search))
+            if (!String.IsNullOrEmpty(options.search))
             {
-                var search = options.Search.ToLower();
+                var search = options.search.ToLower();
                 couriers = couriers.Where(s =>
                          s.FirstName != null && s.FirstName.ToLower().Contains(search)
                         || s.LastName != null && s.LastName.ToLower().Contains(search)
@@ -119,7 +119,7 @@ namespace Service.Features.Courier
             CourierMapper.From(userView, user);
         }
 
-        private void Sorting(ref IQueryable<CourierEntity> unit, TableOptions options) => unit = options.SortLabel switch
+        private void Sorting(ref IQueryable<CourierEntity> unit, TableOptions options) => unit = options.sort_label switch
         {
             "FirstName" => unit.Ordering(options, o => o.FirstName),
             "LastName" => unit.Ordering(options, o => o.LastName),

@@ -155,6 +155,32 @@ namespace Service.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "product_category",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_product_category", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "product_sub_category",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_product_sub_category", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "project_users",
                 columns: table => new
                 {
@@ -349,6 +375,11 @@ namespace Service.Data.Migrations
                         principalColumn: "id");
                 });
 
+            migrationBuilder.InsertData(
+                table: "project_users",
+                columns: new[] { "id", "created_at", "password", "phone_number", "role", "updated_at" },
+                values: new object[] { 1L, new DateTime(2024, 2, 16, 9, 32, 31, 88, DateTimeKind.Utc).AddTicks(9407), "admin", "Admin", "Admin", null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_UserIdentities_Id",
                 table: "UserIdentities",
@@ -468,6 +499,12 @@ namespace Service.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "files");
+
+            migrationBuilder.DropTable(
+                name: "product_category");
+
+            migrationBuilder.DropTable(
+                name: "product_sub_category");
 
             migrationBuilder.DropTable(
                 name: "products");
