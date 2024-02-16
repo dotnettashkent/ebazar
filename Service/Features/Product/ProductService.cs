@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Service.Data;
 using Shared.Features;
 using Shared.Infrastructures;
@@ -7,7 +9,10 @@ using Stl.Async;
 using Stl.Fusion;
 using Stl.Fusion.EntityFramework;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reactive;
+using System.Security.Claims;
+using System.Text;
 
 namespace Service.Features
 {
@@ -16,14 +21,21 @@ namespace Service.Features
         #region Initialize
         private readonly DbHub<AppDbContext> dbHub;
         private readonly IFileService fileService;
+        private readonly IConfiguration configuration;
 
-        public ProductService(DbHub<AppDbContext> dbHub, IFileService fileService)
+        public ProductService(DbHub<AppDbContext> dbHub, IFileService fileService, IConfiguration configuration)
         {
             this.dbHub = dbHub;
             this.fileService = fileService;
+            this.configuration = configuration;
         }
         #endregion
-
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
         #region Queries
         public async virtual Task<TableResponse<ProductResultView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
@@ -75,6 +87,11 @@ namespace Service.Features
             {
                 _ = await Invalidate();
                 return;
+            }
+            var phoneNumber = ValidateToken(command.Token);
+            if (!IsAdminUser(phoneNumber))
+            {
+                throw new CustomException("User does not have permission to create a product.");
             }
             #region Check image
 
@@ -137,7 +154,19 @@ namespace Service.Features
             dbContext.Update(entity);
             await dbContext.SaveChangesAsync();
         }
+        public string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
 
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
 
 
         public async virtual Task Delete(DeleteProductCommand command, CancellationToken cancellationToken = default)
