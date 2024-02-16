@@ -77,11 +77,11 @@ namespace Server.Controllers.Courier
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<CourierView>> Get(long Id, CancellationToken cancellationToken)
+        public async Task<ActionResult<CourierView>> Get(long Id, string token, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await courierService.GetById(Id);
+                var user = await courierService.GetById(Id, token);
                 return StatusCode(408, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "Courier was not found")

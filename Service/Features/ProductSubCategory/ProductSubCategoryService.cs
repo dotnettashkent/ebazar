@@ -6,9 +6,8 @@ using System.Reactive;
 using Shared.Infrastructures;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructures.Extensions;
-using Microsoft.AspNetCore.SignalR;
 using System.IdentityModel.Tokens.Jwt;
+using Shared.Infrastructures.Extensions;
 
 namespace Service.Features
 {
@@ -48,9 +47,9 @@ namespace Service.Features
 			var items = await category.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
 			return new TableResponse<ProductSubCategoryView>() { Items = items.MapToViewList(), TotalItems = count };
 		}
-		public async virtual Task<ProductSubCategoryView> Get(long Id, CancellationToken cancellationToken = default)
+		public async virtual Task<ProductSubCategoryView> Get(long Id, string token, CancellationToken cancellationToken = default)
 		{
-            var isValid = ValidateToken(options.token);
+            var isValid = ValidateToken(token);
             if (!IsAdminUser(isValid))
             {
                 throw new CustomException("User does not have permission to create a product.");

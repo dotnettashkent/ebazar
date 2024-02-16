@@ -77,11 +77,11 @@ namespace Server.Controllers.Brand
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<BrandView>> Get(long Id)
+        public async Task<ActionResult<BrandView>> Get(long Id, string token)
         {
             try
             {
-                var user = await brandService.Get(Id);
+                var user = await brandService.Get(Id, token);
                 return StatusCode(408, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
