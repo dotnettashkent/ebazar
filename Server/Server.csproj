@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\ProductSubCategory\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
