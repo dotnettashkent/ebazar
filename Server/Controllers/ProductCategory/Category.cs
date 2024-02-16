@@ -78,11 +78,11 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<ProductCategoryView>> Get(long Id)
+        public async Task<ActionResult<ProductCategoryView>> Get(long Id, string token)
         {
             try
             {
-                var user = await productCategoryService.Get(Id);
+                var user = await productCategoryService.Get(Id, token);
                 return StatusCode(408, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")

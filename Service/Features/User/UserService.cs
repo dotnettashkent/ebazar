@@ -208,6 +208,8 @@ namespace Service.Features.User
             _ => unit.OrderBy(o => o.CreatedAt),
         };
 
+        #endregion
+        #region Token
         public async virtual Task<string> Login(string phoneNumber, string password)
         {
             var dbContext = dbHub.CreateDbContext();
@@ -276,6 +278,5 @@ namespace Service.Features.User
             return jwt;
         }
         #endregion
-
     }
 }

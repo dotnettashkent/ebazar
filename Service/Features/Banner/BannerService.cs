@@ -1,13 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Service.Data;
 using Shared.Features;
-using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
 using Stl.Async;
 using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
 using System.Reactive;
+using Shared.Infrastructures;
+using Stl.Fusion.EntityFramework;
+using System.IdentityModel.Tokens.Jwt;
+using Shared.Infrastructures.Extensions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Service.Features;
 
@@ -16,17 +19,23 @@ public class BannerService : IBannerService
     #region Initialize
     private readonly DbHub<AppDbContext> _dbHub;
     private readonly IFileService fileService;
-
-    public BannerService(DbHub<AppDbContext> dbHub, IFileService fileService)
+    private readonly IConfiguration configuration;
+    public BannerService(DbHub<AppDbContext> dbHub, IFileService fileService, IConfiguration configuration)
     {
         _dbHub = dbHub;
         this.fileService = fileService;
+        this.configuration = configuration;
     }
     #endregion
     #region Queries
     //[ComputeMethod]
     public virtual async Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
     {
+        var phoneNumber = ValidateToken(options.token);
+        if (!IsAdminUser(phoneNumber))
+        {
+            throw new CustomException("User does not have permission to create a product.");
+        }
         await Invalidate();
         var dbContext = _dbHub.CreateDbContext();
         await using var _ = dbContext.ConfigureAwait(false);
@@ -51,8 +60,13 @@ public class BannerService : IBannerService
     }
 
     //[ComputeMethod]
-    public async virtual Task<BannerView> Get(long Id, CancellationToken cancellationToken = default)
+    public async virtual Task<BannerView> Get(long Id, string token, CancellationToken cancellationToken = default)
     {
+        var phoneNumber = ValidateToken(token);
+        if (!IsAdminUser(phoneNumber))
+        {
+            throw new CustomException("User does not have permission to create a product.");
+        }
         var dbContext = _dbHub.CreateDbContext();
         await using var _ = dbContext.ConfigureAwait(false);
         var Banner = await dbContext.Banners
@@ -64,6 +78,11 @@ public class BannerService : IBannerService
     #region Mutations
     public virtual async Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default)
     {
+        var phoneNumber = ValidateToken(command.Token);
+        if (!IsAdminUser(phoneNumber))
+        {
+            throw new CustomException("User does not have permission to create a product.");
+        }
         if (Computed.IsInvalidating())
         {
             _ = await Invalidate();
@@ -90,6 +109,11 @@ public class BannerService : IBannerService
 
     public virtual async Task Delete(DeleteBannerCommand command, CancellationToken cancellationToken = default)
     {
+        var phoneNumber = ValidateToken(command.Token);
+        if (!IsAdminUser(phoneNumber))
+        {
+            throw new CustomException("User does not have permission to create a product.");
+        }
         if (Computed.IsInvalidating())
         {
             _ = await Invalidate();
@@ -106,6 +130,11 @@ public class BannerService : IBannerService
 
     public virtual async Task Update(UpdateBannerCommand command, CancellationToken cancellationToken = default)
     {
+        var phoneNumber = ValidateToken(command.Token);
+        if (!IsAdminUser(phoneNumber))
+        {
+            throw new CustomException("User does not have permission to create a product.");
+        }
         if (Computed.IsInvalidating())
         {
             _ = await Invalidate();
@@ -121,9 +150,6 @@ public class BannerService : IBannerService
         await dbContext.SaveChangesAsync(cancellationToken);
     }
     #endregion
-
-
-
     #region Helpers
 
     //[ComputeMethod]
@@ -143,5 +169,26 @@ public class BannerService : IBannerService
         _ => Banner.OrderBy(o => o.Id),
 
     };
+    #endregion
+    #region Token
+    private bool IsAdminUser(string phoneNumber)
+    {
+        using var dbContext = _dbHub.CreateDbContext();
+        var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+        return user != null;
+    }
+    private string ValidateToken(string token)
+    {
+        var jwtEncodedString = token.Substring(7);
+
+        var secondToken = new JwtSecurityToken(jwtEncodedString);
+        var json = secondToken.Payload.Values.FirstOrDefault();
+        if (json == null)
+            throw new CustomException("Payload is null");
+        else
+        {
+            return json?.ToString() ?? string.Empty;
+        }
+    }
     #endregion
 }

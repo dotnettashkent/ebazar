@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Stl.Async;
+using Stl.Fusion;
 using Service.Data;
+using System.Reactive;
 using Shared.Features;
 using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using Stl.Fusion;
 using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
-using System.Reactive;
+using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using Shared.Infrastructures.Extensions;
 
 namespace Service.Features.Courier
 {
@@ -25,6 +25,11 @@ namespace Service.Features.Courier
         #region Queries
         public async virtual Task<TableResponse<CourierView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
@@ -49,8 +54,13 @@ namespace Service.Features.Courier
             return new TableResponse<CourierView>() { Items = items.MapToViewList(), TotalItems = count };
         }
 
-        public async virtual Task<CourierView> GetById(long id, CancellationToken cancellationToken = default)
+        public async virtual Task<CourierView> GetById(long id, string token, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var user = await dbContext.Couriers
@@ -62,6 +72,11 @@ namespace Service.Features.Courier
         #region Mutations
         public async virtual Task Create(CreateCourierCommand command, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -77,6 +92,11 @@ namespace Service.Features.Courier
         }
         public async virtual Task Delete(DeleteCourierCommand command, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -93,6 +113,11 @@ namespace Service.Features.Courier
         }
         public async virtual Task Update(UpdateCourierCommand command, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -129,6 +154,27 @@ namespace Service.Features.Courier
             _ => unit.OrderBy(o => o.CreatedAt),
         };
 
+        #endregion
+        #region Token
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
         #endregion
     }
 }

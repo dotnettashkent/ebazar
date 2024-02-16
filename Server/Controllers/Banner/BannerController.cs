@@ -78,11 +78,11 @@ namespace Server.Controllers.Banner
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<BannerView>> Get(long Id, CancellationToken cancellationToken)
+        public async Task<ActionResult<BannerView>> Get(long Id, string token, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await bannerService.Get(Id);
+                var user = await bannerService.Get(Id, token);
                 return StatusCode(408, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
