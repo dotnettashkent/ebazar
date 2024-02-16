@@ -48,7 +48,7 @@ namespace Service.Data
                 {
                     Id = 1,
                     PhoneNumber = "Admin",
-                    Password = "admin",
+                    Password = BCrypt.Net.BCrypt.HashPassword("admin"),
                     Role = UserRole.Admin.ToString(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = null
