@@ -7,6 +7,8 @@ using Shared.Infrastructures;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructures.Extensions;
+using Microsoft.AspNetCore.SignalR;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Service.Features
 {
@@ -23,7 +25,12 @@ namespace Service.Features
 		#region Queries
 		public async virtual Task<TableResponse<ProductSubCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
-			await Invalidate();
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            await Invalidate();
 			var dbContext = _dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var category = from s in dbContext.ProductSubCategories select s;
@@ -43,7 +50,12 @@ namespace Service.Features
 		}
 		public async virtual Task<ProductSubCategoryView> Get(long Id, CancellationToken cancellationToken = default)
 		{
-			var dbContext = _dbHub.CreateDbContext();
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            var dbContext = _dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var category = await dbContext.ProductSubCategories
 				.FirstOrDefaultAsync(x => x.Id == Id);
@@ -54,7 +66,12 @@ namespace Service.Features
 		#region Mutations
 		public async virtual Task Create(CreateProductSubCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            if (Computed.IsInvalidating())
 			{
 				_ = await Invalidate();
 				return;
@@ -70,7 +87,12 @@ namespace Service.Features
 
 		public async virtual Task Delete(DeleteProductSubCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            if (Computed.IsInvalidating())
 			{
 				_ = await Invalidate();
 				return;
@@ -86,7 +108,12 @@ namespace Service.Features
 
 		public async virtual Task Update(UpdateProductSubCategoryCommand command, CancellationToken cancellationToken = default)
 		{
-			if (Computed.IsInvalidating())
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
+            if (Computed.IsInvalidating())
 			{
 				_ = await Invalidate();
 				return;
@@ -101,10 +128,30 @@ namespace Service.Features
 
 			await dbContext.SaveChangesAsync();
 		}
-		#endregion
+        #endregion
+        #region Token
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = _dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
 
-		#region Helpers
-		public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
+        #endregion
+        #region Helpers
+        public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
 		private void Reattach(ProductSubCategoryEntity entity, ProductSubCategoryView view, AppDbContext dbContext)
 		{
 			ProductSubCategoryMapper.From(view, entity);
