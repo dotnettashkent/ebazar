@@ -1,13 +1,12 @@
-﻿using Service.Data;
+﻿using Stl.Async;
+using Stl.Fusion;
+using Service.Data;
 using Shared.Features;
+using System.Reactive;
 using Shared.Infrastructures;
 using Stl.Fusion.EntityFramework;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using System.Reactive;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using Stl.Fusion;
+using Shared.Infrastructures.Extensions;
 
 namespace Service.Features
 {
@@ -49,7 +48,7 @@ namespace Service.Features
 			var category = await dbContext.ProductSubCategories
 				.FirstOrDefaultAsync(x => x.Id == Id);
 
-			return category == null ? throw new ValidationException("ProductSubCategoryEntity Not Found") : category.MapToView();
+			return category == null ? throw new CustomException("ProductSubCategoryEntity Not Found") : category.MapToView();
 		}
 		#endregion
 		#region Mutations
@@ -79,7 +78,7 @@ namespace Service.Features
 			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
 			var brand = await dbContext.ProductSubCategories
 				.FirstOrDefaultAsync(x => x.Id == command.Id);
-			if (brand == null) throw new ValidationException("ProductSubCategoryEntity Not Found");
+			if (brand == null) throw new CustomException("ProductSubCategoryEntity Not Found");
 			dbContext.Remove(brand);
 			await dbContext.SaveChangesAsync();
 		}
@@ -96,7 +95,7 @@ namespace Service.Features
 			var category = await dbContext.ProductSubCategories
 				.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-			if (category == null) throw new ValidationException("ProductSubCategoryEntity Not Found");
+			if (category == null) throw new CustomException("ProductSubCategoryEntity Not Found");
 
 			Reattach(category, command.Entity, dbContext);
 

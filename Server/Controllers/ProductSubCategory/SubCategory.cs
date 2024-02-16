@@ -1,26 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
 using Stl.CommandR;
 
-namespace Server.Controllers.ProductCategory
+namespace Server.Controllers.ProductSubCategory
 {
-    [Route("api/category")]
+    [Route("api/subcategory")]
     [ApiController]
-    public class Category : ControllerBase
+    public class SubCategory : ControllerBase
     {
-        private readonly IProductCategoryService productCategoryService;
+        private readonly IProductSubCategoryService productSubCategoryService;
         private readonly ICommander commander;
 
-        public Category(ICommander commander, IProductCategoryService productCategoryService)
+        public SubCategory(ICommander commander, IProductSubCategoryService productSubCategoryService)
         {
             this.commander = commander;
-            this.productCategoryService = productCategoryService;
+            this.productSubCategoryService = productSubCategoryService;
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromForm] CreateProductSubCategoryCommand command, CancellationToken cancellationToken)
         {
             try
             {
@@ -34,16 +35,16 @@ namespace Server.Controllers.ProductCategory
             }
         }
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update([FromBody] UpdateProductSubCategoryCommand command, CancellationToken cancellationToken)
         {
             try
             {
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
-            catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
+            catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Category not found" });
+                return StatusCode(408, new { success = false, messages = "Sub category not found" });
             }
 
             catch (Exception ex)
@@ -53,16 +54,16 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteProductSubCategoryCommand command, CancellationToken cancellationToken)
         {
             try
             {
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
-            catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
+            catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Category not found" });
+                return StatusCode(408, new { success = false, messages = "Sub category not found" });
             }
 
             catch (Exception ex)
@@ -72,22 +73,22 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpGet("get/all")]
-        public async Task<TableResponse<ProductCategoryView>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
+        public async Task<TableResponse<ProductSubCategoryView>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
         {
-            return await productCategoryService.GetAll(options, cancellationToken);
+            return await productSubCategoryService.GetAll(options, cancellationToken);
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<ProductCategoryView>> Get(long Id)
+        public async Task<ActionResult<ProductSubCategoryView>> Get(long Id)
         {
             try
             {
-                var user = await productCategoryService.Get(Id);
+                var user = await productSubCategoryService.Get(Id);
                 return StatusCode(408, new { success = true, messages = user });
             }
-            catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
+            catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Category not found" });
+                return StatusCode(408, new { success = false, messages = "Sub category not found" });
             }
 
             catch (Exception ex)

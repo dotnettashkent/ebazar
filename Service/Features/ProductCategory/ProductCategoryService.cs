@@ -8,7 +8,6 @@ using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Service.Features.ProductCategory;
 using Shared.Infrastructures.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace Service.Features
 {
@@ -55,7 +54,7 @@ namespace Service.Features
 			var category = await dbContext.ProductCategories
 				.FirstOrDefaultAsync(x => x.Id == Id);
 
-			return category == null ? throw new ValidationException("ProductSubCategoryEntity Not Found") : category.MapToView();
+			return category == null ? throw new CustomException("ProductCategoryEntity Not Found") : category.MapToView();
 		}
 		#endregion
 		#region Mutations
@@ -85,7 +84,7 @@ namespace Service.Features
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 			var category = await dbContext.ProductCategories
 				.FirstOrDefaultAsync(x => x.Id == command.Id);
-			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+			if (category == null) throw new CustomException("ProductCategoryEntity Not Found");
 			dbContext.Remove(category);
 			await dbContext.SaveChangesAsync();
 		}
@@ -101,7 +100,7 @@ namespace Service.Features
 			var category = await dbContext.ProductCategories
 				.FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
 
-			if (category == null) throw new ValidationException("ProductCategoryEntity Not Found");
+			if (category == null) throw new CustomException("ProductCategoryEntity Not Found");
 
 			Reattach(category, command.Entity, dbContext);
 
