@@ -404,6 +404,25 @@ namespace Service.Data.Migrations
                     b.ToTable("orders");
                 });
 
+            modelBuilder.Entity("Shared.Features.ProductCategoryEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("product_category");
+                });
+
             modelBuilder.Entity("Shared.Features.ProductEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -544,6 +563,25 @@ namespace Service.Data.Migrations
                     b.ToTable("products");
                 });
 
+            modelBuilder.Entity("Shared.Features.ProductSubCategoryEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("product_sub_category");
+                });
+
             modelBuilder.Entity("Shared.Features.UserEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -583,7 +621,7 @@ namespace Service.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2024, 2, 14, 7, 14, 20, 494, DateTimeKind.Utc).AddTicks(81),
+                            CreatedAt = new DateTime(2024, 2, 16, 9, 32, 31, 88, DateTimeKind.Utc).AddTicks(9407),
                             Password = "admin",
                             PhoneNumber = "Admin",
                             Role = "Admin"

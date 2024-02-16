@@ -20,6 +20,8 @@ namespace Server
             fusion.AddService<IUserService, UserService>();
             fusion.AddService<IOrderServices, OrderService>();
             fusion.AddService<IFileService, FileService>();
+            fusion.AddService<IProductCategoryService, ProductCategoryService>();
+            fusion.AddService<IProductSubCategoryService, ProductSubCategoryService>();
             //fusion.AddService<ILocaleService, LocaleService>();
             return fusion;
         }

@@ -20,7 +20,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(CreateProductCategoryCommand command, CancellationToken cancellationToken)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace Server.Controllers.ProductCategory
             }
         }
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken)
         {
             try
             {
