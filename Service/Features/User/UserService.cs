@@ -228,8 +228,28 @@ namespace Service.Features.User
             }
             else
             {
-                throw new CustomException ("User was not found");
+                throw new CustomException("User was not found");
             }
+        }
+
+        public async Task<string> AdminLogin(string phoneNumber, string password)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = await dbContext.UsersEntities
+                .Where(x => x.PhoneNumber == phoneNumber && x.Role == "Admin")
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new CustomException("Admin user not found");
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
+            {
+                throw new CustomException("Admin user not found");
+            }
+
+            return GenerateToken(phoneNumber);
         }
 
         private string GenerateToken(string phoneNumber)

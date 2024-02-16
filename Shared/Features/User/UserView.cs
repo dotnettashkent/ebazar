@@ -41,4 +41,9 @@ namespace Shared.Features
         [property: DataMember] [JsonPropertyName("phone_number")] public string PhoneNumber { get; set; } = null!;
         [property: DataMember] [JsonPropertyName("password")] public string Password { get; set; } = null!;
     }
+    public class LoginIncome
+    {
+        public string? PhoneNumber { get; set; }
+        public string? Password { get; set; }
+    }
 }

@@ -112,7 +112,27 @@ namespace Server.Controllers.User
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
             }
-            
+
+        }
+
+        [HttpPost("admin/login")]
+        public async Task<ActionResult<string>> AdminLogin(LoginIncome login)
+        {
+            try
+            {
+                var result = await userService.AdminLogin(login.PhoneNumber, login.Password);
+                return StatusCode(200, new { success = true, messages = result });
+            }
+            catch (CustomException ex) when (ex.Message == "Admin user not found")
+            {
+                return StatusCode(408, new { success = false, messages = "Admin user not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+
         }
 
 
@@ -161,9 +181,5 @@ namespace Server.Controllers.User
         }
     }
 
-    public class LoginIncome
-    {
-        public string? PhoneNumber { get; set; }
-        public string? Password { get; set; }
-    }
+    
 }
