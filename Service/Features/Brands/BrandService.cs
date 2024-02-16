@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Stl.Async;
+using Stl.Fusion;
 using Service.Data;
 using Shared.Features;
-using Shared.Infrastructures;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
-using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
-using System.ComponentModel.DataAnnotations;
 using System.Reactive;
+using Shared.Infrastructures;
+using Stl.Fusion.EntityFramework;
+using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using Shared.Infrastructures.Extensions;
 
 namespace Service.Features
 {
@@ -27,6 +27,11 @@ namespace Service.Features
 
         public async virtual Task<TableResponse<BrandView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
@@ -47,8 +52,13 @@ namespace Service.Features
             decimal totalPage = (decimal)count / (decimal)options.page_size;
             return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
         }
-        public async virtual Task<BrandView> Get(long Id, CancellationToken cancellationToken = default)
+        public async virtual Task<BrandView> Get(long Id, string token, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var category = await dbContext.Brands
@@ -57,10 +67,14 @@ namespace Service.Features
             return category == null ? throw new CustomException("BrandEntity Not Found") : category.MapToView();
         }
         #endregion
-
         #region Mutations
         public async virtual Task Create(CreateBrandCommand command, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -84,6 +98,11 @@ namespace Service.Features
 
         public async virtual Task Delete(DeleteBrandCommand command, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -103,6 +122,11 @@ namespace Service.Features
 
         public async virtual Task Update(UpdateBrandCommand command, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(command.Token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -119,7 +143,6 @@ namespace Service.Features
             await dbContext.SaveChangesAsync();
         }
         #endregion
-
         #region Helpers
         public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
         private void Reattach(BrandEntity brand, BrandView brandView, AppDbContext dbContext)
@@ -134,6 +157,27 @@ namespace Service.Features
             _ => brand.OrderBy(o => o.Id),
 
         };
+        #endregion
+        #region Token
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
         #endregion
     }
 }
