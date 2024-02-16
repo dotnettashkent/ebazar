@@ -1,4 +1,4 @@
-﻿/*using Riok.Mapperly.Abstractions;
+﻿using Riok.Mapperly.Abstractions;
 using Shared.Features;
 
 namespace Service.Features.ProductCategory
@@ -16,14 +16,13 @@ namespace Service.Features.ProductCategory
 		#region Internal
 
 		private static partial ProductCategoryView To(this ProductCategoryEntity src);
-		
+
 		private static partial List<ProductCategoryView> ToList(this List<ProductCategoryEntity> src);
-		
+
 		private static partial ProductCategoryEntity From(this ProductCategoryView ProductCategoryView);
-		
+
 		public static partial void From(ProductCategoryView personView, ProductCategoryEntity personEntity);
 		#endregion
 
 	}
 }
-*/
