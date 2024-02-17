@@ -8,6 +8,7 @@ using Shared.Infrastructures;
 using Service.Features.Order;
 using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 using Shared.Infrastructures.Extensions;
 
 namespace Service.Features
@@ -30,6 +31,11 @@ namespace Service.Features
         #region Queries
         public async virtual Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("Not Permission");
+            }
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
@@ -52,14 +58,42 @@ namespace Service.Features
 
         }
 
-        public async virtual Task<OrderResponse> Get(long Id, CancellationToken cancellationToken = default)
+        public async virtual Task<OrderResponse> Get(string token)
         {
+            var isValid = ValidateToken(token);
+            var isUser = IsUser(isValid);
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
-
-            // Query the order without including related products
             var order = await dbContext.Orders
-                .FirstOrDefaultAsync(x => x.UserId == Id);
+                .FirstOrDefaultAsync(x => x.UserId == isUser.Id);
+
+            var orderResponse = new OrderResponse();
+
+            if (order != null)
+            {
+                orderResponse = order.MapToView2();
+                var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
+                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx);
+                orderResponse.Product = lists;
+            }
+            else
+            {
+                throw new CustomException("OrderEntity Not Found");
+            }
+
+            return orderResponse;
+        }
+
+
+
+        public async virtual Task<OrderResponse> GetForAdmin(string token, long OrderId, CancellationToken cancellationToken = default)
+        {
+            var isValid = ValidateToken(token);
+            var isUser = IsAdminUser(token);
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var order = await dbContext.Orders
+                .FirstOrDefaultAsync(x => x.Id == OrderId);
 
             var orderResponse = new OrderResponse();
 
@@ -79,18 +113,20 @@ namespace Service.Features
         }
 
         #endregion
-
         #region Mutations
         public async virtual Task Create(CreateOrderCommand command, CancellationToken cancellationToken = default)
         {
+            var valid = ValidateToken(command.Entity.Token);
+            var isUser = IsUser(valid);
+            command.Entity.UserId = isUser.Id;
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
                 return;
             }
-
-            var userId = command.Entity.UserId;
-            var products = await cartService.GetAll(userId, cancellationToken);
+            //command.Entity.UserId = 
+            var token = command.Entity.Token;
+            var products = await cartService.GetAll(token, cancellationToken);
             var productResults = products.Items;
             string status = command.Entity.Status = OrderStatus.Pending.ToString().ToLower();
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
@@ -110,12 +146,18 @@ namespace Service.Features
                     product.InfoCount += item2.Quantity;
                 }
             }
-            await cartService.RemoveAll(userId, cancellationToken);
+            await cartService.RemoveAll(token, cancellationToken);
             await dbContext.SaveChangesAsync();
         }
 
         public async virtual Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(command.Entity.Token);
+            var isUser = IsUser(isValid);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission to create a product.");
+            }
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -125,7 +167,7 @@ namespace Service.Features
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 
             var existingOrder = await dbContext.Orders
-                .FirstOrDefaultAsync(x => x.UserId == command.Entity.UserId);
+                .FirstOrDefaultAsync(x => x.UserId == isUser.Id);
 
             if (existingOrder == null)
             {
@@ -151,7 +193,6 @@ namespace Service.Features
             throw new NotImplementedException();
         }
         #endregion
-
         #region Helpers
         private void Sorting(ref IQueryable<OrderEntity> unit, TableOptions options) => unit = options.sort_label switch
         {
@@ -170,6 +211,32 @@ namespace Service.Features
             OrderMapper.From(view, entity);
         }
         #endregion
+        #region Token Helper
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
+            return user != null;
+        }
+        private UserEntity IsUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
+            return user ?? throw new CustomException("Not Permission");
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
 
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
+        #endregion
     }
 }

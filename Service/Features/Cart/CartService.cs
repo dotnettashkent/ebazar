@@ -1,12 +1,13 @@
-﻿using Service.Data;
-using Service.Features.Cart;
-using Shared.Features;
-using Shared.Infrastructures.Extensions;
-using Stl.Async;
+﻿using Stl.Async;
 using Stl.Fusion;
-using Stl.Fusion.EntityFramework;
+using Service.Data;
 using System.Reactive;
+using Shared.Features;
 using System.Text.Json;
+using Service.Features.Cart;
+using Stl.Fusion.EntityFramework;
+using System.IdentityModel.Tokens.Jwt;
+using Shared.Infrastructures.Extensions;
 
 namespace Service.Features
 {
@@ -21,16 +22,15 @@ namespace Service.Features
             this.productService = productService;
         }
         #endregion
-
         #region Queries
-        public async virtual Task<TableResponse<ProductResultView>> GetAll(long userId, CancellationToken cancellationToken = default)
+        public async virtual Task<TableResponse<ProductResultView>> GetAll(string token, CancellationToken cancellationToken = default)
         {
+            var valid = ValidateToken(token);
+            var isUser = IsUser(valid);
             await Invalidate();
-
             await using var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext;
-
-            var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == userId);
+            var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == isUser.Id);
 
             if (cart != null && cart.Product != null)
             {
@@ -53,18 +53,19 @@ namespace Service.Features
 
 
         #endregion
-
         #region Mutations
         public async virtual Task Create(CreateCartCommand command, CancellationToken cancellationToken = default)
         {
+            var valid = ValidateToken(command.Entity.Token);
+            var isUser = IsUser(valid);
+            command.Entity.UserId = isUser.Id;
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
                 return;
             }
-
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var exists = dbContext.Carts.FirstOrDefault(x => x.UserId == command.Entity.UserId);
+            var exists = dbContext.Carts.FirstOrDefault(x => x.UserId == isUser.Id);
 
             if (exists != null && exists.Product != null)
             {
@@ -111,6 +112,9 @@ namespace Service.Features
 
         public async virtual Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default)
         {
+            var valid = ValidateToken(command.Entity.Token);
+            var isUser = IsUser(valid);
+            command.Entity.UserId = isUser.Id;
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -118,7 +122,7 @@ namespace Service.Features
             }
 
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-            var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == command.Entity.UserId);
+            var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == isUser.Id);
             if (cart == null)
             {
                 throw new CustomException("CartEntity Not Found");
@@ -150,8 +154,10 @@ namespace Service.Features
             }
         }
 
-        public async virtual Task RemoveAll(long userId, CancellationToken cancellationToken = default)
+        public async virtual Task RemoveAll(string token, CancellationToken cancellationToken = default)
         {
+            var valid = ValidateToken(token);
+            var isUser = IsUser(valid);
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -161,7 +167,7 @@ namespace Service.Features
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 
             // Find all carts with the specified userId
-            var cartsToDelete = dbContext.Carts.Where(x => x.UserId == userId).ToList();
+            var cartsToDelete = dbContext.Carts.Where(x => x.UserId == isUser.Id).ToList();
 
             foreach (var cart in cartsToDelete)
             {
@@ -180,6 +186,27 @@ namespace Service.Features
         private void Reattach(CartEntity entity, CartView view, AppDbContext dbContext)
         {
             CartMapper.From(view, entity);
+        }
+        #endregion
+        #region Token
+        private UserEntity IsUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
+            return user ?? throw new CustomException("Not Permission");
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
         }
         #endregion
     }

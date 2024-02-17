@@ -9,7 +9,7 @@ namespace Shared.Features
     public interface ICartService : IComputeService
     {
         //[ComputeMethod]
-        Task<TableResponse<ProductResultView>> GetAll(long UserId, CancellationToken cancellationToken = default);
+        Task<TableResponse<ProductResultView>> GetAll(string token, CancellationToken cancellationToken = default);
 
         //[ComputeMethod]
         //Task<ProductResultView> Get(long Id, CancellationToken cancellationToken= default);
@@ -21,7 +21,7 @@ namespace Shared.Features
         Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default);
 
         //[CommandHandler]
-        Task RemoveAll(long userId, CancellationToken cancellationToken = default);
+        Task RemoveAll(string token, CancellationToken cancellationToken = default);
         Task<Unit> Invalidate() { return TaskExt.UnitTask; }
     }
 }

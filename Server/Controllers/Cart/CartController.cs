@@ -25,7 +25,14 @@ namespace Server.Controllers
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
-
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
@@ -44,6 +51,14 @@ namespace Server.Controllers
             {
                 return StatusCode(408, new { success = false, messages = "Cart not found" });
             }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
 
             catch (Exception ex)
             {
@@ -52,14 +67,22 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/carts")]
-        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(long userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(string token, CancellationToken cancellationToken)
         {
 
             try
             {
-                return await cartService.GetAll(userId, cancellationToken);
+                return await cartService.GetAll(token, cancellationToken);
             }
-            catch(CustomException ex) when (ex.Message == "CartEntity Not Found") 
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "CartEntity Not Found") 
             {
                 return StatusCode(408, new { success = false, messages = "Cart not found" });
             }

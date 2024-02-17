@@ -28,6 +28,14 @@ namespace Server.Controllers.Favourite
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
 
             catch (Exception ex)
             {
@@ -47,6 +55,14 @@ namespace Server.Controllers.Favourite
             {
                 return StatusCode(408, new { success = false, messages = "Favourite Not Found" });
             }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
 
             catch (Exception ex)
             {
@@ -55,16 +71,28 @@ namespace Server.Controllers.Favourite
         }
 
         [HttpGet("get/favourite")]
-        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(long userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(string token, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await favouriteService.GetAll(userId, cancellationToken);
+                var result = await favouriteService.GetAll(token, cancellationToken);
                 return StatusCode(200, new { success = result });
             }
             catch (CustomException ex) when (ex.Message == "Favourite Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Favourite Not Found" });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
             }
         }
     }
