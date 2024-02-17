@@ -28,6 +28,14 @@ namespace Server.Controllers.Favourite
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
 
             catch (Exception ex)
             {
@@ -46,6 +54,14 @@ namespace Server.Controllers.Favourite
             catch (CustomException ex) when (ex.Message == "Favourite Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Favourite Not Found" });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
             }
 
             catch (Exception ex)
@@ -68,7 +84,11 @@ namespace Server.Controllers.Favourite
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(408, new { success = false, messages = "Not Permission" });
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
             }
             catch (Exception ex)
             {

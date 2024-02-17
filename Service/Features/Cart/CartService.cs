@@ -58,6 +58,7 @@ namespace Service.Features
         {
             var valid = ValidateToken(command.Entity.Token);
             var isUser = IsUser(valid);
+            command.Entity.UserId = isUser.Id;
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
@@ -113,6 +114,7 @@ namespace Service.Features
         {
             var valid = ValidateToken(command.Entity.Token);
             var isUser = IsUser(valid);
+            command.Entity.UserId = isUser.Id;
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
