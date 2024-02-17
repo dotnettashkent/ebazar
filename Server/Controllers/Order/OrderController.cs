@@ -42,11 +42,11 @@ namespace Server.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<OrderResponse>> Get([FromQuery] long UserId, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<OrderResponse>> Get([FromQuery] string token, CancellationToken cancellationToken = default)
         {
             try
             {
-                var user = await orderServices.Get(UserId, cancellationToken);
+                var user = await orderServices.Get(token, cancellationToken);
                 return user;
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")

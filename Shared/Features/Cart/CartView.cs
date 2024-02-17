@@ -20,8 +20,8 @@ namespace Shared.Features
 
 
         [property: DataMember]
-        [JsonPropertyName("user_id")]
-        public long UserId { get; set; }
+        [JsonPropertyName("token")]
+        public string Token { get; set; } = null!;
 
 
         [JsonIgnore]

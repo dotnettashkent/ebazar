@@ -34,6 +34,11 @@ namespace Service.Features.User
         #region Queries
         public async virtual Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("User does not have permission");
+            }
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
@@ -276,6 +281,28 @@ namespace Service.Features.User
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }
+        #endregion
+
+        #region Token Helper
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
         }
         #endregion
     }

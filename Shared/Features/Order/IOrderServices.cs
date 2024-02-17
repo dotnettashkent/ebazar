@@ -13,7 +13,7 @@ namespace Shared.Features
         Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
 
         //[ComputeMethod]
-        Task<OrderResponse> Get(long Id, CancellationToken cancellationToken = default);
+        Task<OrderResponse> Get(string token, CancellationToken cancellationToken = default);
 
         [CommandHandler]
         Task Create(CreateOrderCommand command, CancellationToken cancellationToken = default);

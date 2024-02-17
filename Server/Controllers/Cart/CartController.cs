@@ -52,12 +52,12 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/carts")]
-        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(long userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(string token, CancellationToken cancellationToken)
         {
 
             try
             {
-                return await cartService.GetAll(userId, cancellationToken);
+                return await cartService.GetAll(token, cancellationToken);
             }
             catch(CustomException ex) when (ex.Message == "CartEntity Not Found") 
             {
