@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Shared.Infrastructures;
 using Stl.Fusion.Blazor;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -16,9 +17,13 @@ namespace Shared.Features
 
 
         [property: DataMember]
-        [JsonPropertyName("token")]
+        [property: JsonPropertyName("token")]
+        [NotMapped]
         public string Token { get; set; } = null!;
 
+        [property: DataMember]
+        [property: JsonIgnore]
+        public long UserId { get; set; }
 
         [property: DataMember]
         [JsonPropertyName("city")]

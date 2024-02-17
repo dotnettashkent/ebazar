@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Service.Features;
+﻿using Stl.CommandR;
 using Shared.Features;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures;
 using Shared.Infrastructures.Extensions;
-using Stl.CommandR;
 
 namespace Server.Controllers
 {
@@ -27,6 +26,14 @@ namespace Server.Controllers
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
 
             catch (Exception ex)
             {
@@ -36,22 +43,70 @@ namespace Server.Controllers
 
 
         [HttpGet("get/all")]
-        public async Task<TableResponse<OrderView>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
-        {
-            return await orderServices.GetAll(options, cancellationToken);
-        }
-
-        [HttpGet("get")]
-        public async Task<ActionResult<OrderResponse>> Get([FromQuery] string token, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
-                var user = await orderServices.Get(token, cancellationToken);
-                return user;
+                var result = await orderServices.GetAll(options, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+
+        [HttpGet("get")]
+        public async Task<ActionResult<OrderResponse>> Get(string token)
+        {
+            try
+            {
+                var orderResponse = await orderServices.Get(token);
+                return orderResponse;
+            }
+            catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, message = "Order not found" });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission" || ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, message = "Not Permission" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+
+
+        [HttpGet("get/for/admin")]
+        public async Task<ActionResult<OrderResponse>> GetForAdmin([FromQuery] string token, long OrderId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var order = await orderServices.GetForAdmin(token, OrderId,cancellationToken);
+                return order;
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Order not found" });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
             }
 
             catch (Exception ex)
@@ -72,7 +127,14 @@ namespace Server.Controllers
             {
                 return StatusCode(408, new { success = false, messages = "Order not found" });
             }
-
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });

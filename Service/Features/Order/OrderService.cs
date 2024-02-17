@@ -34,7 +34,7 @@ namespace Service.Features
             var isValid = ValidateToken(options.token);
             if (!IsAdminUser(isValid))
             {
-                throw new CustomException("User does not have permission to create a product.");
+                throw new CustomException("Not Permission");
             }
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
@@ -58,10 +58,10 @@ namespace Service.Features
 
         }
 
-        public async virtual Task<OrderResponse> Get(string token, CancellationToken cancellationToken = default)
+        public async virtual Task<OrderResponse> Get(string token)
         {
             var isValid = ValidateToken(token);
-            var isUser = IsUser(token);
+            var isUser = IsUser(isValid);
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var order = await dbContext.Orders
@@ -84,16 +84,47 @@ namespace Service.Features
             return orderResponse;
         }
 
+
+
+        public async virtual Task<OrderResponse> GetForAdmin(string token, long OrderId, CancellationToken cancellationToken = default)
+        {
+            var isValid = ValidateToken(token);
+            var isUser = IsAdminUser(token);
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var order = await dbContext.Orders
+                .FirstOrDefaultAsync(x => x.Id == OrderId);
+
+            var orderResponse = new OrderResponse();
+
+            if (order != null)
+            {
+                orderResponse = order.MapToView2();
+                var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
+                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx);
+                orderResponse.Product = lists;
+            }
+            else
+            {
+                throw new CustomException("OrderEntity Not Found");
+            }
+
+            return orderResponse;
+        }
+
         #endregion
         #region Mutations
         public async virtual Task Create(CreateOrderCommand command, CancellationToken cancellationToken = default)
         {
+            var valid = ValidateToken(command.Entity.Token);
+            var isUser = IsUser(valid);
+            command.Entity.UserId = isUser.Id;
             if (Computed.IsInvalidating())
             {
                 _ = await Invalidate();
                 return;
             }
-
+            //command.Entity.UserId = 
             var token = command.Entity.Token;
             var products = await cartService.GetAll(token, cancellationToken);
             var productResults = products.Items;
@@ -184,7 +215,7 @@ namespace Service.Features
         private bool IsAdminUser(string phoneNumber)
         {
             using var dbContext = dbHub.CreateDbContext();
-            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
             return user != null;
         }
         private UserEntity IsUser(string phoneNumber)
