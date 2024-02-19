@@ -12,7 +12,7 @@ namespace Service.Features
         public FileService(IWebHostEnvironment environment)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            _hostUrl = "http://188.166.57.12:8080";
+            _hostUrl = "http://188.166.57.12:80";
         }
 
         public async Task<Tuple<int, string>> SaveImage(IFormFile imageFile)
