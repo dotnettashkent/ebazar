@@ -7,10 +7,12 @@ namespace Service.Features
     public class FileService : IFileService
     {
         private readonly IWebHostEnvironment _environment;
+        private readonly string _hostUrl;
 
         public FileService(IWebHostEnvironment environment)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _hostUrl = "http://188.166.57.12:8080";
         }
 
         public async Task<Tuple<int, string>> SaveImage(IFormFile imageFile)
@@ -46,7 +48,9 @@ namespace Service.Features
                     await imageFile.CopyToAsync(stream);
                 }
 
-                return new Tuple<int, string>(1, newFileName);
+                var imageUrl = $"{_hostUrl}/uploads/{newFileName}"; // Construct full image URL
+
+                return new Tuple<int, string>(1, imageUrl);
             }
             catch (Exception ex)
             {
