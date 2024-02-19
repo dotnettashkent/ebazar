@@ -16,6 +16,6 @@ namespace Shared.Infrastructures
 
         [property: DataMember] public string? search { get; set; }
 
-        [property: DataMember] public string token { get; set; } = null!;
+        [property: DataMember] public string? token { get; set; }
     }
 }

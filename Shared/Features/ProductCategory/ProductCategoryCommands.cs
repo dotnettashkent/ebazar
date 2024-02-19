@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Stl.Fusion;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Shared.Features
 {

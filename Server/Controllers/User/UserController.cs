@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
 using Shared.Infrastructures;
 using Shared.Infrastructures.Extensions;
@@ -135,7 +136,7 @@ namespace Server.Controllers.User
 
         }
 
-
+        [Authorize]
         [HttpGet("return/user")]
         public async Task<ActionResult<UserView>> Return([FromHeader] string token, CancellationToken cancellationToken)
         {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
@@ -21,32 +20,30 @@ namespace Server.Controllers.ProductSubCategory
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateProductSubCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromForm] CreateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
             }
         }
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateProductSubCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update([FromBody] UpdateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Sub category not found" });
+                return StatusCode(408, new { success = false, messages = "Category not found" });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
@@ -54,18 +51,17 @@ namespace Server.Controllers.ProductSubCategory
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteProductSubCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
-            catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
+            catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Sub category not found" });
+                return StatusCode(408, new { success = false, messages = "Category not found" });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });

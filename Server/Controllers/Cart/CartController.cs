@@ -18,10 +18,11 @@ namespace Server.Controllers
         }
 
         [HttpPost("")]
-        public async Task<ActionResult> Create([FromBody] CreateCartCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromBody] CreateCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
+                command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -40,10 +41,11 @@ namespace Server.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
+                command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -67,7 +69,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/carts")]
-        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(string token, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll([FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken)
         {
 
             try

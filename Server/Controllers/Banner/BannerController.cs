@@ -20,11 +20,11 @@ namespace Server.Controllers.Banner
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateBannerCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromForm] CreateBannerCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
 
@@ -34,11 +34,11 @@ namespace Server.Controllers.Banner
             }
         }
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateBannerCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update([FromBody] UpdateBannerCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
@@ -53,11 +53,11 @@ namespace Server.Controllers.Banner
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteBannerCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteBannerCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
@@ -78,18 +78,17 @@ namespace Server.Controllers.Banner
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<BannerView>> Get(long Id, string token, CancellationToken cancellationToken)
+        public async Task<ActionResult<BannerView>> Get(long Id, CancellationToken cancellationToken)
         {
             try
             {
-                var user = await bannerService.Get(Id, token);
+                var user = await bannerService.Get(Id);
                 return StatusCode(408, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Banner not found" });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });

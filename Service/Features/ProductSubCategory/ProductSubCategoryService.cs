@@ -24,11 +24,7 @@ namespace Service.Features
 		#region Queries
 		public async virtual Task<TableResponse<ProductSubCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
-            var isValid = ValidateToken(options.token);
-            if (!IsAdminUser(isValid))
-            {
-                throw new CustomException("User does not have permission to create a product.");
-            }
+            
             await Invalidate();
 			var dbContext = _dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
@@ -49,11 +45,7 @@ namespace Service.Features
 		}
 		public async virtual Task<ProductSubCategoryView> Get(long Id, string token, CancellationToken cancellationToken = default)
 		{
-            var isValid = ValidateToken(token);
-            if (!IsAdminUser(isValid))
-            {
-                throw new CustomException("User does not have permission to create a product.");
-            }
+            
             var dbContext = _dbHub.CreateDbContext();
 			await using var _ = dbContext.ConfigureAwait(false);
 			var category = await dbContext.ProductSubCategories

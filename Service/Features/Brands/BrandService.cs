@@ -27,11 +27,6 @@ namespace Service.Features
 
         public async virtual Task<TableResponse<BrandView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
-            var isValid = ValidateToken(options.token);
-            if (!IsAdminUser(isValid))
-            {
-                throw new CustomException("User does not have permission to create a product.");
-            }
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
@@ -52,13 +47,8 @@ namespace Service.Features
             decimal totalPage = (decimal)count / (decimal)options.page_size;
             return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
         }
-        public async virtual Task<BrandView> Get(long Id, string token, CancellationToken cancellationToken = default)
+        public async virtual Task<BrandView> Get(long Id, CancellationToken cancellationToken = default)
         {
-            var isValid = ValidateToken(token);
-            if (!IsAdminUser(isValid))
-            {
-                throw new CustomException("User does not have permission to create a product.");
-            }
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var category = await dbContext.Brands

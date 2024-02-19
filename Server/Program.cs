@@ -1,4 +1,5 @@
 using EF.Audit.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Server.Infrastructure.ServiceCollection;
 using Service.Data;
@@ -23,6 +24,7 @@ services.AddDbContext<AppDbContext>(options =>
 });
 #endregion
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocument();
