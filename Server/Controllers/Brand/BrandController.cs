@@ -19,11 +19,11 @@ namespace Server.Controllers.Brand
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateBrandCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromForm] CreateBrandCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
 
@@ -33,11 +33,11 @@ namespace Server.Controllers.Brand
             }
         }
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateBrandCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update([FromBody] UpdateBrandCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
@@ -52,11 +52,11 @@ namespace Server.Controllers.Brand
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteBrandCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteBrandCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")

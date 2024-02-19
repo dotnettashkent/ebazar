@@ -31,11 +31,6 @@ public class BannerService : IBannerService
     //[ComputeMethod]
     public virtual async Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
     {
-        var phoneNumber = ValidateToken(options.token);
-        if (!IsAdminUser(phoneNumber))
-        {
-            throw new CustomException("User does not have permission to create a product.");
-        }
         await Invalidate();
         var dbContext = _dbHub.CreateDbContext();
         await using var _ = dbContext.ConfigureAwait(false);
@@ -62,11 +57,6 @@ public class BannerService : IBannerService
     //[ComputeMethod]
     public async virtual Task<BannerView> Get(long Id, string token, CancellationToken cancellationToken = default)
     {
-        var phoneNumber = ValidateToken(token);
-        if (!IsAdminUser(phoneNumber))
-        {
-            throw new CustomException("User does not have permission to create a product.");
-        }
         var dbContext = _dbHub.CreateDbContext();
         await using var _ = dbContext.ConfigureAwait(false);
         var Banner = await dbContext.Banners

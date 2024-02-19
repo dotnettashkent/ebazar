@@ -20,32 +20,31 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create(CreateProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromBody] CreateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
             }
         }
-        [HttpPut("udpate")]
-        public async Task<ActionResult> Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken)
+
+        [HttpPut("update")]
+        public async Task<ActionResult> Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Category not found" });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
@@ -53,18 +52,17 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
-                var result = await commander.Call(command, cancellationToken);
+                var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Category not found" });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
