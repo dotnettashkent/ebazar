@@ -48,7 +48,7 @@ namespace Service.Features
                     await imageFile.CopyToAsync(stream);
                 }
 
-                var imageUrl = $"{_hostUrl}/uploads/{newFileName}"; // Construct full image URL
+                var imageUrl = $"{_hostUrl}/Uploads/{newFileName}";
 
                 return new Tuple<int, string>(1, imageUrl);
             }
