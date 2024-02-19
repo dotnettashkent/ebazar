@@ -136,7 +136,7 @@ namespace Server.Controllers.User
 
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("return/user")]
         public async Task<ActionResult<UserView>> Return([FromHeader] string token, CancellationToken cancellationToken)
         {
