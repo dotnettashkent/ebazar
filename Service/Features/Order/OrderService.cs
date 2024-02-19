@@ -215,7 +215,7 @@ namespace Service.Features
         private bool IsAdminUser(string phoneNumber)
         {
             using var dbContext = dbHub.CreateDbContext();
-            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
             return user != null;
         }
         private UserEntity IsUser(string phoneNumber)
@@ -224,8 +224,12 @@ namespace Service.Features
             var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
             return user ?? throw new CustomException("Not Permission");
         }
-        private string ValidateToken(string token)
+        private string ValidateToken(string? token)
         {
+            if (token == null)
+            {
+                throw new CustomException("Token is required");
+            }
             var jwtEncodedString = token.Substring(7);
 
             var secondToken = new JwtSecurityToken(jwtEncodedString);

@@ -42,13 +42,13 @@ namespace Server.Controllers
         }
 
 
-        [HttpGet("get/all")]
+        [HttpGet("get/all/admin")]
         public async Task<ActionResult<TableResponse<OrderView>>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
                 var result = await orderServices.GetAll(options, cancellationToken);
-                return StatusCode(200, new { success = true });
+                return StatusCode(200, new { success = true, message = result });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
