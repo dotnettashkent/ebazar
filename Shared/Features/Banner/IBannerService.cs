@@ -12,7 +12,7 @@ namespace Shared.Features
         //[ComputeMethod]
         Task<TableResponse<BannerView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
         //[ComputeMethod]
-        Task<BannerView> Get(long Id, string token,  CancellationToken cancellationToken = default);
+        Task<BannerView> Get(long Id,  CancellationToken cancellationToken = default);
         [CommandHandler]
         Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default);
         [CommandHandler]

@@ -21,10 +21,11 @@ namespace Server.Controllers.Favourite
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromBody] CreateFavouriteCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create([FromBody] CreateFavouriteCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
+                command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -44,10 +45,11 @@ namespace Server.Controllers.Favourite
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteFavouriteCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Delete([FromBody] DeleteFavouriteCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
+                command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -71,7 +73,7 @@ namespace Server.Controllers.Favourite
         }
 
         [HttpGet("get/favourite")]
-        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll(string token, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll([FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken)
         {
             try
             {

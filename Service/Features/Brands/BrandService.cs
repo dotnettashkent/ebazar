@@ -47,7 +47,7 @@ namespace Service.Features
             decimal totalPage = (decimal)count / (decimal)options.page_size;
             return new TableResponse<BrandView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
         }
-        public async virtual Task<BrandView> Get(long Id, string token, CancellationToken cancellationToken = default)
+        public async virtual Task<BrandView> Get(long Id, CancellationToken cancellationToken = default)
         {
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);

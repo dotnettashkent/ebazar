@@ -10,7 +10,6 @@ using Shared.Infrastructures;
 using Stl.Fusion.EntityFramework;
 using System.IdentityModel.Tokens.Jwt;
 using Shared.Infrastructures.Extensions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Service.Features;
 
@@ -55,7 +54,7 @@ public class BannerService : IBannerService
     }
 
     //[ComputeMethod]
-    public async virtual Task<BannerView> Get(long Id, string token, CancellationToken cancellationToken = default)
+    public async virtual Task<BannerView> Get(long Id, CancellationToken cancellationToken = default)
     {
         var dbContext = _dbHub.CreateDbContext();
         await using var _ = dbContext.ConfigureAwait(false);
