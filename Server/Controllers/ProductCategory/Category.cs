@@ -24,6 +24,10 @@ namespace Server.Controllers.ProductCategory
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -38,6 +42,10 @@ namespace Server.Controllers.ProductCategory
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -56,6 +64,10 @@ namespace Server.Controllers.ProductCategory
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -80,6 +92,10 @@ namespace Server.Controllers.ProductCategory
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var user = await productCategoryService.Get(Id, token);
                 return StatusCode(408, new { success = true, messages = user });
             }

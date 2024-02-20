@@ -1,6 +1,7 @@
 ﻿using MemoryPack;
 using Stl.Fusion.Blazor;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Shared.Features
 {
@@ -9,7 +10,7 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class ProductCategoryView
 	{
-		[property: DataMember] public long Id { get; set; }
+		[property: DataMember] [JsonIgnore] public long Id { get; set; }
 		[property: DataMember] public string Name { get; set; } = null!;
 
 		public override bool Equals(object? o)
