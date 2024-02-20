@@ -75,7 +75,13 @@ namespace Service.Features
 			}
 
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
-			ProductCategoryEntity category = new ProductCategoryEntity();
+            var existingCategory = await dbContext.ProductCategories
+				.FirstOrDefaultAsync(x => x.Name == command.Entity.Name);
+            if (existingCategory != null)
+            {
+                throw new CustomException("Already exists");
+            }
+            ProductCategoryEntity category = new ProductCategoryEntity();
 			Reattach(category, command.Entity, dbContext);
 
 			dbContext.Update(category);

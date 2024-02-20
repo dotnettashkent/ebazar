@@ -31,6 +31,10 @@ namespace Server.Controllers.ProductCategory
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
+            catch (CustomException ex) when (ex.Message == "Already exists")
+            {
+                return StatusCode(408, new { success = false, messages = "Already exists" });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
