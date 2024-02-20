@@ -9,18 +9,18 @@ namespace Shared.Features
 	public partial record CreateProductCategoryCommand(
 		[property: DataMember] Session Session, 
 		[property: DataMember] ProductCategoryView Entity,
-		[property: DataMember] string Token) : ISessionCommand<ProductCategoryView>;
+		[property: DataMember] string? Token) : ISessionCommand<ProductCategoryView>;
 
 	[DataContract, MemoryPackable]
 	public partial record UpdateProductCategoryCommand(
 		[property: DataMember] Session Session, 
 		[property: DataMember] ProductCategoryView Entity,
-        [property: DataMember] string Token) : ISessionCommand<ProductCategoryView>;
+        [property: DataMember] string? Token) : ISessionCommand<ProductCategoryView>;
 
 	[DataContract, MemoryPackable]
 	public partial record DeleteProductCategoryCommand(
 		[property: DataMember] Session Session, 
 		[property: DataMember] long Id,
-        [property: DataMember] string Token) : ISessionCommand<ProductCategoryView>;
+        [property: DataMember] string? Token) : ISessionCommand<ProductCategoryView>;
 
 }
