@@ -19,10 +19,11 @@ namespace Server.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create(CreateOrderCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Create(CreateOrderCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
+                command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -43,10 +44,11 @@ namespace Server.Controllers
 
 
         [HttpGet("get/all/admin")]
-        public async Task<ActionResult<TableResponse<OrderView>>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAll([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token,CancellationToken cancellationToken = default)
         {
             try
             {
+                options.token = token;
                 var result = await orderServices.GetAll(options, cancellationToken);
                 return StatusCode(200, new { success = true, message = result });
             }
@@ -66,7 +68,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<OrderResponse>> Get(string token)
+        public async Task<ActionResult<OrderResponse>> Get([FromHeader] string token)
         {
             try
             {
@@ -89,7 +91,7 @@ namespace Server.Controllers
 
 
         [HttpGet("get/for/admin")]
-        public async Task<ActionResult<OrderResponse>> GetForAdmin([FromQuery] string token, long OrderId, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<OrderResponse>> GetForAdmin([FromHeader] string token, long OrderId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -116,10 +118,11 @@ namespace Server.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult> Update(UpdateOrderCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> Update(UpdateOrderCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
+                command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
             }

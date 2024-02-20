@@ -10,6 +10,7 @@ using Stl.Fusion.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using Shared.Infrastructures.Extensions;
+using Newtonsoft.Json;
 
 namespace Service.Features
 {
@@ -72,9 +73,11 @@ namespace Service.Features
             if (order != null)
             {
                 orderResponse = order.MapToView2();
-                var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
-                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx);
-                orderResponse.Product = lists;
+                if (order.Products != null)
+                {
+                    var lists = JsonConvert.DeserializeObject<List<ProductResultView>>(order.Products);
+                    orderResponse.Product = lists;
+                }
             }
             else
             {
@@ -100,8 +103,7 @@ namespace Service.Features
             if (order != null)
             {
                 orderResponse = order.MapToView2();
-                var jsonx = System.Text.RegularExpressions.Regex.Unescape(order.Products);
-                var lists = JsonSerializer.Deserialize<List<ProductResultView>>(jsonx);
+                var lists = JsonConvert.DeserializeObject<List<ProductResultView>>(order.Products);
                 orderResponse.Product = lists;
             }
             else
@@ -132,7 +134,7 @@ namespace Service.Features
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var orderEntity = new OrderEntity
             {
-                Products = JsonSerializer.Serialize(productResults),
+                Products = JsonConvert.SerializeObject(productResults),
                 Status = status
             };
             Reattach(orderEntity, command.Entity, dbContext);
