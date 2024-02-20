@@ -293,6 +293,8 @@ namespace Service.Features.User
         }
         private string ValidateToken(string token)
         {
+            if (token is null)
+                throw new CustomException("Token is required");
             var jwtEncodedString = token.Substring(7);
 
             var secondToken = new JwtSecurityToken(jwtEncodedString);
