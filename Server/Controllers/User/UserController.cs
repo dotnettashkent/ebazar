@@ -142,6 +142,10 @@ namespace Server.Controllers.User
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await userService.GetByToken(token, cancellationToken);
                 return StatusCode(200, new { success = true, message = result });
             }

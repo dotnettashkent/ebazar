@@ -23,6 +23,10 @@ namespace Server.Controllers.Brand
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -37,6 +41,10 @@ namespace Server.Controllers.Brand
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -56,6 +64,10 @@ namespace Server.Controllers.Brand
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }

@@ -25,6 +25,10 @@ namespace Server.Controllers.Favourite
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
@@ -49,6 +53,10 @@ namespace Server.Controllers.Favourite
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
                 return StatusCode(200, new { success = true });
@@ -77,6 +85,10 @@ namespace Server.Controllers.Favourite
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await favouriteService.GetAll(token, cancellationToken);
                 return StatusCode(200, new { success = result });
             }

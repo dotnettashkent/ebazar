@@ -20,10 +20,14 @@ namespace Server.Controllers.Product
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateProductCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Create([FromForm] CreateProductCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -39,10 +43,14 @@ namespace Server.Controllers.Product
         }
 
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateProductCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Update([FromForm] UpdateProductCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -62,6 +70,10 @@ namespace Server.Controllers.Product
         {
             try
             {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
