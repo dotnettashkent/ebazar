@@ -38,7 +38,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult> Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
+        public async Task<ActionResult> Update([FromBody] UpdateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
+        public async Task<ActionResult> Delete([FromBody] DeleteProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {

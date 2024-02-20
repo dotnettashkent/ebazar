@@ -20,7 +20,7 @@ namespace Server.Controllers.ProductSubCategory
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
+        public async Task<ActionResult> Create([FromBody] CreateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
