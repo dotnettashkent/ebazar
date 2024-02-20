@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: db
+    ports:
+      - '5432:5432'
+    environment:
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_DB=eltoptest'
+    volumes:
+      - 'eltopdata:/var/lib/postgresql/data'
+      - './database.sql:/docker-entrypoint-initdb.d/database.sql'
+
+
+  eltop:
+    image: ksobitov/eltop:latest
+    container_name: eltop
+    depends_on:
+      - 'db'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - 'ConnectionStrings__Default=User Id=postgres;Password=postgres;Host=db;Port=5432;Database=eltoptest;'
+      - 'JwtSettings:SecretKey=my top key is eltop but this key is very difficult for example I need 512 bit greater than how we do it ?'
+      - DatabaseProviderConfiguration:ProviderType=PostgreSQL
+    ports:
+      - '80:80'
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    environment:
+      - WATCHTOWER_CLEANUP=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 eltop
+
+volumes:
+  eltopdata:
