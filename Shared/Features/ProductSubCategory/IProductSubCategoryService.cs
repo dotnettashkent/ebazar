@@ -9,9 +9,9 @@ namespace Shared.Features
 {
 	public interface IProductSubCategoryService : IComputeService
 	{
-		[ComputeMethod]
+		//[ComputeMethod]
 		Task<TableResponse<ProductSubCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
-		[ComputeMethod]
+		//[ComputeMethod]
 		Task<ProductSubCategoryView> Get(long Id, string token, CancellationToken cancellationToken = default);
 		[CommandHandler]
 		Task Create(CreateProductSubCategoryCommand command, CancellationToken cancellationToken = default);
