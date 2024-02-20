@@ -20,10 +20,14 @@ namespace Server.Controllers.ProductSubCategory
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromForm] CreateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Create([FromForm] CreateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -33,10 +37,14 @@ namespace Server.Controllers.ProductSubCategory
             }
         }
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Update([FromBody] UpdateProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -51,10 +59,14 @@ namespace Server.Controllers.ProductSubCategory
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Delete([FromBody] DeleteProductSubCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
@@ -75,10 +87,14 @@ namespace Server.Controllers.ProductSubCategory
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<ProductSubCategoryView>> Get(long Id, string token)
+        public async Task<ActionResult<ProductSubCategoryView>> Get(long Id, string? token)
         {
             try
             {
+                if (String.IsNullOrEmpty(token))
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
                 var user = await productSubCategoryService.Get(Id, token);
                 return StatusCode(408, new { success = true, messages = user });
             }

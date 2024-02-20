@@ -20,7 +20,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create([FromBody] CreateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Create([FromBody] CreateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult> Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Update(UpdateProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Delete(DeleteProductCategoryCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace Server.Controllers.ProductCategory
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<ProductCategoryView>> Get(long Id, string token)
+        public async Task<ActionResult<ProductCategoryView>> Get(long Id, string? token)
         {
             try
             {
