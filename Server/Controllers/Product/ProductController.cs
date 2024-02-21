@@ -3,6 +3,7 @@ using Shared.Features;
 using Shared.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures.Extensions;
+using Stl.Fusion;
 
 namespace Server.Controllers.Product
 {

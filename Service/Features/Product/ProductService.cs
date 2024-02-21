@@ -84,6 +84,7 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
+            command.Session.IsDefault();
             #region Check image
 
             if (command.Entity.ImageOne != null)
@@ -158,6 +159,7 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
+            command.Session.IsDefault();
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var entity = await dbContext.Products
             .FirstOrDefaultAsync(x => x.Id == command.Id);
@@ -179,6 +181,7 @@ namespace Service.Features
                 _ = await Invalidate();
                 return;
             }
+            command.Session.IsDefault();
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var entity = await dbContext.Products
                 .FirstOrDefaultAsync(x => x.Id == command.Entity!.Id);
