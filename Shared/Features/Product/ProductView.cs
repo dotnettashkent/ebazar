@@ -128,6 +128,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("tag")]
+        [JsonIgnore]
         public string? Tag { get; set; }
 
         [property: DataMember]
@@ -295,6 +296,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("tag")]
+        [JsonIgnore]
         public string? Tag { get; set; }
 
         [property: DataMember]
