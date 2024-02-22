@@ -8,18 +8,18 @@ namespace Shared.Features
     public partial record CreateBannerCommand(
         [property: DataMember] Session Session, 
         [property: DataMember] BannerView Entity,
-        [property: DataMember] string Token) : ISessionCommand<BannerView>;
+        [property: DataMember] string? Token) : ISessionCommand<BannerView>;
 
     [DataContract, MemoryPackable]
     public partial record UpdateBannerCommand(
         [property: DataMember] Session Session, 
         [property: DataMember] BannerView Entity,
-        [property: DataMember] string Token) : ISessionCommand<BannerView>;
+        [property: DataMember] string? Token) : ISessionCommand<BannerView>;
 
     [DataContract, MemoryPackable]
     public partial record DeleteBannerCommand(
         [property: DataMember] Session Session, 
         [property: DataMember] long Id,
-        [property: DataMember] string Token) : ISessionCommand<BannerView>;
+        [property: DataMember] string? Token) : ISessionCommand<BannerView>;
 
 }
