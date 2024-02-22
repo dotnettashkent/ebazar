@@ -37,7 +37,7 @@ namespace Server.Controllers.Brand
             }
         }
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateBrandCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Update([FromForm] UpdateBrandCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             try
             {

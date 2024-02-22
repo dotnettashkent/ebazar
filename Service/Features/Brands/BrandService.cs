@@ -60,6 +60,7 @@ namespace Service.Features
         #region Mutations
         public async virtual Task Create(CreateBrandCommand command, CancellationToken cancellationToken = default)
         {
+            command.Session.IsDefault();
             var isValid = ValidateToken(command.Token);
             if (!IsAdminUser(isValid))
             {
@@ -112,6 +113,7 @@ namespace Service.Features
 
         public async virtual Task Update(UpdateBrandCommand command, CancellationToken cancellationToken = default)
         {
+            command.Session.IsDefault();
             var isValid = ValidateToken(command.Token);
             if (!IsAdminUser(isValid))
             {
