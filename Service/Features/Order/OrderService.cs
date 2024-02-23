@@ -246,7 +246,7 @@ namespace Service.Features
         public async virtual Task Update(UpdateOrderCommand command, CancellationToken cancellationToken = default)
         {
             var isValid = ValidateToken(command.Entity.Token);
-            var isUser = IsUser(isValid);
+            //var isUser = IsUser(isValid);
             if (!IsAdminUser(isValid))
             {
                 throw new CustomException("User does not have permission to create a product.");
@@ -260,7 +260,7 @@ namespace Service.Features
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
 
             var existingOrder = await dbContext.Orders
-                .FirstOrDefaultAsync(x => x.UserId == isUser.Id);
+                .FirstOrDefaultAsync(x => x.Id == command.Entity.Id);
 
             if (existingOrder == null)
             {
