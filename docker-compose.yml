@@ -12,8 +12,7 @@ services:
       - 'POSTGRES_DB=eltoptest'
     volumes:
       - 'eltopdata:/var/lib/postgresql/data'
-      - './database.sql:/docker-entrypoint-initdb.d/database.sql'
-
+      - './eltop.sql:/docker-entrypoint-initdb.d/database.sql'
 
   eltop:
     image: ksobitov/eltop:latest
