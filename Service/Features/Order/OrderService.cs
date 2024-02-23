@@ -30,7 +30,7 @@ namespace Service.Features
         }
         #endregion
         #region Queries
-        public async virtual Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
+        public async virtual Task<TableResponse<OrderView>> GetAllPending(TableOptions options, CancellationToken cancellationToken = default)
         {
             var isValid = ValidateToken(options.token);
             if (!IsAdminUser(isValid))
@@ -41,6 +41,97 @@ namespace Service.Features
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
             var orders = from s in dbContext.Orders select s;
+            orders = orders.Where(x => x.Status == "pending");
+            if (!String.IsNullOrEmpty(options.search))
+            {
+                orders = orders.Where(s =>
+                         s.Region.Contains(options.search)
+                         || s.FirstName.Contains(options.search)
+                         || s.LastName.Contains(options.search)
+                );
+            }
+
+            Sorting(ref orders, options);
+
+            var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
+            var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
+
+        }
+
+        public async virtual Task<TableResponse<OrderView>> GetAllInProcess(TableOptions options, CancellationToken cancellationToken = default)
+        {
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("Not Permission");
+            }
+            await Invalidate();
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var orders = from s in dbContext.Orders select s;
+            orders = orders.Where(x => x.Status == "process");
+            if (!String.IsNullOrEmpty(options.search))
+            {
+                orders = orders.Where(s =>
+                         s.Region.Contains(options.search)
+                         || s.FirstName.Contains(options.search)
+                         || s.LastName.Contains(options.search)
+                );
+            }
+
+            Sorting(ref orders, options);
+
+            var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
+            var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
+
+        }
+
+        public async virtual Task<TableResponse<OrderView>> GetAllAccept(TableOptions options, CancellationToken cancellationToken = default)
+        {
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("Not Permission");
+            }
+            await Invalidate();
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var orders = from s in dbContext.Orders select s;
+            orders = orders.Where(x => x.Status == "accept");
+            if (!String.IsNullOrEmpty(options.search))
+            {
+                orders = orders.Where(s =>
+                         s.Region.Contains(options.search)
+                         || s.FirstName.Contains(options.search)
+                         || s.LastName.Contains(options.search)
+                );
+            }
+
+            Sorting(ref orders, options);
+
+            var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
+            var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
+            return new TableResponse<OrderView>() { Items = items.MapToViewList(), TotalItems = count, AllPage = (int)Math.Ceiling(totalPage), CurrentPage = options.page };
+
+        }
+
+        public async virtual Task<TableResponse<OrderView>> GetAllCancelled(TableOptions options, CancellationToken cancellationToken = default)
+        {
+            var isValid = ValidateToken(options.token);
+            if (!IsAdminUser(isValid))
+            {
+                throw new CustomException("Not Permission");
+            }
+            await Invalidate();
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var orders = from s in dbContext.Orders select s;
+            orders = orders.Where(x => x.Status == "cancel");
             if (!String.IsNullOrEmpty(options.search))
             {
                 orders = orders.Where(s =>

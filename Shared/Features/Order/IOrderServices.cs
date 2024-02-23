@@ -10,7 +10,10 @@ namespace Shared.Features
     public interface IOrderServices : IComputeService
     {
         //[ComputeMethod]
-        Task<TableResponse<OrderView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
+        Task<TableResponse<OrderView>> GetAllPending(TableOptions options, CancellationToken cancellationToken = default);
+        Task<TableResponse<OrderView>> GetAllInProcess(TableOptions options, CancellationToken cancellationToken = default);
+        Task<TableResponse<OrderView>> GetAllAccept(TableOptions options, CancellationToken cancellationToken = default);
+        Task<TableResponse<OrderView>> GetAllCancelled(TableOptions options, CancellationToken cancellationToken = default);
 
         //[ComputeMethod]
         Task<OrderResponse> Get(string token);

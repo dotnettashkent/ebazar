@@ -47,8 +47,8 @@ namespace Server.Controllers
         }
 
 
-        [HttpGet("get/all/admin")]
-        public async Task<ActionResult<TableResponse<OrderView>>> GetAll([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token,CancellationToken cancellationToken = default)
+        [HttpGet("get/all/pending")]
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllPending([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token,CancellationToken cancellationToken = default)
         {
             try
             {
@@ -57,7 +57,90 @@ namespace Server.Controllers
                     return StatusCode(401, new { success = false, message = "token is required" });
                 }
                 options.token = token;
-                var result = await orderServices.GetAll(options, cancellationToken);
+                var result = await orderServices.GetAllPending(options, cancellationToken);
+                return StatusCode(200, new { success = true, message = result });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+        [HttpGet("get/all/process")]
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllProcessing([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
+                options.token = token;
+                var result = await orderServices.GetAllInProcess(options, cancellationToken);
+                return StatusCode(200, new { success = true, message = result });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+
+        [HttpGet("get/all/accept")]
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllAccept([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
+                options.token = token;
+                var result = await orderServices.GetAllAccept(options, cancellationToken);
+                return StatusCode(200, new { success = true, message = result });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "Payload is null")
+            {
+                return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+
+        [HttpGet("get/all/cancel")]
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllCancel([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
+                options.token = token;
+                var result = await orderServices.GetAllCancelled(options, cancellationToken);
                 return StatusCode(200, new { success = true, message = result });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
