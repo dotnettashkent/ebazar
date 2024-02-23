@@ -69,7 +69,7 @@ namespace Service.Features
 			}
 
 			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
-            var existingCategory = await dbContext.ProductCategories
+            var existingCategory = await dbContext.ProductSubCategories
                 .FirstOrDefaultAsync(x => x.Name == command.Entity.Name);
             if (existingCategory != null)
             {
