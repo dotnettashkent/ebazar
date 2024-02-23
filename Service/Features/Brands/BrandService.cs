@@ -143,9 +143,10 @@ namespace Service.Features
         }
         private void Sorting(ref IQueryable<BrandEntity> brand, TableOptions options) => brand = options.sort_label switch
         {
-            "Id" => brand.Ordering(options, o => o.Id),
-            "Name" => brand.Ordering(options, o => o.Name),
-            "Link" => brand.Ordering(options, o => o.Link),
+            "id" => brand.Ordering(options, o => o.Id),
+            "name" => brand.Ordering(options, o => o.Name),
+            "link" => brand.Ordering(options, o => o.Link),
+            "is_popular" => brand.Ordering(options, o => o.IsPopular),
             _ => brand.OrderBy(o => o.Id),
 
         };
