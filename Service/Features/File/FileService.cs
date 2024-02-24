@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Service.Data;
 using Shared.Features;
+using Shared.Infrastructures.Extensions;
+using Stl.Fusion.EntityFramework;
+using System.IdentityModel.Tokens.Jwt;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Service.Features
 {
@@ -8,11 +13,13 @@ namespace Service.Features
     {
         private readonly IWebHostEnvironment _environment;
         private readonly string _hostUrl;
+        private readonly DbHub<AppDbContext> dbHub;
 
-        public FileService(IWebHostEnvironment environment)
+        public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _hostUrl = "http://188.166.57.12:80";
+            this.dbHub = dbHub;
         }
 
         public async Task<Tuple<int, string>> SaveImage(IFormFile imageFile)
@@ -78,10 +85,60 @@ namespace Service.Features
             }
             catch (Exception ex)
             {
+                return false;
+            }
+        }
+        public async Task<bool> DeleteOneImage(string imageFileName, string token)
+        {
+            try
+            {
+                var valid = ValidateToken(token);
+                if (!IsAdminUser(valid))
+                {
+                    throw new CustomException("User does not have permission to create a product.");
+                }
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "Uploads");
+                var filePath = Path.Combine(uploadsFolder, imageFileName);
+
+                if (File.Exists(filePath))
+                {
+                    // Delete the file
+                    File.Delete(filePath);
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
                 // Log any exceptions
                 Console.WriteLine($"Error deleting image: {ex.Message}");
                 return false;
             }
         }
+
+        #region Token
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
+        private string ValidateToken(string token)
+        {
+            var jwtEncodedString = token.Substring(7);
+
+            var secondToken = new JwtSecurityToken(jwtEncodedString);
+            var json = secondToken.Payload.Values.FirstOrDefault();
+            if (json == null)
+                throw new CustomException("Payload is null");
+            else
+            {
+                return json?.ToString() ?? string.Empty;
+            }
+        }
+        
+
+        #endregion
     }
 }

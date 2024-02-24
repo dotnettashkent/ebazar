@@ -4,6 +4,9 @@ using Shared.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures.Extensions;
 using Stl.Fusion;
+using Service.Features;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Threading;
 
 namespace Server.Controllers.Product
 {
@@ -12,12 +15,14 @@ namespace Server.Controllers.Product
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;
+        private readonly IFileService fileService;
         private readonly ICommander commander;
 
-        public ProductController(IProductService productService, ICommander commander)
+        public ProductController(IProductService productService, ICommander commander, IFileService fileService)
         {
             this.productService = productService;
             this.commander = commander;
+            this.fileService = fileService;
         }
 
         [HttpPost("create")]
@@ -86,6 +91,32 @@ namespace Server.Controllers.Product
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+
+        [HttpDelete("delete/file")]
+        public async Task<IActionResult> DeleteImage(string fileName, [FromHeader(Name = "Authorization")] string token)
+        {
+            try
+            {
+
+                if (String.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
+                var result = await fileService.DeleteOneImage(fileName, token);
+                if (result)
+                {
+                    return StatusCode(200, new { success = true });
+                }
+                else
+                {
+                    return StatusCode(408, new { success = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
             }
         }
 
