@@ -188,6 +188,60 @@ namespace Service.Features
 
             if (entity == null)
                 throw new CustomException("ProductEntity Not Found");
+            #region Check image
+
+            if (command.Entity.ImageOne != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageOne);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoOne = fileResult.Item2;
+                }
+            }
+            if (command.Entity.ImageTwo != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageTwo);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoTwo = fileResult.Item2;
+                }
+            }
+            if (command.Entity.ImageThree != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageThree);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoThree = fileResult.Item2;
+                }
+            }
+
+            if (command.Entity.ImageFour != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageFour);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoFour = fileResult.Item2;
+                }
+            }
+
+            if (command.Entity.ImageFive != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageFive);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoFive = fileResult.Item2;
+                }
+            }
+            if (command.Entity.ImageSix != null)
+            {
+                var fileResult = await fileService.SaveImage(command.Entity.ImageSix);
+                if (fileResult.Item1 == 1)
+                {
+                    command.Entity.PhotoSix = fileResult.Item2;
+                }
+            }
+
+            #endregion 
 
             Reattach(entity, command.Entity, dbContext);
 
