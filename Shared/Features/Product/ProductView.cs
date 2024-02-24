@@ -62,7 +62,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("is_delivery_free")]
-        public bool IsFreeDelivery { get; set; } = false;
+        public bool IsFreeDelivery { get; set; }
 
         [property: DataMember]
         [JsonPropertyName("photo_1")]
@@ -141,7 +141,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("is_active")]
-        public bool IsActive { get; set; } = false;
+        public bool IsActive { get; set; }
 
 
         [property: DataMember]
@@ -231,7 +231,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("is_delivery_free")]
-        public bool IsFreeDelivery { get; set; } = false;
+        public bool IsFreeDelivery { get; set; }
 
         [property: DataMember]
         [JsonPropertyName("photo_1")]
@@ -309,7 +309,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("is_active")]
-        public bool IsActive { get; set; } = false;
+        public bool IsActive { get; set; }
 
 
 
