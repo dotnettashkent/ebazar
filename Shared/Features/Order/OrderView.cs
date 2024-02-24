@@ -93,7 +93,6 @@ namespace Shared.Features
         [JsonPropertyName("user_id")]
         public long UserId { get; set; }
 
-
         [property: DataMember]
         [JsonPropertyName("city")]
         public string? City { get; set; }
