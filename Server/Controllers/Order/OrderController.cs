@@ -58,7 +58,7 @@ namespace Server.Controllers
                 }
                 options.token = token;
                 var result = await orderServices.GetAllPending(options, cancellationToken);
-                return StatusCode(200, new { success = true, message = result });
+                return StatusCode(200, new { success = true, result.Items, result.TotalItems, result.AllPage, result.CurrentPage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
@@ -85,7 +85,7 @@ namespace Server.Controllers
                 }
                 options.token = token;
                 var result = await orderServices.GetAllInProcess(options, cancellationToken);
-                return StatusCode(200, new { success = true, message = result });
+                return StatusCode(200, new { success = true, result.Items, result.TotalItems, result.AllPage, result.CurrentPage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
@@ -113,7 +113,7 @@ namespace Server.Controllers
                 }
                 options.token = token;
                 var result = await orderServices.GetAllAccept(options, cancellationToken);
-                return StatusCode(200, new { success = true, message = result });
+                return StatusCode(200, new { success = true, result.Items, result.TotalItems, result.AllPage, result.CurrentPage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
@@ -141,7 +141,7 @@ namespace Server.Controllers
                 }
                 options.token = token;
                 var result = await orderServices.GetAllCancelled(options, cancellationToken);
-                return StatusCode(200, new { success = true, message = result });
+                return StatusCode(200, new { success = true, result.Items, result.TotalItems, result.AllPage, result.CurrentPage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
