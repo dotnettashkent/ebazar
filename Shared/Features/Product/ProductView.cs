@@ -231,7 +231,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("is_delivery_free")]
-        public bool IsFreeDelivery { get; set; }
+        public bool IsDeliveryFree { get; set; }
 
         [property: DataMember]
         [JsonPropertyName("photo_1")]
