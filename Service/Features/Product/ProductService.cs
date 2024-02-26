@@ -142,7 +142,6 @@ namespace Service.Features
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             ProductEntity entity = new ProductEntity();
             Reattach(entity, command.Entity, dbContext);
-
             dbContext.Update(entity);
             await dbContext.SaveChangesAsync();
         }
@@ -244,7 +243,6 @@ namespace Service.Features
             #endregion 
 
             Reattach(entity, command.Entity, dbContext);
-
             await dbContext.SaveChangesAsync();
         }
 
