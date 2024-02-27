@@ -161,10 +161,15 @@ namespace Server.Controllers.User
         }
 
         [HttpGet("get/all")]
-        public async Task<ActionResult<TableResponse<UserView>>> GetAll([FromQuery] TableOptions options, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<TableResponse<UserView>>> GetAll([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string? token, CancellationToken cancellationToken = default)
         {
             try 
             {
+                if (String.IsNullOrEmpty(token) && token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
+                options.token = token;
                 return await userService.GetAll(options, cancellationToken);
             }
             catch (CustomException ex) when (ex.Message == "Token is required")
