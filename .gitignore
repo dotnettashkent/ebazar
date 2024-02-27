@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 eltop.sql
+backup.sql
