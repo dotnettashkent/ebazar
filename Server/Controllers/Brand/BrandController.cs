@@ -30,6 +30,10 @@ namespace Server.Controllers.Brand
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+            }
 
             catch (Exception ex)
             {
@@ -51,6 +55,10 @@ namespace Server.Controllers.Brand
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Brand not found" });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "You are not allowed" });
             }
 
             catch (Exception ex)
@@ -76,6 +84,11 @@ namespace Server.Controllers.Brand
                 return StatusCode(408, new { success = false, messages = "Brand not found" });
             }
 
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+            }
+
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
@@ -94,7 +107,7 @@ namespace Server.Controllers.Brand
             try
             {
                 var user = await brandService.Get(Id);
-                return StatusCode(408, new { success = true, messages = user });
+                return StatusCode(200, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {

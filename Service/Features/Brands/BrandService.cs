@@ -64,7 +64,7 @@ namespace Service.Features
             var isValid = ValidateToken(command.Token);
             if (!IsAdminUser(isValid))
             {
-                throw new CustomException("User does not have permission to create a product.");
+                throw new CustomException("Not Permission");
             }
             if (Computed.IsInvalidating())
             {
@@ -92,7 +92,7 @@ namespace Service.Features
             var isValid = ValidateToken(command.Token);
             if (!IsAdminUser(isValid))
             {
-                throw new CustomException("User does not have permission to create a product.");
+                throw new CustomException("Not Permission");
             }
             if (Computed.IsInvalidating())
             {
@@ -117,7 +117,7 @@ namespace Service.Features
             var isValid = ValidateToken(command.Token);
             if (!IsAdminUser(isValid))
             {
-                throw new CustomException("User does not have permission to create a product.");
+                throw new CustomException("Not Permission");
             }
             if (Computed.IsInvalidating())
             {

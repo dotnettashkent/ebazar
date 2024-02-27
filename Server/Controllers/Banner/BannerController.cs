@@ -32,6 +32,11 @@ namespace Server.Controllers.Banner
                 return StatusCode(200, new { success = true });
             }
 
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+            }
+
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
@@ -49,11 +54,14 @@ namespace Server.Controllers.Banner
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+            }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Banner not found" });
             }
-
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
@@ -71,6 +79,10 @@ namespace Server.Controllers.Banner
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "Not Permission")
+            {
+                return StatusCode(403, new { success = false, messages = "You are not allowed" });
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
@@ -95,7 +107,7 @@ namespace Server.Controllers.Banner
             try
             {
                 var user = await bannerService.Get(Id);
-                return StatusCode(408, new { success = true, messages = user });
+                return StatusCode(200, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
