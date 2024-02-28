@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Service.Data;
 using Shared.Features;
 using Shared.Infrastructures.Extensions;
@@ -14,20 +15,24 @@ namespace Service.Features
         private readonly IWebHostEnvironment _environment;
         private readonly string _hostUrl;
         private readonly DbHub<AppDbContext> dbHub;
+        private readonly IConfiguration _configuration;
 
-        public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub)
+        public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub, IConfiguration configuration)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _hostUrl = "http://188.166.57.12:80";
             this.dbHub = dbHub;
+            _configuration = configuration;
         }
 
         public async Task<Tuple<int, string>> SaveImage(IFormFile imageFile)
         {
             try
             {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "Uploads");
-
+                // Use a configuration setting or environment variable to get the base path
+                var linuxServerBasePath = _configuration.GetSection("LinuxServer")["ImageUploadBasePath"];
+                var basePath = string.IsNullOrEmpty(linuxServerBasePath) ? _environment.WebRootPath : linuxServerBasePath;
+                var uploadsFolder = Path.Combine(basePath, "Uploads");
                 // Ensure the "Uploads" folder exists and create it if not
                 if (!Directory.Exists(uploadsFolder))
                 {
@@ -66,6 +71,7 @@ namespace Service.Features
                 return new Tuple<int, string>(0, "Error has occurred");
             }
         }
+
 
         public async Task<bool> DeleteImage(string imageFileName)
         {
