@@ -19,7 +19,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Create(CreateOrderCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Create(CreateOrderCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace Server.Controllers
 
 
         [HttpGet("get/all/pending")]
-        public async Task<ActionResult<TableResponse<OrderView>>> GetAllPending([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token,CancellationToken cancellationToken = default)
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllPending([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string? token,CancellationToken cancellationToken = default)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Server.Controllers
             }
         }
         [HttpGet("get/all/process")]
-        public async Task<ActionResult<TableResponse<OrderView>>> GetAllProcessing([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllProcessing([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string? token, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/all/accept")]
-        public async Task<ActionResult<TableResponse<OrderView>>> GetAllAccept([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllAccept([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string? token, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/all/cancel")]
-        public async Task<ActionResult<TableResponse<OrderView>>> GetAllCancel([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<TableResponse<OrderView>>> GetAllCancel([FromQuery] TableOptions options, [FromHeader(Name = "Authorization")] string? token, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<OrderResponse>> Get([FromHeader] string token)
+        public async Task<ActionResult<OrderResponse>> Get([FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
@@ -183,10 +183,19 @@ namespace Server.Controllers
                 return StatusCode(500, new { error = ex.Message, success = false });
             }
         }
-
+        /// <summary>
+        /// Retrieves order details for admin.
+        /// </summary>
+        /// <remarks>
+        /// Token should be included in the request header.
+        /// </remarks>
+        /// <param name="token">Bearer token</param>
+        /// <param name="OrderId">Order ID</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Order details</returns>
 
         [HttpGet("get/for/admin")]
-        public async Task<ActionResult<OrderResponse>> GetForAdmin([FromHeader] string token, long OrderId, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<OrderResponse>> GetForAdmin([FromHeader(Name = "Authorization")] string? token, long OrderId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -217,7 +226,7 @@ namespace Server.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult> Update(UpdateOrderCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Update(UpdateOrderCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string? token)
         {
             try
             {
