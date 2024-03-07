@@ -25,7 +25,7 @@ namespace Service.Features
 		#region Queries
 
 
-		[ComputeMethod]
+		//[ComputeMethod]
 		public virtual async Task<TableResponse<ProductCategoryView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
 		{
             
@@ -37,7 +37,7 @@ namespace Service.Features
 			if (!String.IsNullOrEmpty(options.search))
 			{
 				category = category.Where(s =>
-						 s.Name.Contains(options.search)
+						 s.NameUz.Contains(options.search) || s.NameRu.Contains(options.search)
 				);
 			}
 
@@ -48,8 +48,8 @@ namespace Service.Features
 			return new TableResponse<ProductCategoryView>() { Items = items.MapToViewList(), TotalItems = count };
 		}
 
-		[ComputeMethod]
-		public async virtual Task<ProductCategoryView> Get(long Id, string token, CancellationToken cancellationToken = default)
+		//[ComputeMethod]
+		public async virtual Task<ProductCategoryView> Get(long Id, CancellationToken cancellationToken = default)
 		{
             
             var dbContext = dbHub.CreateDbContext();
@@ -76,7 +76,7 @@ namespace Service.Features
 
 			await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var existingCategory = await dbContext.ProductCategories
-				.FirstOrDefaultAsync(x => x.Name == command.Entity.Name);
+				.FirstOrDefaultAsync(x => x.NameUz == command.Entity.NameUz && x.NameRu == command.Entity.NameRu);
             if (existingCategory != null)
             {
                 throw new CustomException("Already exists");
@@ -147,9 +147,10 @@ namespace Service.Features
 
 		private void Sorting(ref IQueryable<ProductCategoryEntity> tag, TableOptions options) => tag = options.sort_label switch
 		{
-			"Id" => tag.Ordering(options, o => o.Id),
-			"Name" => tag.Ordering(options, o => o.Name),
-			_ => tag.OrderBy(o => o.Id),
+			"id" => tag.Ordering(options, o => o.Id),
+			"name_uz" => tag.Ordering(options, o => o.NameUz),
+            "name_ru" => tag.Ordering(options, o => o.NameRu),
+            _ => tag.OrderBy(o => o.Id),
 
 		};
         #endregion

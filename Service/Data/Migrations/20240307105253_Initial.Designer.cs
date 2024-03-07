@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240216093231_Initial")]
+    [Migration("20240307105253_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -416,10 +416,15 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("NameRu")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasColumnName("name_ru");
+
+                    b.Property<string>("NameUz")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name_uz");
 
                     b.HasKey("Id");
 
@@ -575,10 +580,24 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("category_id");
+
+                    b.Property<string>("Href")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasColumnName("href");
+
+                    b.Property<string>("NameRu")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name_ru");
+
+                    b.Property<string>("NameUz")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name_uz");
 
                     b.HasKey("Id");
 
@@ -624,8 +643,8 @@ namespace Service.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2024, 2, 16, 9, 32, 31, 88, DateTimeKind.Utc).AddTicks(9407),
-                            Password = "admin",
+                            CreatedAt = new DateTime(2024, 3, 7, 10, 52, 52, 754, DateTimeKind.Utc).AddTicks(3691),
+                            Password = "$2a$11$h0REc2wxjzhs0NQ9t/HOtutNjgz5P6WhfjOF.7PSUngzVAxQrBN3.",
                             PhoneNumber = "Admin",
                             Role = "Admin"
                         });

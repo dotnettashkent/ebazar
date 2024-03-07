@@ -91,15 +91,11 @@ namespace Server.Controllers.ProductSubCategory
         }
 
         [HttpGet("get")]
-        public async Task<ActionResult<ProductSubCategoryView>> Get(long Id, string? token)
+        public async Task<ActionResult<ProductSubCategoryView>> Get(long Id)
         {
             try
             {
-                if (String.IsNullOrEmpty(token))
-                {
-                    return StatusCode(401, new { success = false, message = "token is required" });
-                }
-                var user = await productSubCategoryService.Get(Id, token);
+                var user =  productSubCategoryService.Get(Id);
                 return StatusCode(408, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")

@@ -9,10 +9,22 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class ProductSubCategoryView
 	{
-		[property: DataMember] [JsonIgnore] public long Id { get; set; }
-		[property: DataMember] public string Name { get; set; } = null!;
+		[property: DataMember] [JsonIgnore] 
+		public long Id { get; set; }
+        
+		[property : DataMember] [JsonPropertyName("name_uz")]
+        public string NameUz { get; set; } = null!;
 
-		public override bool Equals(object? o)
+        [property: DataMember] [JsonPropertyName("name_ru")]
+        public string NameRu { get; set; } = null!;
+
+		[property : DataMember] [JsonPropertyName("href")]
+        public string Href { get; set; } = null!;
+
+		[property: DataMember] [JsonPropertyName("category_id")]
+        public long CategoryId { get; set; }
+
+        public override bool Equals(object? o)
 		{
 			var other = o as ProductCategoryView;
 			return other?.Id == Id;

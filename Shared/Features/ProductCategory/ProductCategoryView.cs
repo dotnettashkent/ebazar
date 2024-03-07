@@ -1,5 +1,6 @@
 ﻿using MemoryPack;
 using Stl.Fusion.Blazor;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -11,9 +12,14 @@ namespace Shared.Features
 	public partial class ProductCategoryView
 	{
 		[property: DataMember] [JsonIgnore] public long Id { get; set; }
-		[property: DataMember] public string Name { get; set; } = null!;
+		[property: DataMember]
+        [JsonPropertyName("name_uz")]
+        public string NameUz { get; set; } = null!;
 
-		public override bool Equals(object? o)
+        [JsonPropertyName("name_ru")]
+        public string NameRu { get; set; } = null!;
+
+        public override bool Equals(object? o)
 		{
 			var other = o as ProductCategoryView;
 			return other?.Id == Id;
