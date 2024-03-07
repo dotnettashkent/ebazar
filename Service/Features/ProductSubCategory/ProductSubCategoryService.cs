@@ -33,7 +33,8 @@ namespace Service.Features
 			if (!String.IsNullOrEmpty(options.search))
 			{
 				category = category.Where(s =>
-						 s.Name.Contains(options.search)
+						 s.NameUz.Contains(options.search) || 
+						 s.NameRu.Contains(options.search)
 				);
 			}
 
@@ -43,7 +44,7 @@ namespace Service.Features
 			var items = await category.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
 			return new TableResponse<ProductSubCategoryView>() { Items = items.MapToViewList(), TotalItems = count };
 		}
-		public async virtual Task<ProductSubCategoryView> Get(long Id, string token, CancellationToken cancellationToken = default)
+		public async virtual Task<ProductSubCategoryView> Get(long Id, CancellationToken cancellationToken = default)
 		{
             
             var dbContext = _dbHub.CreateDbContext();
@@ -70,7 +71,7 @@ namespace Service.Features
 
 			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
             var existingCategory = await dbContext.ProductSubCategories
-                .FirstOrDefaultAsync(x => x.Name == command.Entity.Name);
+                .FirstOrDefaultAsync(x => x.NameUz == command.Entity.NameUz && x.NameRu == command.Entity.NameRu);
             if (existingCategory != null)
             {
                 throw new CustomException("Already exists");
@@ -155,9 +156,10 @@ namespace Service.Features
 		}
 		private void Sorting(ref IQueryable<ProductSubCategoryEntity> entity, TableOptions options) => entity = options.sort_label switch
 		{
-			"Id" => entity.Ordering(options, o => o.Id),
-			"Name" => entity.Ordering(options, o => o.Name),
-			_ => entity.OrderBy(o => o.Id),
+			"id" => entity.Ordering(options, o => o.Id),
+			"name_uz" => entity.Ordering(options, o => o.NameUz),
+            "name_ru" => entity.Ordering(options, o => o.NameRu),
+            _ => entity.OrderBy(o => o.Id),
 
 		};
 		#endregion

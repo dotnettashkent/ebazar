@@ -9,7 +9,10 @@ namespace Shared.Features
 		[Column("id"), DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
 		public long Id { get; set; }
 
-		[Column("name")]
-		public string Name { get; set; } = null!;
-	}
+		[Column("name_uz")]
+		public string NameUz { get; set; } = null!;
+
+        [Column("name_ru")]
+        public string NameRu { get; set; } = null!;
+    }
 }

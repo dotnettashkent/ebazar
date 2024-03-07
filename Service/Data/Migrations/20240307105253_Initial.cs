@@ -160,7 +160,8 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false)
+                    name_uz = table.Column<string>(type: "text", nullable: false),
+                    name_ru = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -173,7 +174,10 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false)
+                    name_uz = table.Column<string>(type: "text", nullable: false),
+                    name_ru = table.Column<string>(type: "text", nullable: false),
+                    href = table.Column<string>(type: "text", nullable: false),
+                    category_id = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -378,7 +382,7 @@ namespace Service.Data.Migrations
             migrationBuilder.InsertData(
                 table: "project_users",
                 columns: new[] { "id", "created_at", "password", "phone_number", "role", "updated_at" },
-                values: new object[] { 1L, new DateTime(2024, 2, 16, 9, 32, 31, 88, DateTimeKind.Utc).AddTicks(9407), "admin", "Admin", "Admin", null });
+                values: new object[] { 1L, new DateTime(2024, 3, 7, 10, 52, 52, 754, DateTimeKind.Utc).AddTicks(3691), "$2a$11$h0REc2wxjzhs0NQ9t/HOtutNjgz5P6WhfjOF.7PSUngzVAxQrBN3.", "Admin", "Admin", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserIdentities_Id",
