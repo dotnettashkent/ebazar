@@ -23,7 +23,7 @@ namespace Shared.Features
         [property: DataMember]
         [JsonPropertyName("token")]
         [NotMapped]
-        public string Token { get; set; } = null!;
+        public string? Token { get; set; }
 
         [property: DataMember]
         [property: JsonIgnore]
