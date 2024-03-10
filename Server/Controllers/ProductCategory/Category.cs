@@ -97,7 +97,7 @@ namespace Server.Controllers.ProductCategory
             try
             {
                 var user = await productCategoryService.Get(Id);
-                return StatusCode(408, new { success = true, messages = user });
+                return StatusCode(200, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
             {

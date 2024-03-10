@@ -95,8 +95,8 @@ namespace Server.Controllers.ProductSubCategory
         {
             try
             {
-                var user =  productSubCategoryService.Get(Id);
-                return StatusCode(408, new { success = true, messages = user });
+                var user = await productSubCategoryService.Get(Id);
+                return StatusCode(200, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
             {
