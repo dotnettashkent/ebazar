@@ -90,6 +90,10 @@ namespace Shared.Features
     public partial class OrderResponse
     {
         [property: DataMember]
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+
+        [property: DataMember]
         [JsonPropertyName("user_id")]
         public long UserId { get; set; }
 
