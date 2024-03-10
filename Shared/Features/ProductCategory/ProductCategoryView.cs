@@ -11,7 +11,8 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class ProductCategoryView
 	{
-		[property: DataMember] [JsonIgnore] public long Id { get; set; }
+		[property: DataMember, JsonPropertyName("id")] public long Id { get; set; }
+
 		[property: DataMember]
         [JsonPropertyName("name_uz")]
         public string NameUz { get; set; } = null!;
