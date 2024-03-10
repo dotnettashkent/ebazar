@@ -9,7 +9,7 @@ namespace Shared.Features
 	[ParameterComparer(typeof(ByValueParameterComparer))]
 	public partial class ProductSubCategoryView
 	{
-		[property: DataMember] [JsonIgnore] 
+		[property: DataMember, JsonPropertyName("id")]
 		public long Id { get; set; }
         
 		[property : DataMember] [JsonPropertyName("name_uz")]
