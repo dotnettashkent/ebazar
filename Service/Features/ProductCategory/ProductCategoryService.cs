@@ -59,9 +59,21 @@ namespace Service.Features
 
 			return category == null ? throw new CustomException("ProductCategoryEntity Not Found") : category.MapToView();
 		}
-		#endregion
-		#region Mutations
-		public async virtual Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default)
+
+        public async virtual Task<List<ProductSubCategoryView>> GetByCategory(long categoryId, CancellationToken cancellationToken = default)
+        {
+
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+            var category = await dbContext.ProductSubCategories
+                .Where(x => x.CategoryId == categoryId).ToListAsync(cancellationToken);
+
+            return category == null ? throw new CustomException("ProductCategoryEntity Not Found") : category.MapToViewList();
+        }
+
+        #endregion
+        #region Mutations
+        public async virtual Task Create(CreateProductCategoryCommand command, CancellationToken cancellationToken = default)
 		{
             var isValid = ValidateToken(command.Token);
             if (!IsAdminUser(isValid))
