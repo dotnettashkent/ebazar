@@ -3,6 +3,7 @@ using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Shared.Infrastructures;
 using Stl.CommandR;
+using System.Text.Json.Serialization;
 
 namespace Server.Controllers.ProductCategory
 {
@@ -97,6 +98,25 @@ namespace Server.Controllers.ProductCategory
             try
             {
                 var user = await productCategoryService.Get(Id);
+                return StatusCode(200, new { success = true, messages = user });
+            }
+            catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
+            {
+                return StatusCode(408, new { success = false, messages = "Category not found" });
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+
+        [HttpGet("get/category/id")]
+        public async Task<ActionResult<ProductCategoryView>> GetByCategoryId(long category_id)
+        {
+            try
+            {
+                var user = await productCategoryService.GetByCategory(category_id);
                 return StatusCode(200, new { success = true, messages = user });
             }
             catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
