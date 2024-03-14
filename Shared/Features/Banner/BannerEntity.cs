@@ -10,25 +10,13 @@ namespace Shared.Features
         [Column("id")]
         public long Id { get; set; }
 
-        [Column("locale")]
-        public string Locale { get; set; } = null!;
-
-        [Column("photo")]
-        public string Photo { get; set; } = null!;
-
-        [Column("title")]
-        public string Title { get; set; } = null!;
-
         [Column("link")]
         public string Link { get; set; } = null!;
 
-        [Column("description")]
-        public string Description { get; set; } = null!;
+        [Column("sort")]
+        public int Sort { get; set; }
 
-        [Column("created_at")]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        [Column("updated_at")]
-        public DateTime? UpdatedAt { get; set; }
+        [Column("photo")]
+        public string? Photo { get; set; }
     }
 }

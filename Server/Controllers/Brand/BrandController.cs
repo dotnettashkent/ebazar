@@ -54,7 +54,7 @@ namespace Server.Controllers.Brand
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Brand not found" });
+                return StatusCode(400, new { success = false, messages = "Brand not found" });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
@@ -81,7 +81,7 @@ namespace Server.Controllers.Brand
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Brand not found" });
+                return StatusCode(400, new { success = false, messages = "Brand not found" });
             }
 
             catch (CustomException ex) when (ex.Message == "Not Permission")
@@ -111,7 +111,7 @@ namespace Server.Controllers.Brand
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Brand not found" });
+                return StatusCode(400, new { success = false, messages = "Brand not found" });
             }
 
             catch (Exception ex)

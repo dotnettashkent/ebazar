@@ -36,7 +36,6 @@ namespace Service.Features
             {
                 brand = brand.Where(s =>
                          s.Name.Contains(options.search)
-                        || s.IsPopular.Contains(options.search)
                 );
             }
 

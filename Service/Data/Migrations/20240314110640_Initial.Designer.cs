@@ -13,7 +13,7 @@ using Service.Data;
 namespace Service.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240307105253_Initial")]
+    [Migration("20240314110640_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -83,38 +83,18 @@ namespace Service.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
                     b.Property<string>("Link")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("link");
 
-                    b.Property<string>("Locale")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("locale");
-
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("photo");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                    b.Property<int>("Sort")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort");
 
                     b.HasKey("Id");
 
@@ -134,9 +114,8 @@ namespace Service.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("photo");
 
-                    b.Property<string>("IsPopular")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<bool>("IsPopular")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_popular");
 
                     b.Property<string>("Link")
@@ -643,8 +622,8 @@ namespace Service.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedAt = new DateTime(2024, 3, 7, 10, 52, 52, 754, DateTimeKind.Utc).AddTicks(3691),
-                            Password = "$2a$11$h0REc2wxjzhs0NQ9t/HOtutNjgz5P6WhfjOF.7PSUngzVAxQrBN3.",
+                            CreatedAt = new DateTime(2024, 3, 14, 11, 6, 38, 843, DateTimeKind.Utc).AddTicks(7296),
+                            Password = "$2a$11$iiWk3KWhu6PyZsThLds1r.4GBlub7nmYJF12siL/e7sWPVtWbVY1W",
                             PhoneNumber = "Admin",
                             Role = "Admin"
                         });

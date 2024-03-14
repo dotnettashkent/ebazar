@@ -33,7 +33,7 @@ namespace Server.Controllers.ProductSubCategory
             }
             catch (CustomException ex) when (ex.Message == "Already exists")
             {
-                return StatusCode(408, new { success = false, messages = "Already exists" });
+                return StatusCode(400, new { success = false, messages = "Already exists" });
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace Server.Controllers.ProductSubCategory
             }
             catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Category not found" });
+                return StatusCode(400, new { success = false, messages = "Category not found" });
             }
             catch (Exception ex)
             {
@@ -76,7 +76,7 @@ namespace Server.Controllers.ProductSubCategory
             }
             catch (CustomException ex) when (ex.Message == "ProductCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Category not found" });
+                return StatusCode(400, new { success = false, messages = "Category not found" });
             }
             catch (Exception ex)
             {
@@ -100,7 +100,7 @@ namespace Server.Controllers.ProductSubCategory
             }
             catch (CustomException ex) when (ex.Message == "ProductSubCategoryEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Sub category not found" });
+                return StatusCode(400, new { success = false, messages = "Sub category not found" });
             }
 
             catch (Exception ex)

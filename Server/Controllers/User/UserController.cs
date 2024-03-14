@@ -46,7 +46,7 @@ namespace Server.Controllers.User
             }
             catch (CustomException ex) when (ex.Message == "User already exists")
             {
-                return StatusCode(408, new { success = false, messages = "User already exists" });
+                return StatusCode(400, new { success = false, messages = "User already exists" });
             }
             catch (Exception ex)
             {
@@ -68,7 +68,13 @@ namespace Server.Controllers.User
             }
             catch (CustomException ex) when (ex.Message == "UserEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "User not found" }); 
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Foydalanuvchi topilmadi",
+                    ["msg_ru"] = "Пользователь не найден",
+                    ["msg_en"] = "User was not found"
+                };
+                return StatusCode(400, new { success = false, messages = errorMessage });
             }
 
             catch (Exception ex)
@@ -87,7 +93,7 @@ namespace Server.Controllers.User
             }
             catch (CustomException ex) when (ex.Message == "UserEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "User not found" });
+                return StatusCode(400, new { success = false, messages = "User not found" });
             }
 
             catch (Exception ex)
@@ -106,7 +112,7 @@ namespace Server.Controllers.User
             }
             catch (CustomException ex) when (ex.Message == "User was not found")
             {
-                return StatusCode(408, new { success = false, messages = "User not found" });
+                return StatusCode(400, new { success = false, messages = "User not found" });
             }
 
             catch (Exception ex)
@@ -126,7 +132,7 @@ namespace Server.Controllers.User
             }
             catch (CustomException ex) when (ex.Message == "Admin user not found")
             {
-                return StatusCode(408, new { success = false, messages = "Admin user not found" });
+                return StatusCode(400, new { success = false, messages = "Admin user not found" });
             }
 
             catch (Exception ex)
@@ -151,7 +157,7 @@ namespace Server.Controllers.User
             }
             catch (CustomException ex) when (ex.Message == "User was not found")
             {
-                return StatusCode(408, new { success = false, messages = "User not found" });
+                return StatusCode(400, new { success = false, messages = "User not found" });
             }
 
             catch (Exception ex)
@@ -192,7 +198,7 @@ namespace Server.Controllers.User
             }
             catch (CustomException ex) when (ex.Message == "User was not found")
             {
-                return StatusCode(408, new { success = false, messages = "User not found" });
+                return StatusCode(400, new { success = false, messages = "User not found" });
             }
 
             catch (Exception ex)

@@ -82,13 +82,9 @@ namespace Service.Data.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    locale = table.Column<string>(type: "text", nullable: false),
-                    photo = table.Column<string>(type: "text", nullable: false),
-                    title = table.Column<string>(type: "text", nullable: false),
                     link = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    sort = table.Column<int>(type: "integer", nullable: false),
+                    photo = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,7 +98,7 @@ namespace Service.Data.Migrations
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false),
-                    is_popular = table.Column<string>(type: "text", nullable: false),
+                    is_popular = table.Column<bool>(type: "boolean", nullable: false),
                     Link = table.Column<string>(type: "text", nullable: false),
                     photo = table.Column<string>(type: "text", nullable: true)
                 },
@@ -382,7 +378,7 @@ namespace Service.Data.Migrations
             migrationBuilder.InsertData(
                 table: "project_users",
                 columns: new[] { "id", "created_at", "password", "phone_number", "role", "updated_at" },
-                values: new object[] { 1L, new DateTime(2024, 3, 7, 10, 52, 52, 754, DateTimeKind.Utc).AddTicks(3691), "$2a$11$h0REc2wxjzhs0NQ9t/HOtutNjgz5P6WhfjOF.7PSUngzVAxQrBN3.", "Admin", "Admin", null });
+                values: new object[] { 1L, new DateTime(2024, 3, 14, 11, 6, 38, 843, DateTimeKind.Utc).AddTicks(7296), "$2a$11$iiWk3KWhu6PyZsThLds1r.4GBlub7nmYJF12siL/e7sWPVtWbVY1W", "Admin", "Admin", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserIdentities_Id",

@@ -13,7 +13,7 @@ namespace Shared.Features
     {
         [property: DataMember][JsonPropertyName("id")] public long Id { get; set; }
         [property: DataMember][JsonPropertyName("name")] public string? Name { get; set; }
-        [property: DataMember][JsonPropertyName("is_popular")] public bool IsPopular { get; set; } = false;
+        [property: DataMember][JsonPropertyName("is_popular")] public bool IsPopular { get; set; }
         [property: DataMember][JsonPropertyName("link")] public string? Link { get; set; }
 
         [NotMapped]
