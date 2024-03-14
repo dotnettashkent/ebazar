@@ -240,7 +240,7 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Order not found" });
+                return StatusCode(400, new { success = false, messages = "Order not found" });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {

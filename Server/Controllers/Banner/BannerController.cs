@@ -60,7 +60,7 @@ namespace Server.Controllers.Banner
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Banner not found" });
+                return StatusCode(400, new { success = false, messages = "Banner not found" });
             }
             catch (Exception ex)
             {
@@ -86,7 +86,7 @@ namespace Server.Controllers.Banner
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Banner not found" });
+                return StatusCode(400, new { success = false, messages = "Banner not found" });
             }
 
             catch (Exception ex)
@@ -111,7 +111,7 @@ namespace Server.Controllers.Banner
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Banner not found" });
+                return StatusCode(400, new { success = false, messages = "Banner not found" });
             }
             catch (Exception ex)
             {

@@ -15,7 +15,7 @@ namespace Shared.Features
         public string Name { get; set; } = null!;
 
         [Column("is_popular")]
-        public string IsPopular { get; set; } = null!;
+        public bool IsPopular { get; set; }
 
         public string Link { get; set; } = null!;
 

@@ -35,13 +35,6 @@ public class BannerService : IBannerService
         await using var _ = dbContext.ConfigureAwait(false);
         var Banner = from s in dbContext.Banners select s;
 
-        if (!String.IsNullOrEmpty(options.search))
-        {
-            Banner = Banner.Where(s =>
-                     s.Title.Contains(options.search)
-                    || s.Description.Contains(options.search)
-            );
-        }
 
         Sorting(ref Banner, options);
 
@@ -151,11 +144,8 @@ public class BannerService : IBannerService
 
     private void Sorting(ref IQueryable<BannerEntity> Banner, TableOptions options) => Banner = options.sort_label switch
     {
-        "Title" => Banner.Ordering(options, o => o.Title),
-        "Locale" => Banner.Ordering(options, o => o.Locale),
-        "Link" => Banner.Ordering(options, o => o.Link),
-        "Photo" => Banner.Ordering(options, o => o.Photo),
-        "Id" => Banner.Ordering(options, o => o.Id),
+        "link" => Banner.Ordering(options, o => o.Link),
+        "id" => Banner.Ordering(options, o => o.Id),
         _ => Banner.OrderBy(o => o.Id),
 
     };
