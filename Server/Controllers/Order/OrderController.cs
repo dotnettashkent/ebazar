@@ -1,7 +1,7 @@
 ﻿using Stl.CommandR;
 using Shared.Features;
-using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Infrastructures.Extensions;
 
 namespace Server.Controllers
@@ -54,7 +54,14 @@ namespace Server.Controllers
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllPending(options, cancellationToken);
@@ -62,11 +69,23 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Payload is null")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(403, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -81,7 +100,14 @@ namespace Server.Controllers
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllInProcess(options, cancellationToken);
@@ -89,11 +115,23 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Payload is null")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -109,7 +147,14 @@ namespace Server.Controllers
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllAccept(options, cancellationToken);
@@ -117,11 +162,23 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Payload is null")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -137,7 +194,14 @@ namespace Server.Controllers
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllCancelled(options, cancellationToken);
@@ -145,11 +209,23 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Payload is null")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -165,18 +241,37 @@ namespace Server.Controllers
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var orderResponse = await orderServices.Get(token);
                 return orderResponse;
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
             {
-                return StatusCode(404, new { success = false, message = "Order not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Buyurtma topilmadi",
+                    ["msg_ru"] = "Заказ не найден",
+                    ["msg_en"] = "Order not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission" || ex.Message == "Payload is null")
             {
-                return StatusCode(403, new { success = false, message = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (Exception ex)
             {
@@ -192,22 +287,47 @@ namespace Server.Controllers
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var order = await orderServices.GetForAdmin(token, OrderId,cancellationToken);
                 return order;
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
             {
-                return StatusCode(408, new { success = false, messages = "Order not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Buyurtma topilmadi",
+                    ["msg_ru"] = "Заказ не найден",
+                    ["msg_en"] = "Order not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Payload is null")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -223,7 +343,14 @@ namespace Server.Controllers
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
@@ -231,15 +358,33 @@ namespace Server.Controllers
             }
             catch (CustomException ex) when (ex.Message == "OrderEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Order not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Buyurtma topilmadi",
+                    ["msg_ru"] = "Заказ не найден",
+                    ["msg_en"] = "Order not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Payload is null")
             {
-                return StatusCode(403, new { success = false, messages = "Not Permission" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (Exception ex)
             {

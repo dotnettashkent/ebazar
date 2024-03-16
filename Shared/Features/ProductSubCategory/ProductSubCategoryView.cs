@@ -13,13 +13,14 @@ namespace Shared.Features
 		public long Id { get; set; }
         
 		[property : DataMember] [JsonPropertyName("name_uz")]
-        public string NameUz { get; set; } = null!;
+        public string? NameUz { get; set; }
 
-        [property: DataMember] [JsonPropertyName("name_ru")]
-        public string NameRu { get; set; } = null!;
+        [property: DataMember]
+		[JsonPropertyName("name_ru")]
+		public string? NameRu { get; set; }
 
 		[property : DataMember] [JsonPropertyName("href")]
-        public string Href { get; set; } = null!;
+        public string? Href { get; set; }
 
 		[property: DataMember] [JsonPropertyName("category_id")]
         public long CategoryId { get; set; }

@@ -15,10 +15,10 @@ namespace Shared.Features
 
 		[property: DataMember]
         [JsonPropertyName("name_uz")]
-        public string NameUz { get; set; } = null!;
+        public string? NameUz { get; set; } 
 
         [JsonPropertyName("name_ru")]
-        public string NameRu { get; set; } = null!;
+        public string? NameRu { get; set; }  
 
         public override bool Equals(object? o)
 		{

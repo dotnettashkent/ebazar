@@ -17,7 +17,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [property: JsonPropertyName("link")]
-        public string Link { get; set; } = null!;
+        public string? Link { get; set; }
         
         [property: DataMember]
         [property: JsonPropertyName("image")]
