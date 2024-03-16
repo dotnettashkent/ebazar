@@ -32,14 +32,27 @@ namespace Server.Controllers.Product
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Product Not Found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Mahsulot topilmadi",
+                    ["msg_ru"] = "Продукт не найден",
+                    ["msg_en"] = "Product not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -55,14 +68,27 @@ namespace Server.Controllers.Product
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Product not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Mahsulot topilmadi",
+                    ["msg_ru"] = "Продукт не найден",
+                    ["msg_en"] = "Product not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -78,14 +104,27 @@ namespace Server.Controllers.Product
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Product not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Mahsulot topilmadi",
+                    ["msg_ru"] = "Продукт не найден",
+                    ["msg_en"] = "Product not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -102,7 +141,14 @@ namespace Server.Controllers.Product
 
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var result = await fileService.DeleteOneImage(fileName, token);
                 if (result)
@@ -136,7 +182,13 @@ namespace Server.Controllers.Product
             }
             catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Product not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Mahsulot topilmadi",
+                    ["msg_ru"] = "Продукт не найден",
+                    ["msg_en"] = "Product not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)

@@ -22,49 +22,80 @@ namespace Server.Controllers.Banner
         [HttpPost("create")]
         public async Task<ActionResult> Create([FromForm] CreateBannerCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
+            if (String.IsNullOrEmpty(token) || token is null)
+            {
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["key"] = "token",
+                    ["msg_uz"] = "Token majburiy",
+                    ["msg_ru"] = "Токен обязательна",
+                    ["msg_en"] = "Token is required"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
+            }
+
+            var validationErrors = StaticHelperMethod.ValidateCreateBannerCommand(command);
+            if (validationErrors.Any())
+            {
+                var errorObjects = validationErrors.Select(errorJson => StaticHelperMethod.DeserializeError(errorJson)).ToList();
+                return StatusCode(400, new { success = false, message = errorObjects });
+            }
+
             try
             {
-                if (String.IsNullOrEmpty(token) || token is null)
-                {
-                    return StatusCode(401, new { success = false, message = "token is required" });
-                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
-                return StatusCode(200, new { success = true });
+                return Ok(new { success = true });
             }
-
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+                return StatusCode(403, new { success = false, message = "You are not allowed" });
             }
-
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message, success = false });
+                return StatusCode(500, new { message = ex.Message, success = false });
             }
         }
+
         [HttpPut("udpate")]
         public async Task<ActionResult> Update([FromBody] UpdateBannerCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
+            if (String.IsNullOrEmpty(token) || token is null)
+            {
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["key"] = "token",
+                    ["msg_uz"] = "Token majburiy",
+                    ["msg_ru"] = "Токен обязательна",
+                    ["msg_en"] = "Token is required"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
+            }
+
+            var validationErrors = StaticHelperMethod.ValidateUpdateBannerCommand(command);
+            if (validationErrors.Any())
+            {
+                var errorObjects = validationErrors.Select(errorJson => StaticHelperMethod.DeserializeError(errorJson)).ToList();
+                return StatusCode(400, new { success = false, message = errorObjects });
+            }
+
             try
             {
-                if (String.IsNullOrEmpty(token) || token is null)
-                {
-                    return StatusCode(401, new { success = false, message = "token is required" });
-                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
-                return StatusCode(200, new { success = true });
+                return Ok(new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "You are not allowed" });
-            }
-            catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
-            {
-                return StatusCode(400, new { success = false, messages = "Banner not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message, success = false });
+                return StatusCode(500, new { message = ex.Message, success = false });
             }
         }
 
@@ -75,23 +106,42 @@ namespace Server.Controllers.Banner
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Banner not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Banner topilmadi",
+                    ["msg_ru"] = "Баннер не найден",
+                    ["msg_en"] = "Banner not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message, success = false });
+                return StatusCode(500, new { message = ex.Message, success = false });
             }
         }
 
@@ -111,11 +161,17 @@ namespace Server.Controllers.Banner
             }
             catch (CustomException ex) when (ex.Message == "BannerEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Banner not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Banner topilmadi",
+                    ["msg_ru"] = "Баннер не найден",
+                    ["msg_en"] = "Banner not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message, success = false });
+                return StatusCode(500, new { message = ex.Message, success = false });
             }
         }
     }

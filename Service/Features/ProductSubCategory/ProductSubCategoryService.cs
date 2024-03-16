@@ -70,6 +70,11 @@ namespace Service.Features
 			}
 
 			await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
+            var categoryExists = await dbContext.ProductCategories.AnyAsync(c => c.Id == command.Entity.CategoryId);
+            if (!categoryExists)
+            {
+                throw new CustomException("No corresponding category found.");
+            }
             var existingCategory = await dbContext.ProductSubCategories
                 .FirstOrDefaultAsync(x => x.NameUz == command.Entity.NameUz && x.NameRu == command.Entity.NameRu);
             if (existingCategory != null)

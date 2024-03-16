@@ -21,18 +21,39 @@ namespace Server.Controllers.Brand
         [HttpPost("create")]
         public async Task<ActionResult> Create([FromForm] CreateBrandCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
+            if (String.IsNullOrEmpty(token) || token is null)
+            {
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["key"] = "token",
+                    ["msg_uz"] = "Token majburiy",
+                    ["msg_ru"] = "Токен обязательна",
+                    ["msg_en"] = "Token is required"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
+            }
+
+            var validationErrors = StaticHelperMethod.ValidateCreateBrandCommand(command);
+            if (validationErrors.Any())
+            {
+                var errorObjects = validationErrors.Select(errorJson => StaticHelperMethod.DeserializeError(errorJson)).ToList();
+                return StatusCode(400, new { success = false, message = errorObjects });
+            }
+
             try
             {
-                if (String.IsNullOrEmpty(token) || token is null)
-                {
-                    return StatusCode(401, new { success = false, message = "token is required" });
-                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
-                return StatusCode(200, new { success = true });
+                return Ok(new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(403, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -43,22 +64,49 @@ namespace Server.Controllers.Brand
         [HttpPut("udpate")]
         public async Task<ActionResult> Update([FromForm] UpdateBrandCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
+            if (String.IsNullOrEmpty(token) || token is null)
+            {
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["key"] = "token",
+                    ["msg_uz"] = "Token majburiy",
+                    ["msg_ru"] = "Токен обязательна",
+                    ["msg_en"] = "Token is required"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
+            }
+
+            var validationErrors = StaticHelperMethod.ValidateUpdateBrandCommand(command);
+            if (validationErrors.Any())
+            {
+                var errorObjects = validationErrors.Select(errorJson => StaticHelperMethod.DeserializeError(errorJson)).ToList();
+                return StatusCode(400, new { success = false, message = errorObjects });
+            }
+
             try
             {
-                if (String.IsNullOrEmpty(token) || token is null)
-                {
-                    return StatusCode(401, new { success = false, message = "token is required" });
-                }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
-                return StatusCode(200, new { success = true });
+                return Ok(new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Brand not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Brand topilmadi",
+                    ["msg_ru"] = "Бренд не найден",
+                    ["msg_en"] = "Brand not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {
-                return StatusCode(403, new { success = false, messages = "You are not allowed" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Sizga ruxsat berilmagan",
+                    ["msg_ru"] = "Тебе не разрешено",
+                    ["msg_en"] = "You are not allowed"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (Exception ex)
@@ -74,14 +122,27 @@ namespace Server.Controllers.Brand
             {
                 if (String.IsNullOrEmpty(token) || token is null)
                 {
-                    return StatusCode(401, new { success = false, message = "token is required" });
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(400, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Brand not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Brand topilmadi",
+                    ["msg_ru"] = "Бренд не найден",
+                    ["msg_en"] = "Brand not found"
+                };
+                return StatusCode(400, new { success = false, message = errorMessage });
             }
 
             catch (CustomException ex) when (ex.Message == "Not Permission")
@@ -111,7 +172,13 @@ namespace Server.Controllers.Brand
             }
             catch (CustomException ex) when (ex.Message == "BrandEntity Not Found")
             {
-                return StatusCode(400, new { success = false, messages = "Brand not found" });
+                var errorMessage = new Dictionary<string, string>
+                {
+                    ["msg_uz"] = "Brand topilmadi",
+                    ["msg_ru"] = "Ссылка обязательна",
+                    ["msg_en"] = "Бренд не найден"
+                };
+                return StatusCode(400, new { success = false, error = errorMessage });
             }
 
             catch (Exception ex)
