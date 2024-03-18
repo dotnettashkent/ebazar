@@ -39,7 +39,7 @@ namespace Server.Controllers.Product
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
@@ -75,7 +75,7 @@ namespace Server.Controllers.Product
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
@@ -111,7 +111,7 @@ namespace Server.Controllers.Product
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });
@@ -148,7 +148,7 @@ namespace Server.Controllers.Product
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var result = await fileService.DeleteOneImage(fileName, token);
                 if (result)

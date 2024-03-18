@@ -60,6 +60,7 @@ public class BannerService : IBannerService
     #region Mutations
     public virtual async Task Create(CreateBannerCommand command, CancellationToken cancellationToken = default)
     {
+        command.Session.IsDefault();
         var phoneNumber = ValidateToken(command.Token);
         if (!IsAdminUser(phoneNumber))
         {
@@ -91,6 +92,7 @@ public class BannerService : IBannerService
 
     public virtual async Task Delete(DeleteBannerCommand command, CancellationToken cancellationToken = default)
     {
+        command.Session.IsDefault();
         var phoneNumber = ValidateToken(command.Token);
         if (!IsAdminUser(phoneNumber))
         {
@@ -112,6 +114,7 @@ public class BannerService : IBannerService
 
     public virtual async Task Update(UpdateBannerCommand command, CancellationToken cancellationToken = default)
     {
+        command.Session.IsDefault();
         var phoneNumber = ValidateToken(command.Token);
         if (!IsAdminUser(phoneNumber))
         {

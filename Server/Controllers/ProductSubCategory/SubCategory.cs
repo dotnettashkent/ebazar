@@ -33,7 +33,7 @@ namespace Server.Controllers.ProductSubCategory
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var validationErrors = StaticHelperMethod.ValidateCreateSubCategoryCommand(command);
                 if (validationErrors.Any())
@@ -73,7 +73,7 @@ namespace Server.Controllers.ProductSubCategory
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var validationErrors = StaticHelperMethod.ValidateUpdateSubCategoryCommand(command);
                 if (validationErrors.Any())
@@ -114,7 +114,7 @@ namespace Server.Controllers.ProductSubCategory
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var result = await commander.Call(command with { Token = token }, cancellationToken);
                 return StatusCode(200, new { success = true });

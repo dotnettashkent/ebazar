@@ -61,7 +61,7 @@ namespace Server.Controllers
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllPending(options, cancellationToken);
@@ -107,7 +107,7 @@ namespace Server.Controllers
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllInProcess(options, cancellationToken);
@@ -154,7 +154,7 @@ namespace Server.Controllers
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllAccept(options, cancellationToken);
@@ -201,7 +201,7 @@ namespace Server.Controllers
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 options.token = token;
                 var result = await orderServices.GetAllCancelled(options, cancellationToken);
@@ -248,7 +248,7 @@ namespace Server.Controllers
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var orderResponse = await orderServices.Get(token);
                 return orderResponse;
@@ -303,7 +303,7 @@ namespace Server.Controllers
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 var order = await orderServices.GetForAdmin(token, OrderId,cancellationToken);
                 return order;
@@ -359,7 +359,7 @@ namespace Server.Controllers
                         ["msg_ru"] = "Токен обязательна",
                         ["msg_en"] = "Token is required"
                     };
-                    return StatusCode(400, new { success = false, message = errorMessage });
+                    return StatusCode(401, new { success = false, message = errorMessage });
                 }
                 command.Entity.Token = token;
                 var result = await commander.Call(command, cancellationToken);
