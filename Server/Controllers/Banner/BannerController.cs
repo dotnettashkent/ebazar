@@ -57,7 +57,7 @@ namespace Server.Controllers.Banner
         }
 
         [HttpPut("udpate")]
-        public async Task<ActionResult> Update([FromBody] UpdateBannerCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Update([FromForm] UpdateBannerCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
             if (String.IsNullOrEmpty(token) || token is null)
             {
