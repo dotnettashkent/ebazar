@@ -20,7 +20,7 @@ namespace Service.Features
         public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub, IConfiguration configuration)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            _hostUrl = "http://https://167.71.4.172:80";
+            _hostUrl = "http://167.71.4.172:80";
             this.dbHub = dbHub;
             _configuration = configuration;
         }
