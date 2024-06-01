@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Shared.Infrastructures.Extensions;
 using Microsoft.Extensions.Configuration;
+using Stl.CommandR;
 
 namespace Service.Features.User
 {
@@ -23,11 +24,13 @@ namespace Service.Features.User
         private readonly DbHub<AppDbContext> dbHub;
         private readonly IProductService productService;
         private readonly IConfiguration configuration;
-        public UserService(DbHub<AppDbContext> dbHub, IProductService productService, IConfiguration configuration)
+        private readonly ICommander commander;
+        public UserService(DbHub<AppDbContext> dbHub, IProductService productService, IConfiguration configuration, ICommander commander)
         {
             this.dbHub = dbHub;
             this.productService = productService;
             this.configuration = configuration;
+            this.commander = commander;
         }
         #endregion
 
@@ -225,19 +228,28 @@ namespace Service.Features.User
 
             if (user == null)
             {
-                throw new CustomException("User was not found");
+                var command = new CreateUserCommand(Session.Default, new UserResultView { PhoneNumber = phoneNumber, Password = password });
+                bool created = await commander.Call<bool>(command);
+                if (created == true)
+                {
+                    var text = GenerateToken(phoneNumber);
+                    return text;
+                }
+                user = await dbContext.UsersEntities
+                    .Where(x => x.PhoneNumber == phoneNumber)
+                    .FirstOrDefaultAsync();
             }
 
-            if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
-                string token = GenerateToken(phoneNumber);
-                return token;
+                throw new CustomException("Password is incorrect");
             }
-            else
-            {
-                throw new CustomException("User was not found");
-            }
+
+            string token = GenerateToken(phoneNumber);
+            return token;
         }
+
+
 
         public async Task<string> AdminLogin(string phoneNumber, string password)
         {

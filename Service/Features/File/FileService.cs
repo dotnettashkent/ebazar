@@ -20,7 +20,7 @@ namespace Service.Features
         public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub, IConfiguration configuration)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            _hostUrl = "http://167.71.4.172:80";
+            _hostUrl = "'http://178.62.226.232";
             this.dbHub = dbHub;
             _configuration = configuration;
         }
@@ -29,10 +29,10 @@ namespace Service.Features
         {
             try
             {
-                // Use a configuration setting or environment variable to get the base path
-                var linuxServerBasePath = _configuration.GetSection("LinuxServer")["ImageUploadBasePath"];
-                var basePath = string.IsNullOrEmpty(linuxServerBasePath) ? _environment.WebRootPath : linuxServerBasePath;
+                // Use the web root path
+                var basePath = _environment.WebRootPath;
                 var uploadsFolder = Path.Combine(basePath, "Uploads");
+
                 // Ensure the "Uploads" folder exists and create it if not
                 if (!Directory.Exists(uploadsFolder))
                 {
@@ -42,16 +42,15 @@ namespace Service.Features
                 // Check allowed extensions
                 var ext = Path.GetExtension(imageFile.FileName);
                 var allowedExtensions = new[] { ".jpg", ".png", ".jpeg" };
-                if (Array.IndexOf(allowedExtensions, ext.ToLower()) == -1)
+                if (!allowedExtensions.Contains(ext.ToLower()))
                 {
                     string msg = $"Only {string.Join(",", allowedExtensions)} extensions are allowed";
                     return new Tuple<int, string>(0, msg);
                 }
 
-                string uniqueString = Guid.NewGuid().ToString();
                 // Generate unique filename
+                string uniqueString = Guid.NewGuid().ToString();
                 var newFileName = uniqueString + ext;
-
                 var filePath = Path.Combine(uploadsFolder, newFileName);
 
                 // Save the file
@@ -60,7 +59,7 @@ namespace Service.Features
                     await imageFile.CopyToAsync(stream);
                 }
 
-                var imageUrl = $"{_hostUrl}/Uploads/{newFileName}";
+                var imageUrl = $"http://178.62.226.232/Uploads/{newFileName}";
 
                 return new Tuple<int, string>(1, imageUrl);
             }
@@ -71,6 +70,7 @@ namespace Service.Features
                 return new Tuple<int, string>(0, "Error has occurred");
             }
         }
+
 
 
         public async Task<bool> DeleteImage(string imageFileName)
