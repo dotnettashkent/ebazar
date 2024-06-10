@@ -47,7 +47,8 @@ namespace Service.Features
                 var count = productRes.Count();
                 return new TableResponse<ProductResultView>() { Items = productRes, TotalItems = count };
             }
-            throw new CustomException("CartEntity Not Found");
+            return new TableResponse<ProductResultView>();
+            //throw new CustomException("CartEntity Not Found");
         }
 
 

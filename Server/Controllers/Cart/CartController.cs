@@ -82,7 +82,22 @@ namespace Server.Controllers
 
             try
             {
-                return await cartService.GetAll(token, cancellationToken);
+                var res =  await cartService.GetAll(token, cancellationToken);
+                if(res.Items.Count() == 0)
+                {
+                    return Ok(new
+                    {
+                        items = Array.Empty<string>(),
+                        total_items = 0,
+                        all_page = 0,
+                        current_page = 0,
+
+                    });
+                }
+                else
+                {
+                    return Ok(res);
+                }
             }
             catch (CustomException ex) when (ex.Message == "Not Permission")
             {

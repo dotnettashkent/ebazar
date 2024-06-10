@@ -4,6 +4,7 @@ using Shared.Infrastructures.Extensions;
 using Stl.CommandR;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Threading;
+using Service.Features;
 
 namespace Server.Controllers.Favourite
 {
@@ -89,8 +90,24 @@ namespace Server.Controllers.Favourite
                 {
                     return StatusCode(401, new { success = false, message = "token is required" });
                 }
-                var result = await favouriteService.GetAll(token, cancellationToken);
-                return StatusCode(200, new { success = result });
+                var res =  await favouriteService.GetAll(token, cancellationToken);
+                if (res.Items.Count() == 0)
+                {
+                    return Ok(new
+                    {
+                        items = Array.Empty<string>(),
+                        total_items = 0,
+                        all_page = 0,
+                        current_page = 0,
+
+                    });
+                }
+                else
+                {
+                    return Ok(res);
+                }
+                //var result = await favouriteService.GetAll(token, cancellationToken);
+                //return StatusCode(200, new { success = result });
             }
             catch (CustomException ex) when (ex.Message == "Favourite Not Found")
             {

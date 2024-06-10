@@ -42,10 +42,10 @@ namespace Service.Features
                 var productGetResult = await productService.GetById(item, cancellationToken);
                 productList.Add(productGetResult);
             }
-            if (productList.Count == 0)
-            {
-                throw new CustomException("Favourite Not Found");
-            }
+            //if (productList.Count == 0)
+            //{
+                //throw new CustomException("Favourite Not Found");
+            //}
             var count = productList.Count();
             return new TableResponse<ProductResultView>() { Items = productList, TotalItems = count };
         }
