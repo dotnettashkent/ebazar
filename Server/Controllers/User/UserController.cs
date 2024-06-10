@@ -114,7 +114,10 @@ namespace Server.Controllers.User
             {
                 return StatusCode(400, new { success = false, messages = "User not found" });
             }
-
+            catch (CustomException ex) when (ex.Message == "Password is incorrect")
+            {
+                return StatusCode(401, new {success = false, message = "Password is incorrect!" });
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message, success = false });
