@@ -59,7 +59,7 @@ namespace Service.Features
                     await imageFile.CopyToAsync(stream);
                 }
 
-                var imageUrl = $"http://178.62.226.232/Uploads/{newFileName}";
+                var imageUrl = $"{_hostUrl}/Uploads/{newFileName}";
 
                 return new Tuple<int, string>(1, imageUrl);
             }
