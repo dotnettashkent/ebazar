@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Service.Data;
 using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Stl.Fusion.EntityFramework;
 using System.IdentityModel.Tokens.Jwt;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Service.Features
 {
@@ -15,84 +13,53 @@ namespace Service.Features
         private readonly IWebHostEnvironment _environment;
         private readonly string _hostUrl;
         private readonly DbHub<AppDbContext> dbHub;
-        private readonly IConfiguration _configuration;
-
-        public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub, IConfiguration configuration)
+        private readonly string MEDIA = "media";
+        private readonly string VIDEOS = "videos";
+        private readonly string ROOTPATH;
+        public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            _hostUrl = "http://178.62.226.232";
+            _hostUrl = "https://api.ebazar.admin-eltop.uz";
             this.dbHub = dbHub;
-            _configuration = configuration;
+            ROOTPATH = environment.WebRootPath;
         }
 
-        public async Task<Tuple<int, string>> SaveImage(IFormFile imageFile)
+        public async Task<bool> DeleteVideoAsync(string subpath)
         {
-            try
+            string path = Path.Combine(ROOTPATH, subpath);
+            if (File.Exists(path))
             {
-                // Use the web root path
-                var basePath = _environment.WebRootPath;
-                var uploadsFolder = Path.Combine(basePath, "Uploads");
-
-                // Ensure the "Uploads" folder exists and create it if not
-                if (!Directory.Exists(uploadsFolder))
+                await Task.Run(() =>
                 {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                // Check allowed extensions
-                var ext = Path.GetExtension(imageFile.FileName);
-                var allowedExtensions = new[] { ".jpg", ".png", ".jpeg" };
-                if (!allowedExtensions.Contains(ext.ToLower()))
-                {
-                    string msg = $"Only {string.Join(",", allowedExtensions)} extensions are allowed";
-                    return new Tuple<int, string>(0, msg);
-                }
-
-                // Generate unique filename
-                string uniqueString = Guid.NewGuid().ToString();
-                var newFileName = uniqueString + ext;
-                var filePath = Path.Combine(uploadsFolder, newFileName);
-
-                // Save the file
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(stream);
-                }
-
-                var imageUrl = $"{_hostUrl}/Uploads/{newFileName}";
-
-                return new Tuple<int, string>(1, imageUrl);
+                    File.Delete(path);
+                });
+                return true;
             }
-            catch (Exception ex)
-            {
-                // Log any exceptions
-                Console.WriteLine($"Error saving image: {ex.Message}");
-                return new Tuple<int, string>(0, "Error has occurred");
-            }
+            return false;
         }
 
-
-
-        public async Task<bool> DeleteImage(string imageFileName)
+        public async Task<string> UplaodVideoAsync(IFormFile file)
         {
-            try
-            {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "Uploads");
-                var filePath = Path.Combine(uploadsFolder, imageFileName);
+            if (file == null || file.Length == 0)
+                throw new ArgumentException("File is empty");
 
-                if (File.Exists(filePath))
-                {
-                    // Delete the file
-                    File.Delete(filePath);
-                    return true;
-                }
+            string newImageName = MediaHelper.MakeVideoName(file.FileName);
+            string subpath = Path.Combine(MEDIA, VIDEOS, newImageName);
+            string path = Path.Combine(ROOTPATH, subpath);
 
-                return false;
-            }
-            catch (Exception ex)
+            // Ensure the directory exists
+            string directory = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directory))
             {
-                return false;
+                Directory.CreateDirectory(directory);
             }
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return $"{_hostUrl}/"+subpath;
         }
         public async Task<bool> DeleteOneImage(string imageFileName, string token)
         {

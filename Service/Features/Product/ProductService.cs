@@ -89,53 +89,35 @@ namespace Service.Features
 
             if (command.Entity.ImageOne != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageOne);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoOne = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageOne);
+                command.Entity.PhotoOne = fileResult;
             }
             if (command.Entity.ImageTwo != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageTwo);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoTwo = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageTwo);
+                command.Entity.PhotoTwo = fileResult;
             }
             if (command.Entity.ImageThree != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageThree);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoThree = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageThree);
+                command.Entity.PhotoThree = fileResult;
             }
 
             if (command.Entity.ImageFour != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageFour);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoFour = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageFour);
+                command.Entity.PhotoFour = fileResult;
             }
 
             if (command.Entity.ImageFive != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageFive);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoFive = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageFive);
+                command.Entity.PhotoFive = fileResult;
             }
             if (command.Entity.ImageSix != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageSix);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoSix = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageSix);
+                command.Entity.PhotoSix = fileResult;
             }
 
             #endregion 
@@ -191,53 +173,35 @@ namespace Service.Features
 
             if (command.Entity.ImageOne != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageOne);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoOne = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageOne);
+                command.Entity.PhotoOne = fileResult;
             }
             if (command.Entity.ImageTwo != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageTwo);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoTwo = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageTwo);
+                command.Entity.PhotoTwo = fileResult;
             }
             if (command.Entity.ImageThree != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageThree);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoThree = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageThree);
+                command.Entity.PhotoThree = fileResult;
             }
 
             if (command.Entity.ImageFour != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageFour);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoFour = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageFour);
+                command.Entity.PhotoFour = fileResult;
             }
 
             if (command.Entity.ImageFive != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageFive);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoFive = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageFive);
+                command.Entity.PhotoFive = fileResult;
             }
             if (command.Entity.ImageSix != null)
             {
-                var fileResult = await fileService.SaveImage(command.Entity.ImageSix);
-                if (fileResult.Item1 == 1)
-                {
-                    command.Entity.PhotoSix = fileResult.Item2;
-                }
+                var fileResult = await fileService.UplaodVideoAsync(command.Entity.ImageSix);
+                command.Entity.PhotoSix = fileResult;
             }
 
             #endregion 
