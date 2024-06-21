@@ -110,7 +110,7 @@ namespace Service.Features
                 return json?.ToString() ?? string.Empty;
             }
         }
-        
+
 
         #endregion
     }

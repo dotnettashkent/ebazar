@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   eltop:
     network_mode: "host"
@@ -11,8 +9,8 @@ services:
     environment:
       - 'ASPNETCORE_ENVIRONMENT=Development'
       - 'ASPNETCORE_URLS=http://+:80'
-      - 'ConnectionStrings__Default=User Id=postgres;Password=admin;Host=localhost;Port=5432;Database=eltoptest;'
+      - 'ConnectionStrings__Default=User Id=${POSTGRESS_USER};Password=${POSTGRESS_PASSWORD};Host=${POSTGRESS_HOST};Port=${POSTGRESS_PORT};Database=${POSTGRESS_DBNAME};'
       - 'JwtSettings:SecretKey=my top key is eltop but this key is very difficult for example I need 512 bit greater than how we do it ?'
       - 'DatabaseProviderConfiguration:ProviderType=PostgreSQL'
     ports:
-      - '80:80'
+      - '5080:80'
