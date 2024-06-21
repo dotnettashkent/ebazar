@@ -6,7 +6,6 @@ using Shared.Features;
 using Shared.Infrastructures.Extensions;
 using Stl.Fusion.EntityFramework;
 using System.IdentityModel.Tokens.Jwt;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Service.Features
 {
@@ -143,7 +142,7 @@ namespace Service.Features
                 return json?.ToString() ?? string.Empty;
             }
         }
-        
+
 
         #endregion
     }
