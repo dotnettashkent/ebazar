@@ -19,7 +19,7 @@ namespace Service.Features
         public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub, IConfiguration configuration)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            _hostUrl = "https://api.ebazar.admin-eltop.uz";
+            _hostUrl = "http://178.62.226.232";
             this.dbHub = dbHub;
             _configuration = configuration;
         }
