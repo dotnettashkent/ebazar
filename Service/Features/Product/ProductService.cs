@@ -142,7 +142,7 @@ namespace Service.Features
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             ProductEntity entity = new ProductEntity();
             Reattach(entity, command.Entity, dbContext);
-            dbContext.Update(entity);
+            await dbContext.AddAsync(entity);
             await dbContext.SaveChangesAsync();
         }
 
