@@ -15,19 +15,19 @@ var env = builder.Environment;
 
 #region Database
 var dbType = cfg.GetValue<string>("DatabaseProviderConfiguration:ProviderType");
-var connectionString = $"Host={cfg["POSTGRESS_HOST"]};" +
-                       $"Port={cfg["POSTGRESS_PORT"]};" +
-                       $"User Id={cfg["POSTGRESS_USER"]};" +
-                       $"Database={cfg["POSTGRESS_DBNAME"]};" +
-                       $"Password={cfg["POSTGRESS_PASSWORD"]};";
+//var connectionString = $"Host={cfg["POSTGRESS_HOST"]};" +
+//                       $"Port={cfg["POSTGRESS_PORT"]};" +
+//                       $"User Id={cfg["POSTGRESS_USER"]};" +
+//                       $"Database={cfg["POSTGRESS_DBNAME"]};" +
+//                       $"Password={cfg["POSTGRESS_PASSWORD"]};";
 
-services.AddDataBase<AppDbContext>(env, cfg, (DataBaseType)Enum.Parse(typeof(DataBaseType), dbType, true), connectionString);
+services.AddDataBase<AppDbContext>(env, cfg, (DataBaseType)Enum.Parse(typeof(DataBaseType), dbType, true)/*, connectionString*/);
 
 // Register IDbContextFactory<AuditDbContext> before AddDataBase<AppDbContext>
 services.AddDbContext<AppDbContext>(options =>
 {
     // Configure options for AuditDbContext
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
 });
 #endregion
 

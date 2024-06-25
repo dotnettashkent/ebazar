@@ -11,7 +11,7 @@ namespace Server.Infrastructure.ServiceCollection;
 public static class AddDB
 {
     public static IServiceCollection AddDataBase<TContext>(this IServiceCollection services, IWebHostEnvironment env,
-        ConfigurationManager cfg, DataBaseType dataBaseType, string connectionString) where TContext : DbContext
+        ConfigurationManager cfg, DataBaseType dataBaseType/*, string connectionString*/) where TContext : DbContext
     {
         services.AddTransient(_ => new DbOperationScope<TContext>.Options
         {
@@ -42,7 +42,7 @@ public static class AddDB
                 switch (dataBaseType)
                 {
                     case DataBaseType.PostgreSQL:
-                        db.UseNpgsql(connectionString.Interpolate(fakeTenant), x =>
+                        db.UseNpgsql(cfg.GetConnectionString("Default")!.Interpolate(fakeTenant), x =>
                         {
                             x.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                             x.EnableRetryOnFailure(0);
