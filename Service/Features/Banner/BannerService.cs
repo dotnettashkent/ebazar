@@ -73,11 +73,8 @@ public class BannerService : IBannerService
         }
         if (command.Entity.PhotoView != null)
         {
-            var fileResult = await fileService.SaveImage(command.Entity.PhotoView);
-            if (fileResult.Item1 == 1)
-            {
-                command.Entity.Photo = fileResult.Item2;
-            }
+            var fileResult = await fileService.UplaodVideoAsync(command.Entity.PhotoView);
+            command.Entity.Photo = fileResult;
         }
 
         await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
@@ -106,7 +103,7 @@ public class BannerService : IBannerService
         await using var dbContext = await _dbHub.CreateCommandDbContext(cancellationToken);
         var Banner = await dbContext.Banners
         .FirstOrDefaultAsync(x => x.Id == command.Id) ?? throw new CustomException("BannerEntity Not Found");
-        await fileService.DeleteImage(Banner.Photo);
+        await fileService.DeleteVideoAsync(Banner.Photo);
         dbContext.RemoveRange(Banner);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
