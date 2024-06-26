@@ -5,8 +5,8 @@ namespace Shared.Features
 {
     public interface IFileService : IComputeService
     {
-        Task<bool> DeleteVideoAsync(string subpath);
-        Task<string> UplaodVideoAsync(IFormFile file);
+        Task<bool> DeleteMediaAsync(string subpath);
+        Task<string> UploadMediaAsync(IFormFile file);
 
         public Task<bool> DeleteOneImage(string imageFileName, string token);
     }

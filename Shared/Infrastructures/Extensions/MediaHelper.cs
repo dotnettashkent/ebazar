@@ -1,6 +1,6 @@
 ﻿public class MediaHelper
 {
-    public static string MakeVideoName(string filename)
+    public static string MakeMediaName(string filename)
     {
         FileInfo fileInfo = new FileInfo(filename);
 

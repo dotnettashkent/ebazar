@@ -14,8 +14,8 @@ namespace Service.Features
         private readonly string _hostUrl;
         private readonly DbHub<AppDbContext> dbHub;
         private readonly string MEDIA = "media";
-        private readonly string VIDEOS = "videos";
         private readonly string ROOTPATH;
+        //private readonly string local = "https://localhost:7267";
         public FileService(IWebHostEnvironment environment, DbHub<AppDbContext> dbHub)
         {
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
@@ -24,27 +24,30 @@ namespace Service.Features
             ROOTPATH = environment.WebRootPath;
         }
 
-        public async Task<bool> DeleteVideoAsync(string subpath)
+        public async Task<bool> DeleteMediaAsync(string subpath)
         {
-            string path = Path.Combine(ROOTPATH, subpath);
-            if (File.Exists(path))
+            
+            // Construct the full path to the image file
+            var imagePath = Path.Combine(ROOTPATH, "media", subpath);
+
+            // Check if the file exists
+            if (File.Exists(imagePath))
             {
-                await Task.Run(() =>
-                {
-                    File.Delete(path);
-                });
+                // Delete the file
+                await Task.Run(() => File.Delete(imagePath));
                 return true;
             }
+
             return false;
         }
 
-        public async Task<string> UplaodVideoAsync(IFormFile file)
+        public async Task<string> UploadMediaAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
                 throw new ArgumentException("File is empty");
 
-            string newImageName = MediaHelper.MakeVideoName(file.FileName);
-            string subpath = Path.Combine(MEDIA, VIDEOS, newImageName);
+            string newImageName = MediaHelper.MakeMediaName(file.FileName);
+            string subpath = Path.Combine(MEDIA, newImageName); // Changed to save directly under "media"
             string path = Path.Combine(ROOTPATH, subpath);
 
             // Ensure the directory exists
@@ -59,8 +62,11 @@ namespace Service.Features
                 await file.CopyToAsync(stream);
             }
 
-            return $"{_hostUrl}/"+subpath;
+            string urlPath = subpath.Replace("\\", "/");
+            return $"{_hostUrl}/" + urlPath;
         }
+
+
         public async Task<bool> DeleteOneImage(string imageFileName, string token)
         {
             try
@@ -68,15 +74,15 @@ namespace Service.Features
                 var valid = ValidateToken(token);
                 if (!IsAdminUser(valid))
                 {
-                    throw new CustomException("User does not have permission to create a product.");
+                    throw new CustomException("You have not permission");
                 }
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "Uploads");
-                var filePath = Path.Combine(uploadsFolder, imageFileName);
+                var imagePath = Path.Combine(ROOTPATH, "media", imageFileName);
 
-                if (File.Exists(filePath))
+                // Check if the file exists
+                if (File.Exists(imagePath))
                 {
                     // Delete the file
-                    File.Delete(filePath);
+                    await Task.Run(() => File.Delete(imagePath));
                     return true;
                 }
 
@@ -84,7 +90,6 @@ namespace Service.Features
             }
             catch (Exception ex)
             {
-                // Log any exceptions
                 Console.WriteLine($"Error deleting image: {ex.Message}");
                 return false;
             }

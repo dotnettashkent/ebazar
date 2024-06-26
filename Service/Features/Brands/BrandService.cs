@@ -72,7 +72,7 @@ namespace Service.Features
             }
             if (command.Entity.Photo != null)
             {
-                var fileResult = await fileService.UplaodVideoAsync(command.Entity.Photo);
+                var fileResult = await fileService.UploadMediaAsync(command.Entity.Photo);
                 command.Entity.ImageOne = fileResult;
             }
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
@@ -100,7 +100,7 @@ namespace Service.Features
             .FirstOrDefaultAsync(x => x.Id == command.Id);
             if (brand == null) 
                 throw new CustomException("BrandEntity Not Found");
-            await fileService.DeleteVideoAsync(brand.ImageOne);
+            await fileService.DeleteMediaAsync(brand.ImageOne);
             dbContext.Remove(brand);
             await dbContext.SaveChangesAsync();
         }
