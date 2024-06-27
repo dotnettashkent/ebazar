@@ -335,7 +335,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("quantity")]
-        public int? Quantity { get; set; }
+        public int? Quantity { get; set; } = 1;
         
         [property : DataMember]
         [JsonPropertyName("slug")] 
