@@ -42,6 +42,10 @@ namespace Server.Controllers.Favourite
             {
                 return StatusCode(403, new { success = false, messages = "Not Permission" });
             }
+            catch (CustomException ex) when (ex.Message == "Product already exists.")
+            {
+                return StatusCode(403, new { success = false, messages = "Product already exists." });
+            }
 
             catch (Exception ex)
             {
@@ -120,6 +124,10 @@ namespace Server.Controllers.Favourite
             catch (CustomException ex) when (ex.Message == "Payload is null")
             {
                 return StatusCode(403, new { success = false, messages = "Not Permission" });
+            }
+            catch (CustomException ex) when (ex.Message == "ProductEntity Not Found")
+            {
+                return StatusCode(404, new { success = false, messages = "ProductEntity Not Found" });
             }
             catch (Exception ex)
             {

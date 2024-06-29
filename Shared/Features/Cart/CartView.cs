@@ -22,6 +22,7 @@ namespace Shared.Features
 
         [property: DataMember]
         [JsonPropertyName("token")]
+        [JsonIgnore]
         [NotMapped]
         public string? Token { get; set; }
 
@@ -50,5 +51,6 @@ namespace Shared.Features
         [property: DataMember]
         [JsonPropertyName("quantity")]
         public int Quantity { get; set; }
+
     }
 }

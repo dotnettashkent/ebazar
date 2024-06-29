@@ -8,7 +8,10 @@ namespace Shared.Features
     public partial record CreateCartCommand(
         [property: DataMember] Session Session,
         [property: DataMember] CartView Entity) : ISessionCommand<CartView>;
-
+    
+    public partial record UpdateCartCommand(
+        [property: DataMember] Session Session,
+        [property: DataMember] CartView Entity) : ISessionCommand<CartView>;
 
     [DataContract, MemoryPackable]
     public partial record DeleteCartCommand(

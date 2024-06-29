@@ -16,6 +16,9 @@ namespace Shared.Features
 
         [CommandHandler]
         Task Create(CreateCartCommand command, CancellationToken cancellationToken = default);
+        
+        [CommandHandler]
+        Task UpdateProductQuantityAsync(UpdateCartCommand command, CancellationToken cancellationToken = default);
 
         [CommandHandler]
         Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default);

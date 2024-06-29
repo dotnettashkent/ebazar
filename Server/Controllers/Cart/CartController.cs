@@ -44,6 +44,40 @@ namespace Server.Controllers
             }
         }
 
+        [HttpPatch("patch")]
+        public async Task<IActionResult> UpdateProductQuantityAsync([FromBody] UpdateCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(token) || token is null)
+                {
+                    var errorMessage = new Dictionary<string, string>
+                    {
+                        ["key"] = "token",
+                        ["msg_uz"] = "Token majburiy",
+                        ["msg_ru"] = "Токен обязательна",
+                        ["msg_en"] = "Token is required"
+                    };
+                    return StatusCode(401, new { success = false, message = errorMessage });
+                }
+                command.Entity.Token = token;
+                var result = await commander.Call(command, cancellationToken);
+                return StatusCode(200, new { success = true });
+            }
+            catch (CustomException ex) when (ex.Message == "Cart not found for the user.")
+            {
+                return StatusCode(404, new { success = false, messages = "Cart not found for the user." });
+            }
+            catch (CustomException ex) when (ex.Message == "Admin does not have permission to update a product quantity.")
+            {
+                return StatusCode(403, new { success = false, messages = "Admin does not have permission to update a product quantity." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, success = false });
+            }
+        }
+
         [HttpDelete("delete")]
         public async Task<ActionResult> Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
         {
@@ -82,8 +116,8 @@ namespace Server.Controllers
 
             try
             {
-                var res =  await cartService.GetAll(token, cancellationToken);
-                if(res.Items.Count() == 0)
+                var res = await cartService.GetAll(token, cancellationToken);
+                if (res.Items.Count() == 0)
                 {
                     return Ok(new
                     {
@@ -107,7 +141,7 @@ namespace Server.Controllers
             {
                 return StatusCode(403, new { success = false, messages = "Not Permission" });
             }
-            catch (CustomException ex) when (ex.Message == "CartEntity Not Found") 
+            catch (CustomException ex) when (ex.Message == "CartEntity Not Found")
             {
                 return StatusCode(408, new { success = false, messages = "Cart not found" });
             }
