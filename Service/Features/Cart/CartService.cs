@@ -108,6 +108,54 @@ namespace Service.Features
             }
         }
 
+        public async virtual Task UpdateProductQuantityAsync(UpdateCartCommand command, CancellationToken cancellationToken = default)
+        {
+            var isValid = ValidateToken(command.Entity.Token!);
+
+            if (IsAdminUser(isValid))
+            {
+                throw new CustomException("Admin does not have permission to update a product quantity.");
+            }
+            if (Computed.IsInvalidating())
+            {
+                _ = await Invalidate();
+                return;
+            }
+            await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
+
+            var isUser = IsUser(isValid);
+            var cart = dbContext.Carts.FirstOrDefault(x => x.UserId == isUser.Id);
+
+            if (cart != null && cart.Product != null)
+            {
+                var cartProducts = JsonSerializer.Deserialize<List<ProductList>>(cart.Product);
+                UpdateProductQuantitiesInCart(cartProducts, command.Entity.Products);
+                cart.Product = JsonSerializer.Serialize(cartProducts);
+                await dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new CustomException("Cart not found for the user.");
+            }
+        }
+
+        private static void UpdateProductQuantitiesInCart(List<ProductList> cartProducts, IEnumerable<ProductList> updateProducts)
+        {
+            foreach (var updateProduct in updateProducts)
+            {
+                var existingProduct = cartProducts.FirstOrDefault(p => p.ProductId == updateProduct.ProductId);
+
+                if (existingProduct != null)
+                {
+                    existingProduct.Quantity -= updateProduct.Quantity;
+
+                    if (existingProduct.Quantity <= 0)
+                    {
+                        cartProducts.Remove(existingProduct);
+                    }
+                }
+            }
+        }
 
 
 
@@ -183,6 +231,13 @@ namespace Service.Features
 
         #endregion
         #region Helpers
+
+        private bool IsAdminUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
+            return user != null;
+        }
         public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
         private void Reattach(CartEntity entity, CartView view, AppDbContext dbContext)
         {
