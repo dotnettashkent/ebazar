@@ -147,7 +147,7 @@ namespace Service.Features
 
                 if (existingProduct != null)
                 {
-                    existingProduct.Quantity -= updateProduct.Quantity;
+                    existingProduct.Quantity = updateProduct.Quantity;
 
                     if (existingProduct.Quantity <= 0)
                     {
@@ -156,8 +156,6 @@ namespace Service.Features
                 }
             }
         }
-
-
 
         public async virtual Task Delete(DeleteCartCommand command, CancellationToken cancellationToken = default)
         {

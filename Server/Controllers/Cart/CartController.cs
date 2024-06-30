@@ -18,7 +18,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("")]
-        public async Task<ActionResult> Create([FromBody] CreateCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Create([FromBody] CreateCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token = "")
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Server.Controllers
         }
 
         [HttpPatch("patch")]
-        public async Task<IActionResult> UpdateProductQuantityAsync([FromBody] UpdateCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<IActionResult> UpdateProductQuantityAsync([FromBody] UpdateCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token = "")
         {
             try
             {
@@ -79,7 +79,7 @@ namespace Server.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<ActionResult> Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token)
+        public async Task<ActionResult> Delete([FromBody] DeleteCartCommand command, CancellationToken cancellationToken, [FromHeader(Name = "Authorization")] string token = "")
         {
             try
             {
@@ -111,11 +111,16 @@ namespace Server.Controllers
         }
 
         [HttpGet("get/carts")]
-        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll([FromHeader(Name = "Authorization")] string token, CancellationToken cancellationToken)
+        public async Task<ActionResult<TableResponse<ProductResultView>>> GetAll([FromHeader(Name = "Authorization")] string token = "", CancellationToken cancellationToken = default)
         {
 
             try
             {
+                if (string.IsNullOrEmpty(token) || token is null)
+                {
+                    return StatusCode(401, new { success = false, message = "token is required" });
+                }
+
                 var res = await cartService.GetAll(token, cancellationToken);
                 if (res.Items.Count() == 0)
                 {
