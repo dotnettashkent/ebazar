@@ -14,6 +14,8 @@ namespace Shared.Infrastructures
 
         [property: DataMember] public int sort_direction { get; set; } = 1;
 
+        [property: DataMember] public string? status { get; set; }
+
         [property: DataMember] public string? search { get; set; }
 
         [property: DataMember] public string? token { get; set; }

@@ -1,19 +1,20 @@
-﻿using Stl.Async;
-using Stl.Fusion;
-using System.Data;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Service.Data;
-using System.Reactive;
+using Service.Features.Order;
 using Shared.Features;
 using Shared.Infrastructures;
-using System.Security.Claims;
-using Stl.Fusion.EntityFramework;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using Shared.Infrastructures.Extensions;
-using Microsoft.Extensions.Configuration;
+using Stl.Async;
 using Stl.CommandR;
+using Stl.Fusion;
+using Stl.Fusion.EntityFramework;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reactive;
+using System.Security.Claims;
+using System.Text;
 
 namespace Service.Features.User
 {
@@ -35,6 +36,37 @@ namespace Service.Features.User
         #endregion
 
         #region Queries
+
+        public async Task<TableResponse<OrderView>> GetUserOrdersByProcessAsync(TableOptions options, CancellationToken cancellationToken = default)
+        {
+            var isValid = ValidateToken(options.token!, true);
+            var isUser = IsUser(isValid);
+            if (IsAdminUser(isValid))
+            {
+                throw new CustomException("Not Permission");
+            }
+
+            await Invalidate();
+            var dbContext = dbHub.CreateDbContext();
+            await using var _ = dbContext.ConfigureAwait(false);
+
+            var orders = dbContext.Orders.AsQueryable().Where(x => x.Status == options.status && x.UserId == isUser.Id);
+
+            Sorting(ref orders, options);
+
+            var count = await orders.AsNoTracking().CountAsync(cancellationToken: cancellationToken);
+            var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
+            decimal totalPage = (decimal)count / (decimal)options.page_size;
+
+            return new TableResponse<OrderView>()
+            {
+                Items = items.MapToViewList(),
+                TotalItems = count,
+                AllPage = (int)Math.Ceiling(totalPage),
+                CurrentPage = options.page
+            };
+        }
+
         public async virtual Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
             var isValid = ValidateToken(options.token);
@@ -60,12 +92,12 @@ namespace Service.Features.User
             var count = await users.AsNoTracking().CountAsync();
             var items = await users.AsNoTracking().Paginate(options).ToListAsync();
             decimal totalPage = (decimal)count / (decimal)options.page_size;
-            return new TableResponse<UserView>() 
-            { 
-                Items = items.MapToViewList(), 
-                TotalItems = count, 
-                AllPage = (int)Math.Ceiling(totalPage), 
-                CurrentPage = options.page 
+            return new TableResponse<UserView>()
+            {
+                Items = items.MapToViewList(),
+                TotalItems = count,
+                AllPage = (int)Math.Ceiling(totalPage),
+                CurrentPage = options.page
             };
         }
 
@@ -165,7 +197,7 @@ namespace Service.Features.User
             await using var dbContext = await dbHub.CreateCommandDbContext(cancellationToken);
             var user = await dbContext.UsersEntities
             .FirstOrDefaultAsync(x => x.Id == command.Id);
-            if (user == null) 
+            if (user == null)
                 throw new CustomException("UserEntity Not Found");
             dbContext.Remove(user);
             await dbContext.SaveChangesAsync(cancellationToken);
@@ -214,6 +246,18 @@ namespace Service.Features.User
             "PhoneNumber" => unit.Ordering(options, o => o.PhoneNumber),
             "CreatedAt" => unit.Ordering(options, o => o.CreatedAt),
             _ => unit.OrderBy(o => o.CreatedAt),
+        };
+
+        private void Sorting(ref IQueryable<OrderEntity> unit, TableOptions options) => unit = options.sort_label switch
+        {
+            "City" => unit.Ordering(options, o => o.City),
+            "Region" => unit.Ordering(options, o => o.Region),
+            "Status" => unit.Ordering(options, o => o.Status),
+            "PaymentType" => unit.Ordering(options, o => o.PaymentType),
+            "Street" => unit.Ordering(options, o => o.Street),
+            "FirstName" => unit.Ordering(options, o => o.FirstName),
+            "LastName" => unit.Ordering(options, o => o.LastName),
+            _ => unit.OrderBy(o => o.Id),
         };
 
         #endregion
@@ -297,17 +341,23 @@ namespace Service.Features.User
         #endregion
 
         #region Token Helper
+        private UserEntity IsUser(string phoneNumber)
+        {
+            using var dbContext = dbHub.CreateDbContext();
+            var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
+            return user ?? throw new CustomException("Not Permission");
+        }
         private bool IsAdminUser(string phoneNumber)
         {
             using var dbContext = dbHub.CreateDbContext();
             var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
             return user != null;
         }
-        private string ValidateToken(string token)
+        private string ValidateToken(string token, bool status = false)
         {
             if (token is null)
                 throw new CustomException("Token is required");
-            var jwtEncodedString = token.Substring(7);
+            var jwtEncodedString = status ? token : token.Substring(7);
 
             var secondToken = new JwtSecurityToken(jwtEncodedString);
             var json = secondToken.Payload.Values.FirstOrDefault();
