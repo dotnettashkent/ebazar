@@ -218,11 +218,11 @@ namespace Server.Controllers.User
         {
             try
             {
-                if (string.IsNullOrEmpty(options.token) && options.token is null)
+                if (string.IsNullOrEmpty(token) && options.token is null)
                 {
                     return StatusCode(401, new { success = false, message = "token is required" });
                 }
-                options.token = options.token;
+                options.token = token;
                 return await userService.GetUserOrdersByProcessAsync(options, cancellationToken);
             }
             catch (CustomException ex) when (ex.Message == "Token is required")

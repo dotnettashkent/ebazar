@@ -39,13 +39,8 @@ namespace Service.Features.User
 
         public async Task<TableResponse<OrderView>> GetUserOrdersByProcessAsync(TableOptions options, CancellationToken cancellationToken = default)
         {
-            var isValid = ValidateToken(options.token!, true);
+            var isValid = ValidateToken(options.token);
             var isUser = IsUser(isValid);
-            if (IsAdminUser(isValid))
-            {
-                throw new CustomException("Not Permission");
-            }
-
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
             await using var _ = dbContext.ConfigureAwait(false);
@@ -347,17 +342,16 @@ namespace Service.Features.User
             var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
             return user ?? throw new CustomException("Not Permission");
         }
+        
         private bool IsAdminUser(string phoneNumber)
         {
             using var dbContext = dbHub.CreateDbContext();
             var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "Admin");
             return user != null;
         }
-        private string ValidateToken(string token, bool status = false)
+        private string ValidateToken(string token)
         {
-            if (token is null)
-                throw new CustomException("Token is required");
-            var jwtEncodedString = status ? token : token.Substring(7);
+            var jwtEncodedString = token.Substring(7);
 
             var secondToken = new JwtSecurityToken(jwtEncodedString);
             var json = secondToken.Payload.Values.FirstOrDefault();
