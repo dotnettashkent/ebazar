@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Service.Data;
-using Service.Features.Order;
 using Shared.Features;
 using Shared.Infrastructures;
 using Shared.Infrastructures.Extensions;
@@ -37,9 +37,9 @@ namespace Service.Features.User
 
         #region Queries
 
-        public async Task<TableResponse<OrderView>> GetUserOrdersByProcessAsync(TableOptions options, CancellationToken cancellationToken = default)
+        public async Task<TableResponse<OrderResultView>> GetUserOrdersByProcessAsync(TableOptions options, CancellationToken cancellationToken = default)
         {
-            var isValid = ValidateToken(options.token);
+            var isValid = ValidateToken(options.token!);
             var isUser = IsUser(isValid);
             await Invalidate();
             var dbContext = dbHub.CreateDbContext();
@@ -53,14 +53,41 @@ namespace Service.Features.User
             var items = await orders.AsNoTracking().Paginate(options).ToListAsync(cancellationToken: cancellationToken);
             decimal totalPage = (decimal)count / (decimal)options.page_size;
 
-            return new TableResponse<OrderView>()
+            var itemsResult = new List<OrderResultView>();
+
+            foreach (var item in items)
             {
-                Items = items.MapToViewList(),
+                OrderResultView temp = new()
+                {
+                    Id = item.Id,
+                    UserId = item.UserId,
+                    City = item.City,
+                    Street = item.Street,
+                    Region = item.Region,
+                    HomeNumber = item.HomeNumber,
+                    CommentForCourier = item.CommentForCourier,
+                    DeliveryTime = item.DeliveryTime,
+                    PaymentType = item.PaymentType,
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    ExtraPhoneNumber = item.ExtraPhoneNumber,
+                    Status = item.Status,
+                    Products = Serialize(item.Products!)
+                };
+
+                itemsResult.Add(temp);
+            }
+
+            return new TableResponse<OrderResultView>()
+            {
+                Items = itemsResult,
                 TotalItems = count,
                 AllPage = (int)Math.Ceiling(totalPage),
                 CurrentPage = options.page
             };
         }
+
+        
 
         public async virtual Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default)
         {
@@ -230,6 +257,9 @@ namespace Service.Features.User
         #region Helpers
 
         //[ComputeMethod]
+        private List<ProductResultView> Serialize(string json)
+            => JsonConvert.DeserializeObject<List<ProductResultView>>(json) ?? [];
+        
         public virtual Task<Unit> Invalidate() => TaskExt.UnitTask;
         private void Reattach(UserEntity user, UserResultView userView, AppDbContext dbContext)
         {
@@ -342,7 +372,7 @@ namespace Service.Features.User
             var user = dbContext.UsersEntities.FirstOrDefault(x => x.PhoneNumber == phoneNumber && x.Role == "User");
             return user ?? throw new CustomException("Not Permission");
         }
-        
+
         private bool IsAdminUser(string phoneNumber)
         {
             using var dbContext = dbHub.CreateDbContext();

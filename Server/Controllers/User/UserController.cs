@@ -213,7 +213,7 @@ namespace Server.Controllers.User
         }
 
         [HttpGet("orders")]
-        public async Task<ActionResult<TableResponse<OrderView>>> GetUserOrdersAsync([FromQuery] TableOptions options,
+        public async Task<ActionResult<TableResponse<OrderResultView>>> GetUserOrdersAsync([FromQuery] TableOptions options,
             [FromHeader(Name = "Authorization")] string? token, CancellationToken cancellationToken = default)
         {
             try

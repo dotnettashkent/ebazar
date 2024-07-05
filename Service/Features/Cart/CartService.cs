@@ -1,13 +1,13 @@
-﻿using Stl.Async;
-using Stl.Fusion;
-using Service.Data;
-using System.Reactive;
-using Shared.Features;
-using System.Text.Json;
+﻿using Service.Data;
 using Service.Features.Cart;
+using Shared.Features;
+using Shared.Infrastructures.Extensions;
+using Stl.Async;
+using Stl.Fusion;
 using Stl.Fusion.EntityFramework;
 using System.IdentityModel.Tokens.Jwt;
-using Shared.Infrastructures.Extensions;
+using System.Reactive;
+using System.Text.Json;
 
 namespace Service.Features
 {
@@ -82,7 +82,7 @@ namespace Service.Features
                 UpdateProductsInCart(cartProducts, command.Entity.Products);
                 cart.Product = JsonSerializer.Serialize(cartProducts);
                 Reattach(cart, command.Entity, dbContext);
-                dbContext.Update(cart);
+                dbContext.Add(cart);
                 await dbContext.SaveChangesAsync();
             }
         }

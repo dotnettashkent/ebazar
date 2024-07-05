@@ -12,7 +12,7 @@ namespace Shared.Features
     {
         //[ComputeMethod]
         Task<TableResponse<UserView>> GetAll(TableOptions options, CancellationToken cancellationToken = default);
-        Task<TableResponse<OrderView>> GetUserOrdersByProcessAsync(TableOptions options, CancellationToken cancellationToken = default);
+        Task<TableResponse<OrderResultView>> GetUserOrdersByProcessAsync(TableOptions options, CancellationToken cancellationToken = default);
         //[ComputeMethod]
         Task<UserView> GetById(long id, CancellationToken cancellationToken = default);
         Task<UserResultView> Get(long Id, CancellationToken cancellationToken = default);
